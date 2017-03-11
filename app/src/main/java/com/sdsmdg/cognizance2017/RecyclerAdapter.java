@@ -2,6 +2,8 @@ package com.sdsmdg.cognizance2017;
 
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +55,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         holder.timeText.setText(String.valueOf(currentEvent.getStartHour()) + ":" + min1
                 + "-" + String.valueOf(currentEvent.getEndHour()) + ":" + min2);
         //set Event Icon later
+        Drawable res = ContextCompat.getDrawable(ctx, currentEvent.getImageId());
+        holder.eventIcon.setImageDrawable(res);
     }
 
     @Override
