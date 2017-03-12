@@ -30,5 +30,4 @@ public final class EventsData {
     public static int[] startMin = {0, 0, 0, 0, 30, 45, 30, 45, 30, 0, 0, 0, 30};
     public static int[] endMin = {0, 0, 0, 0, 0, 30, 30, 45, 0, 0, 45, 30, 30};
     public static boolean[] continuous={};
-
 }

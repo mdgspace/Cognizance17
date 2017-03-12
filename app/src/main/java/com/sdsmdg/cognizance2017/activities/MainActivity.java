@@ -16,19 +16,34 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
 import com.sdsmdg.cognizance2017.fragments.ExpandedListFragment;
 import com.sdsmdg.cognizance2017.R;
+import com.sdsmdg.cognizance2017.models.EventList;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private Fragment fragment;
-
+    private Realm realm;
+    private RealmResults<EventList> results;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Realm.init(this);
+        realm = Realm.getDefaultInstance();
+        if(realm.isEmpty())
+        loadDatabase();
+        results = realm.where(EventList.class).equalTo("id", 2).findAll();
+        Toast.makeText(this, "" + results.get(0).getEvents().get(0).getTitle().toString(), Toast.LENGTH_SHORT).show();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ExpandedListFragment expandedListFragment = new ExpandedListFragment();
@@ -55,6 +70,19 @@ public class MainActivity extends AppCompatActivity
         navigationView.getMenu().getItem(0).setChecked(true);
     }
 
+    private void loadDatabase() {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                try {
+                    InputStream is = getAssets().open("events.json");
+                    realm.createAllFromJson(EventList.class, is);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

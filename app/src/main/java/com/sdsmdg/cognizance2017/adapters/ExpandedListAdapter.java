@@ -8,22 +8,30 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.sdsmdg.cognizance2017.models.Event;
 import com.sdsmdg.cognizance2017.R;
+import com.sdsmdg.cognizance2017.models.Event;
+import com.sdsmdg.cognizance2017.models.EventList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 public class ExpandedListAdapter extends BaseExpandableListAdapter {
-    private Context _context;
+    private Context ctx;
     private List<String> daysList;
     private ArrayList<Event> day1Events,day2Events,day3Events;
     private HashMap<String, ArrayList<Event>> dayWiseEventList;
+    private Realm realm;
+    private RealmResults<EventList> results;
     public ExpandedListAdapter(Context context, List<String> listDataHeader,
                      HashMap<String, ArrayList<Event>> listChildData) {
-        this._context = context;
+        this.ctx = context;
+        Realm.init(ctx);
+        realm = Realm.getDefaultInstance();
+        results = realm.where(EventList.class).findAll();
         this.daysList = listDataHeader;
         this.dayWiseEventList = listChildData;
         day1Events = new ArrayList<>();
@@ -92,7 +100,7 @@ public class ExpandedListAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         String headerTitle = (String) getGroup(groupPosition);
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) this._context
+            LayoutInflater inflater = (LayoutInflater) this.ctx
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.group_layout, null);
         }
@@ -110,7 +118,7 @@ public class ExpandedListAdapter extends BaseExpandableListAdapter {
         Event event = (Event) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) this._context
+            LayoutInflater inflater = (LayoutInflater) this.ctx
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.event_item_layout, null);
         }

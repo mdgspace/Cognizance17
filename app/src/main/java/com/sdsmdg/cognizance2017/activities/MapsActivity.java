@@ -22,7 +22,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private boolean isMapReady;
     Marker m;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +58,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMyLocationEnabled(true);
         LatLng roorkee = new LatLng(29.865866, 77.896316);
         m = mMap.addMarker(new MarkerOptions().position(roorkee).title("Marker in Roorkee"));
+        final Marker m = mMap.addMarker(new MarkerOptions().position(roorkee).title("Marker in Roorkee"));
         m.showInfoWindow();
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -66,19 +66,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 m.showInfoWindow();
             }
         });
-
         mMap.moveCamera(CameraUpdateFactory.newLatLng(roorkee));
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-
-                Uri gmmIntentUri = Uri.parse("google.navigation:q=29.865866,77.896316");
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                startActivity(mapIntent);
-                return true;
+        isMapReady = true;
+                    Uri gmmIntentUri = Uri.parse("google.navigation:q=29.865866,77.896316");
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    startActivity(mapIntent);
+                    return true;
             }
         });
-        isMapReady = true;
     }
 }
