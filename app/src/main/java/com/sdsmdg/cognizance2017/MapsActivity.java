@@ -34,20 +34,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -62,6 +52,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng roorkee = new LatLng(29.865866, 77.896316);
         final Marker m = mMap.addMarker(new MarkerOptions().position(roorkee).title("Marker in Roorkee"));
         m.showInfoWindow();
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+
+            }
+        });
         m.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(roorkee));
@@ -69,17 +65,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
 
-                    /*Create a Uri from an intent string. Use the result to create an Intent.
                     Uri gmmIntentUri = Uri.parse("google.navigation:q=29.865866,77.896316");
-// Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-// Make the Intent explicit by setting the Google Maps package
                     mapIntent.setPackage("com.google.android.apps.maps");
-
-// Attempt to start an activity that can handle the Intent
                     startActivity(mapIntent);
-                    */
-
                     return true;
             }
         });

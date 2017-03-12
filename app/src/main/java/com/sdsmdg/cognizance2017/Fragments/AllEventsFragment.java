@@ -19,7 +19,7 @@ public class AllEventsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.all_events_viewpager, container, false);
         ViewPager vPager = (ViewPager) view.findViewById(R.id.all_events_vpager);
-        AllEventsVpagerAdapter mAdapter = new AllEventsVpagerAdapter(getActivity().getSupportFragmentManager());
+        AllEventsVpagerAdapter mAdapter = new AllEventsVpagerAdapter(getChildFragmentManager());
         vPager.setAdapter(mAdapter);
         TabLayout tabLayout= (TabLayout) view.findViewById(R.id.vpager_tabs);
         tabLayout.setupWithViewPager(vPager);
