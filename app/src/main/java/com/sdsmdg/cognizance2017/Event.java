@@ -2,15 +2,15 @@ package com.sdsmdg.cognizance2017;
 
 import io.realm.RealmObject;
 
-public class Events extends RealmObject {
+public class Event extends RealmObject {
     private String title, theme, location;
     private String description;
     private int startDay, startHour, startMinute, imageId;
-    private int endDay, endHour, endMinute;
+    private int event,endDay, endHour, endMinute;
     private boolean continuous;
 
-    public Events(String title, String theme, String location, String description, int startDay,
-                  int startHour, int startMinute, int imageId, int endDay, int endHour, int endMinute, boolean continuous) {
+    public Event(String title, String theme, String location, String description, int startDay,
+                 int startHour, int startMinute, int imageId, int endDay, int endHour, int endMinute, boolean continuous) {
         this.title = title;
         this.theme = theme;
         this.location = location;
@@ -25,7 +25,15 @@ public class Events extends RealmObject {
         this.continuous = continuous;
     }
 
-    public Events() {
+    public Event() {
+    }
+
+    public int getEvent() {
+        return event;
+    }
+
+    public void setEvent(int event) {
+        this.event = event;
     }
 
     public String getTitle() {

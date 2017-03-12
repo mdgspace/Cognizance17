@@ -15,9 +15,9 @@ import java.util.List;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
 
     private Context ctx;
-    List<Events> eventsList = new ArrayList<Events>();
+    List<Event> eventsList = new ArrayList<Event>();
 
-    public RecyclerAdapter(Context ctx, List<Events> eventsList) {
+    public RecyclerAdapter(Context ctx, List<Event> eventsList) {
         this.ctx = ctx;
         this.eventsList = eventsList;
     }
@@ -44,7 +44,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Events currentEvent = eventsList.get(position);
+        Event currentEvent = eventsList.get(position);
         holder.titleText.setText(currentEvent.getTitle());
         holder.themeText.setText(currentEvent.getTheme());
         String min1, min2;
