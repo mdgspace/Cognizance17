@@ -17,8 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.sdsmdg.cognizance2017.Fragments.AllEventsFragment;
-import com.sdsmdg.cognizance2017.Fragments.ExpandedListFragment;
+import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
+import com.sdsmdg.cognizance2017.fragments.ExpandedListFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

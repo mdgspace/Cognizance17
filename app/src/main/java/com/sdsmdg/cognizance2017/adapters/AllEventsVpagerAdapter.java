@@ -1,10 +1,10 @@
-package com.sdsmdg.cognizance2017.Adapters;
+package com.sdsmdg.cognizance2017.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.sdsmdg.cognizance2017.Fragments.AllEventsRecyclerFragment;
+import com.sdsmdg.cognizance2017.fragments.AllEventsRecyclerFragment;
 
 public class AllEventsVpagerAdapter extends FragmentPagerAdapter {
 

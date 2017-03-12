@@ -1,4 +1,4 @@
-package com.sdsmdg.cognizance2017.Activities;
+package com.sdsmdg.cognizance2017.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,8 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.sdsmdg.cognizance2017.Fragments.AllEventsFragment;
-import com.sdsmdg.cognizance2017.Fragments.ExpandedListFragment;
+import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
+import com.sdsmdg.cognizance2017.fragments.ExpandedListFragment;
 import com.sdsmdg.cognizance2017.R;
 
 public class MainActivity extends AppCompatActivity

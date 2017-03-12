@@ -1,4 +1,4 @@
-package com.sdsmdg.cognizance2017.Fragments;
+package com.sdsmdg.cognizance2017.fragments;
 
 
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sdsmdg.cognizance2017.Adapters.AllEventsVpagerAdapter;
+import com.sdsmdg.cognizance2017.adapters.AllEventsVpagerAdapter;
 import com.sdsmdg.cognizance2017.R;
 
 public class AllEventsFragment extends Fragment {
