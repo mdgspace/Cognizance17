@@ -3,9 +3,6 @@ package com.sdsmdg.cognizance2017.models;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
-/**
- * Created by Arihant Jain on 3/12/2017.
- */
 
 public class EventList extends RealmObject {
     private RealmList<Event> events;

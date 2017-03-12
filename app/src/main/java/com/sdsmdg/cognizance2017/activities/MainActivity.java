@@ -4,10 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,11 +15,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
-import com.sdsmdg.cognizance2017.fragments.ExpandedListFragment;
 import com.sdsmdg.cognizance2017.R;
+import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
+import com.sdsmdg.cognizance2017.fragments.AllEventsRecyclerFragment;
+import com.sdsmdg.cognizance2017.fragments.ExpandedListFragment;
+import com.sdsmdg.cognizance2017.models.Event;
 import com.sdsmdg.cognizance2017.models.EventList;
 
 import java.io.IOException;
@@ -33,29 +35,78 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private Fragment fragment;
     private Realm realm;
-    private RealmResults<EventList> results;
+    private RealmResults<Event> results;
+    private boolean isOnFavSelectionFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        isOnFavSelectionFragment = false;
         Realm.init(this);
         realm = Realm.getDefaultInstance();
-        if(realm.isEmpty())
-        loadDatabase();
-        results = realm.where(EventList.class).equalTo("id", 2).findAll();
-        Toast.makeText(this, "" + results.get(0).getEvents().get(0).getTitle().toString(), Toast.LENGTH_SHORT).show();
+        if (realm.isEmpty())
+            loadDatabase();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ExpandedListFragment expandedListFragment = new ExpandedListFragment();
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.events_container, expandedListFragment, "expandable").commit();
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        results = realm.where(Event.class).equalTo("fav", true).findAll();
+        Toast.makeText(this, "" + results.size(), Toast.LENGTH_SHORT).show();
+        if (results.size() == 0) {
+            TextView fav = (TextView) findViewById(R.id.no_favorite_selected_text);
+            fav.setVisibility(View.VISIBLE);
+        } else {
+            /*ExpandedListFragment expandedListFragment = new ExpandedListFragment();
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.add(R.id.events_container, expandedListFragment, "expandable").commit();*/
+            fragment = getSupportFragmentManager().findFragmentByTag("favList");
+            if (fragment == null) {
+                fragment = AllEventsRecyclerFragment.newInstance(6);
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.events_container, fragment, "favList");
+                fragmentTransaction.commit();
+            }
+        }
+
+
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                if (!isOnFavSelectionFragment) {
+                    fragment = getSupportFragmentManager().findFragmentByTag("fav");
+                    if (fragment == null) {
+                        fragment = AllEventsRecyclerFragment.newInstance(5);
+                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.events_container, fragment, "fav");
+                        fragmentTransaction.commit();
+                        fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_menu_send));
+                        isOnFavSelectionFragment = true;
+                    }
+                } else {
+                    //List<Event> events = ((AllEventsRecyclerFragment) fragment).getAdapter().getFavEvents();
+                    fragment = getSupportFragmentManager().findFragmentByTag("favRec");
+                    if (fragment == null) {
+                        fragment = AllEventsRecyclerFragment.newInstance(6);
+                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.events_container, fragment, "favRec");
+                        fragmentTransaction.commit();
+                    }
+                    fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_menu_gallery));
+                    isOnFavSelectionFragment = false;
+                    /*realm.beginTransaction();
+                    List<Event> el = realm.where(Event.class).findAll();
+                    for (int i = 0; i < el.size(); i++)
+                        el.get(i).setFav(false);
+                    for (int i = 0; i < events.size(); i++) {
+                        for (int j = 0; j < el.size(); j++) {
+                            if ((events.get(i).getTitle()).equals(el.get(j).getTitle())) {
+                                el.get(j).setFav(true);
+                            }
+                        }
+                    }
+                    realm.commitTransaction();*/
+                }
             }
         });
 
@@ -83,6 +134,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -109,7 +161,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.map) {
-            startActivity(new Intent(this,MapsActivity.class));
+            startActivity(new Intent(this, MapsActivity.class));
             return true;
         }
 

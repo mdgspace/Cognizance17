@@ -17,34 +17,42 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="8"
         android:layout_gravity="center"
+        android:layout_weight="8"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/event_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
+            android:textSize="20dp"
+            android:layout_marginBottom="4dp"
             android:text="Title" />
+
+        <TextView
+            android:id="@+id/event_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="4dp"
+            android:gravity="start"
+            android:text="09:30-15:30" />
 
         <TextView
             android:id="@+id/event_theme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:layout_marginBottom="4dp"
             android:text="Theme" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/event_time"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="3"
-        android:maxLines="1"
-        android:gravity="end"
-        android:text="09:30-15:30" />
-
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="5dp"
+        android:visibility="gone"/>
 
 </LinearLayout>
