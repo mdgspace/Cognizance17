@@ -1,0 +1,111 @@
+[
+  {"events":[
+    {
+      "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
+      "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
+      "endMin":0,"continuous":true
+    },
+    {
+      "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
+      "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
+      "endMin":0,"continuous":true
+    },
+    {
+      "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
+      "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
+      "endMin":0,"continuous":true
+    }
+  ],
+    "id":1,
+    "title":"Title of Group",
+    "description":"Description of event"
+  },
+
+  {"events":[
+    {
+      "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
+      "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
+      "endMin":0,"continuous":true
+    },
+    {
+      "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
+      "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
+      "endMin":0,"continuous":true
+    },
+    {
+      "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
+      "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
+      "endMin":0,"continuous":true
+    }
+  ],
+    "id":2,
+    "title":"Title of Group",
+    "description":"Description of event"
+  },
+
+  {"events":[
+    {
+      "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
+      "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
+      "endMin":0,"continuous":true
+    },
+    {
+      "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
+      "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
+      "endMin":0,"continuous":true
+    },
+    {
+      "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
+      "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
+      "endMin":0,"continuous":true
+    }
+  ],
+    "id":3,
+    "title":"Title of Group",
+    "description":"Description of event"
+  },
+
+  {"events":[
+    {
+      "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
+      "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
+      "endMin":0,"continuous":true
+    },
+    {
+      "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
+      "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
+      "endMin":0,"continuous":true
+    },
+    {
+      "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
+      "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
+      "endMin":0,"continuous":true
+    }
+  ],
+    "id":4,
+    "title":"Title of Group",
+    "description":"Description of event"
+  },
+
+  {"events":[
+    {
+      "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
+      "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
+      "endMin":0,"continuous":true
+    },
+    {
+      "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
+      "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
+      "endMin":0,"continuous":true
+    },
+    {
+      "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
+      "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
+      "endMin":0,"continuous":true
+    }
+  ],
+    "id":5,
+    "title":"Title of Group",
+    "description":"Description of event"
+  }
+]

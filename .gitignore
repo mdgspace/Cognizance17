@@ -34,3 +34,6 @@ target
 Thumbs.db
 *.swp
 *.bak
+
+# API Key
+google_maps_api.xml

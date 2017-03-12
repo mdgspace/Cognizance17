@@ -1,8 +1,9 @@
 <resources>
-    <string name="app_name">Cognizance'17</string>
+    <string name="app_name">Cognizance\'17</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Campus Map</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
