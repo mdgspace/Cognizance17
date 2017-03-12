@@ -1,4 +1,4 @@
-package com.sdsmdg.cognizance2017;
+package com.sdsmdg.cognizance2017.Adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.sdsmdg.cognizance2017.Models.Event;
+import com.sdsmdg.cognizance2017.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

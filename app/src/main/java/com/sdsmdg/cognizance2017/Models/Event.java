@@ -1,4 +1,4 @@
-package com.sdsmdg.cognizance2017;
+package com.sdsmdg.cognizance2017.Models;
 
 import io.realm.RealmObject;
 

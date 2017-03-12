@@ -16,7 +16,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+
+import com.sdsmdg.cognizance2017.Fragments.AllEventsFragment;
+import com.sdsmdg.cognizance2017.Fragments.ExpandedListFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -31,7 +33,7 @@ public class MainActivity extends AppCompatActivity
         ExpandedListFragment expandedListFragment = new ExpandedListFragment();
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.events_container,expandedListFragment,"expandable").commit();
+        transaction.add(R.id.events_container, expandedListFragment, "expandable").commit();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,23 +92,23 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-       // MainActivityFragment fragment = null;
-        if(id == R.id.all_events){
+        // AllEventsRecyclerFragment fragment = null;
+        if (id == R.id.all_events) {
             fragment = getSupportFragmentManager().findFragmentByTag("pager");
             if (fragment == null) {
-                fragment = new MainActivityFragment();
+                fragment = new AllEventsFragment();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.events_container, fragment, "pager");
                 fragmentTransaction.commit();
             }
-        }else {
-            if(id == R.id.home){
+        } else {
+            if (id == R.id.home) {
 
             }
-                fragment = new ExpandedListFragment();
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.events_container, fragment, "expandable");
-                fragmentTransaction.commit();
+            fragment = new ExpandedListFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.events_container, fragment, "expandable");
+            fragmentTransaction.commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
