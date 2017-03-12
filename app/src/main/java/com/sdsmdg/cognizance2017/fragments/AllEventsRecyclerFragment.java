@@ -1,4 +1,4 @@
-package com.sdsmdg.cognizance2017.Fragments;
+package com.sdsmdg.cognizance2017.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sdsmdg.cognizance2017.Adapters.RecyclerAdapter;
-import com.sdsmdg.cognizance2017.Models.Event;
+import com.sdsmdg.cognizance2017.adapters.RecyclerAdapter;
+import com.sdsmdg.cognizance2017.models.Event;
 import com.sdsmdg.cognizance2017.EventsData;
 import com.sdsmdg.cognizance2017.R;
 

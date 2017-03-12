@@ -1,4 +1,4 @@
-package com.sdsmdg.cognizance2017.Adapters;
+package com.sdsmdg.cognizance2017.adapters;
 
 
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sdsmdg.cognizance2017.Models.Event;
+import com.sdsmdg.cognizance2017.models.Event;
 import com.sdsmdg.cognizance2017.R;
 
 import java.util.ArrayList;
