@@ -52,8 +52,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         String min1, min2;
         min1 = currentEvent.getStartMinute() / 10 == 0 ? "0" + currentEvent.getStartMinute() : "" + currentEvent.getStartMinute();
         min2 = currentEvent.getEndMinute() / 10 == 0 ? "0" + currentEvent.getEndMinute() : "" + currentEvent.getEndMinute();
-        holder.timeText.setText(String.valueOf(currentEvent.getStartHour()) + ":" + min1
-                + "-" + String.valueOf(currentEvent.getEndHour()) + ":" + min2);
+        holder.timeText.setText(currentEvent.getTime());
         //set Event Icon later
         Drawable res = ContextCompat.getDrawable(ctx, currentEvent.getImageId());
         holder.eventIcon.setImageDrawable(res);

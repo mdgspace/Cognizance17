@@ -15,15 +15,15 @@ import java.util.List;
 public class MainActivityFragment extends Fragment {
 
     private static int position;
-    public static List<Events> dummyEvents;
+    public static List<Event> dummyEvents;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dummyEvents = new ArrayList<Events>();
+        dummyEvents = new ArrayList<Event>();
 
         for (int i = 0; i < 13; i++) {
-            dummyEvents.add(new Events(EventsData.titles[i],
+            dummyEvents.add(new Event(EventsData.titles[i],
                     EventsData.themes[i],
                     EventsData.location[i],
                     EventsData.desc[i],

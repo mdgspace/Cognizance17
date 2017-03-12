@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -16,23 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    View replacerView;
-    ViewGroup replacerViewParent;
+    private Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +30,7 @@ public class MainActivity extends AppCompatActivity
         ExpandedListFragment expandedListFragment = new ExpandedListFragment();
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.events_container,expandedListFragment,"l").commit();
+        transaction.add(R.id.events_container,expandedListFragment,"expandable").commit();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,31 +88,23 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        MainActivityFragment fragment = null;
+       // MainActivityFragment fragment = null;
+        if(id == R.id.all_events){
+            fragment = getSupportFragmentManager().findFragmentByTag("pager");
+            if (fragment == null) {
+                fragment = new MainActivityFragment();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.events_container, fragment, "pager");
+                fragmentTransaction.commit();
+            }
+        }else {
+            if(id == R.id.home){
 
-        fragment = (MainActivityFragment) getSupportFragmentManager().findFragmentByTag("myTag");
-        if (fragment == null) fragment = new MainActivityFragment();
-        if (id == R.id.home) {
-            fragment.setData(0);
-        } else if (id == R.id.all_events) {
-            fragment.setData(1);
-        } else if (id == R.id.theme_events) {
-            fragment.setData(2);
-        } else if (id == R.id.robotics) {
-            fragment.setData(3);
-        } else if (id == R.id.literario) {
-            fragment.setData(4);
-        } else if (id == R.id.competitions) {
-            fragment.setData(5);
-        } else if (id == R.id.online) {
-            fragment.setData(6);
-        }
-
-        if (fragment != null) {
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.events_container, fragment, "myTag");
-            fragmentTransaction.commit();
-            getSupportFragmentManager().executePendingTransactions();
+            }
+                fragment = new ExpandedListFragment();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.events_container, fragment, "expandable");
+                fragmentTransaction.commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

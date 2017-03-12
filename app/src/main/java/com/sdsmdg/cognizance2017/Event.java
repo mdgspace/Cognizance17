@@ -131,4 +131,9 @@ public class Event extends RealmObject {
     public void setContinuous(boolean continuous) {
         this.continuous = continuous;
     }
+    public String getTime(){
+        String startMin = startMinute/10==0?"0"+startMinute:""+startMinute;
+        String endMin = startMinute/10==0?"0"+startMinute:""+startMinute;
+        return startHour + ":" + startMin+ "-" + endHour + ":" + endMin;
+    }
 }

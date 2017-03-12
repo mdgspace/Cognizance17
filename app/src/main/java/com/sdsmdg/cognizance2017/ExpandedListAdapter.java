@@ -119,7 +119,7 @@ public class ExpandedListAdapter extends BaseExpandableListAdapter {
 
         title.setText(event.getTitle());
         theme.setText(event.getTheme());
-        time.setText(event.getTitle());
+        time.setText(event.getTime());
         icon.setImageResource(R.drawable.ic_menu_gallery);
         return convertView;
     }
