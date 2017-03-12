@@ -3,17 +3,17 @@
     {
       "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
       "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
-      "endMin":0,"continuous":true
+      "endMin":0,"continuous":true,"fav":true
     },
     {
       "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
       "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
-      "endMin":0,"continuous":true
+      "endMin":0,"continuous":true,"fav":true
     },
     {
       "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
       "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
-      "endMin":0,"continuous":true
+      "endMin":0,"continuous":true,"fav":true
     }
   ],
     "id":1,
@@ -25,17 +25,17 @@
     {
       "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
       "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
-      "endMin":0,"continuous":true
+      "endMin":0,"continuous":true,"fav":true
     },
     {
       "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
       "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
-      "endMin":0,"continuous":true
+      "endMin":0,"continuous":true,"fav":true
     },
     {
       "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
       "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
-      "endMin":0,"continuous":true
+      "endMin":0,"continuous":true,"fav":true
     }
   ],
     "id":2,
@@ -47,17 +47,17 @@
     {
       "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
       "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
-      "endMin":0,"continuous":true
+      "endMin":0,"continuous":true,"fav":true
     },
     {
       "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
       "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
-      "endMin":0,"continuous":true
+      "endMin":0,"continuous":true,"fav":true
     },
     {
       "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
       "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
-      "endMin":0,"continuous":true
+      "endMin":0,"continuous":true,"fav":true
     }
   ],
     "id":3,
@@ -69,17 +69,17 @@
     {
       "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
       "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
-      "endMin":0,"continuous":true
+      "endMin":0,"continuous":true,"fav":true
     },
     {
       "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
       "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
-      "endMin":0,"continuous":true
+      "endMin":0,"continuous":true,"fav":true
     },
     {
       "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
       "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
-      "endMin":0,"continuous":true
+      "endMin":0,"continuous":true,"fav":true
     }
   ],
     "id":4,
@@ -91,17 +91,17 @@
     {
       "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
       "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
-      "endMin":0,"continuous":true
+      "endMin":0,"continuous":true,"fav":true
     },
     {
       "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
       "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
-      "endMin":0,"continuous":true
+      "endMin":0,"continuous":true,"fav":true
     },
     {
       "title":"title","theme":"theme","description":"description about the events description about the eventsdescription about the events",
       "location":"location","latitude":29.865866,"longitude":77.896316,"startDay":25,"endDay":28,"startHr":8,"endHr":9,"startMin":0,
-      "endMin":0,"continuous":true
+      "endMin":0,"continuous":true,"fav":true
     }
   ],
     "id":5,

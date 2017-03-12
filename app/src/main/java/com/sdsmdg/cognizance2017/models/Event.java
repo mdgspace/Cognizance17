@@ -5,23 +5,23 @@ import io.realm.RealmObject;
 public class Event extends RealmObject {
     private String title, theme, location;
     private String description;
-    private int startDay, startHour, startMinute, imageId;
-    private int event,endDay, endHour, endMinute;
-    private boolean continuous;
+    private int startDay, startHr, startMin, imageId;
+    private int event,endDay, endHr, endMin;
+    private boolean continuous ,fav;
 
     public Event(String title, String theme, String location, String description, int startDay,
-                 int startHour, int startMinute, int imageId, int endDay, int endHour, int endMinute, boolean continuous) {
+                 int startHr, int startMin, int imageId, int endDay, int endHr, int endMin, boolean continuous) {
         this.title = title;
         this.theme = theme;
         this.location = location;
         this.description = description;
         this.startDay = startDay;
-        this.startHour = startHour;
-        this.startMinute = startMinute;
+        this.startHr = startHr;
+        this.startMin = startMin;
         this.imageId = imageId;
         this.endDay = endDay;
-        this.endHour = endHour;
-        this.endMinute = endMinute;
+        this.endHr = endHr;
+        this.endMin = endMin;
         this.continuous = continuous;
     }
 
@@ -60,20 +60,20 @@ public class Event extends RealmObject {
         this.startDay = startDay;
     }
 
-    public int getStartHour() {
-        return startHour;
+    public int getStartHr() {
+        return startHr;
     }
 
-    public void setStartHour(int startHour) {
-        this.startHour = startHour;
+    public void setStartHr(int startHr) {
+        this.startHr = startHr;
     }
 
-    public int getStartMinute() {
-        return startMinute;
+    public int getStartMin() {
+        return startMin;
     }
 
-    public void setStartMinute(int startMinute) {
-        this.startMinute = startMinute;
+    public void setStartMin(int startMin) {
+        this.startMin = startMin;
     }
 
     public String getTheme() {
@@ -108,20 +108,20 @@ public class Event extends RealmObject {
         this.endDay = endDay;
     }
 
-    public int getEndHour() {
-        return endHour;
+    public int getEndHr() {
+        return endHr;
     }
 
-    public void setEndHour(int endHour) {
-        this.endHour = endHour;
+    public void setEndHr(int endHr) {
+        this.endHr = endHr;
     }
 
-    public int getEndMinute() {
-        return endMinute;
+    public int getEndMin() {
+        return endMin;
     }
 
-    public void setEndMinute(int endMinute) {
-        this.endMinute = endMinute;
+    public void setEndMin(int endMin) {
+        this.endMin = endMin;
     }
 
     public boolean isContinuous() {
@@ -131,9 +131,20 @@ public class Event extends RealmObject {
     public void setContinuous(boolean continuous) {
         this.continuous = continuous;
     }
+
+    public boolean isFav() {
+        return fav;
+    }
+
+    public void setFav(boolean fav) {
+        this.fav = fav;
+    }
+
     public String getTime(){
-        String startMin = startMinute/10==0?"0"+startMinute:""+startMinute;
-        String endMin = startMinute/10==0?"0"+startMinute:""+startMinute;
-        return startHour + ":" + startMin+ "-" + endHour + ":" + endMin;
+        String startMin = String.format("%02d", getStartMin());
+        String endMin = String.format("%02d",getEndMin());
+        String startHr = String.format("%02d",getStartHr());
+        String endHr = String.format("%02d",getEndHr());
+        return startHr + ":" + startMin+ "-" + endHr + ":" + endMin;
     }
 }

@@ -17,39 +17,22 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class ExpandedListAdapter extends BaseExpandableListAdapter {
     private Context ctx;
     private List<String> daysList;
     private ArrayList<Event> day1Events,day2Events,day3Events;
-    private HashMap<String, ArrayList<Event>> dayWiseEventList;
     private Realm realm;
     private RealmResults<EventList> results;
-    public ExpandedListAdapter(Context context, List<String> listDataHeader,
-                     HashMap<String, ArrayList<Event>> listChildData) {
+    private HashMap<String,RealmList<Event>> dayWiseEventList;
+    public ExpandedListAdapter(Context context) {
         this.ctx = context;
         Realm.init(ctx);
         realm = Realm.getDefaultInstance();
         results = realm.where(EventList.class).findAll();
-        this.daysList = listDataHeader;
-        this.dayWiseEventList = listChildData;
         day1Events = new ArrayList<>();
-        for(int i=0; i<3;i++){
-            Event event = new Event();
-            event.setContinuous(true);
-            event.setDescription("Event Description");
-            event.setEndDay(28);
-            event.setEndMinute(00);
-            event.setImageId(R.mipmap.ic_launcher);
-            event.setLocation("Roorkee");
-            event.setStartDay(25);
-            event.setStartHour(8);
-            event.setStartMinute(00);
-            event.setTheme("Theme");
-            event.setTitle("Title");
-            day1Events.add(event);
-        }
         day2Events = day1Events;
         day3Events = day1Events;
         daysList  = new ArrayList<>();
@@ -57,10 +40,11 @@ public class ExpandedListAdapter extends BaseExpandableListAdapter {
         daysList.add("DAY 2");
         daysList.add("DAY 3");
         dayWiseEventList = new HashMap<>();
-        dayWiseEventList.put(daysList.get(0),day1Events);
-        dayWiseEventList.put(daysList.get(1),day2Events);
-        dayWiseEventList.put(daysList.get(2),day3Events);
+        dayWiseEventList.put(daysList.get(0),results.get(0).getEvents());
+        dayWiseEventList.put(daysList.get(1),results.get(1).getEvents());
+        dayWiseEventList.put(daysList.get(2),results.get(2).getEvents());
     }
+
     @Override
     public int getGroupCount() {
         return this.daysList.size();

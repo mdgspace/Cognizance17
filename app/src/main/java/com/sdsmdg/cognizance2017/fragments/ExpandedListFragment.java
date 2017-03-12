@@ -19,8 +19,7 @@ import java.util.List;
 public class ExpandedListFragment extends Fragment {
     ExpandedListAdapter listAdapter;
     ExpandableListView expListView;
-    List<String> listDataHeader;
-    HashMap<String, ArrayList<Event>> listDataChild;
+
     public ExpandedListFragment() {
         // Required empty public constructor
     }
@@ -33,7 +32,7 @@ public class ExpandedListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_expanded_list, container, false);
 
         expListView = (ExpandableListView) view.findViewById(R.id.expanded_list);
-        listAdapter = new ExpandedListAdapter(getContext(), listDataHeader, listDataChild);
+        listAdapter = new ExpandedListAdapter(getContext());
         expListView.setAdapter(listAdapter);
 
         return view;
