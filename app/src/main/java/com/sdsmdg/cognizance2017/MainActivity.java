@@ -1,5 +1,6 @@
 package com.sdsmdg.cognizance2017;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -76,7 +77,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.map) {
+            startActivity(new Intent(this,MapsActivity.class));
             return true;
         }
 
