@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import org.json.JSONObject;
 
@@ -30,7 +31,8 @@ import io.realm.RealmConfiguration;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private MainActivityFragment fragment;
+    View replacerView;
+    ViewGroup replacerViewParent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +40,10 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //fragment = new MainActivityFragment();
-
         ExpandedListFragment expandedListFragment = new ExpandedListFragment();
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.events_container,expandedListFragment,"l").commit();
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +61,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     @Override
@@ -101,7 +101,10 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        MainActivityFragment fragment = null;
 
+        fragment = (MainActivityFragment) getSupportFragmentManager().findFragmentByTag("myTag");
+        if (fragment == null) fragment = new MainActivityFragment();
         if (id == R.id.home) {
             fragment.setData(0);
         } else if (id == R.id.all_events) {
@@ -116,6 +119,13 @@ public class MainActivity extends AppCompatActivity
             fragment.setData(5);
         } else if (id == R.id.online) {
             fragment.setData(6);
+        }
+
+        if (fragment != null) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.events_container, fragment, "myTag");
+            fragmentTransaction.commit();
+            getSupportFragmentManager().executePendingTransactions();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
