@@ -186,10 +186,13 @@ public class MainActivity extends AppCompatActivity
             if (id == R.id.home) {
 
             }
-            fragment = new ExpandedListFragment();
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.events_container, fragment, "expandable");
-            fragmentTransaction.commit();
+            fragment = getSupportFragmentManager().findFragmentByTag("expandable");
+            if(fragment == null) {
+                fragment = new ExpandedListFragment();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.events_container, fragment, "expandable");
+                fragmentTransaction.commit();
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

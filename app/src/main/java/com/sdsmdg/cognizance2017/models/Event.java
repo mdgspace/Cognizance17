@@ -8,6 +8,7 @@ public class Event extends RealmObject {
     private int startDay, startHr, startMin, imageId;
     private int event,endDay, endHr, endMin;
     private boolean continuous ,fav;
+    private Double latitude,longitude;
 
     public Event(String title, String theme, String location, String description, int startDay,
                  int startHr, int startMin, int imageId, int endDay, int endHr, int endMin, boolean continuous) {
@@ -146,5 +147,21 @@ public class Event extends RealmObject {
         String startHr = String.format("%02d",getStartHr());
         String endHr = String.format("%02d",getEndHr());
         return startHr + ":" + startMin+ "-" + endHr + ":" + endMin;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

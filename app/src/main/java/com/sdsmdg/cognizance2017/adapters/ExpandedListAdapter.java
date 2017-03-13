@@ -23,7 +23,6 @@ import io.realm.RealmResults;
 public class ExpandedListAdapter extends BaseExpandableListAdapter {
     private Context ctx;
     private List<String> daysList;
-    private ArrayList<Event> day1Events,day2Events,day3Events;
     private Realm realm;
     private RealmResults<EventList> results;
     private HashMap<String,RealmList<Event>> dayWiseEventList;
@@ -32,9 +31,6 @@ public class ExpandedListAdapter extends BaseExpandableListAdapter {
         Realm.init(ctx);
         realm = Realm.getDefaultInstance();
         results = realm.where(EventList.class).findAll();
-        day1Events = new ArrayList<>();
-        day2Events = day1Events;
-        day3Events = day1Events;
         daysList  = new ArrayList<>();
         daysList.add("DAY 1");
         daysList.add("DAY 2");
