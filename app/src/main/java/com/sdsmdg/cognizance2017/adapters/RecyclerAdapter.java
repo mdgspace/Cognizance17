@@ -2,18 +2,23 @@ package com.sdsmdg.cognizance2017.adapters;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sdsmdg.cognizance2017.R;
+import com.sdsmdg.cognizance2017.activities.MainActivity;
 import com.sdsmdg.cognizance2017.models.Event;
 
 import java.util.ArrayList;
@@ -51,11 +56,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 checkBox.setVisibility(View.VISIBLE);
                 this.setIsRecyclable(false);
             }
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-
+            ((MainActivity)ctx).showSingleEventFragment();
         }
     }
 
@@ -97,7 +103,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     }*/
                 }
             });
+
         }
+        Animation animation = AnimationUtils.loadAnimation(ctx, android.R.anim.slide_in_left);
+        holder.itemView.startAnimation(animation);
 
     }
 
@@ -109,4 +118,5 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     public List<Event> getFavEvents() {
         return favEvents;
     }
+
 }

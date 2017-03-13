@@ -15,6 +15,15 @@ import com.sdsmdg.cognizance2017.R;
 public class EventDescription extends Fragment {
 
 
+    public static EventDescription newInstance(int page, int choice) {
+        EventDescription fragment = new EventDescription();
+        Bundle args = new Bundle();
+        //page is 0 indexed, to get Day number add 1 to it
+        args.putInt("Page Number", page);
+        args.putInt("choice", choice);
+        fragment.setArguments(args);
+        return fragment;
+    }
     public EventDescription() {
         // Required empty public constructor
     }
