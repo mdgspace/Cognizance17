@@ -8,13 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
-import com.sdsmdg.cognizance2017.adapters.ExpandedListAdapter;
-import com.sdsmdg.cognizance2017.models.Event;
 import com.sdsmdg.cognizance2017.R;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.sdsmdg.cognizance2017.adapters.ExpandedListAdapter;
 
 public class ExpandedListFragment extends Fragment {
     ExpandedListAdapter listAdapter;

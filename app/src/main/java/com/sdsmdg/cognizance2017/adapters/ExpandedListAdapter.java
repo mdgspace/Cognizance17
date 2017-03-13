@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.models.Event;
 import com.sdsmdg.cognizance2017.models.EventList;
@@ -25,20 +26,21 @@ public class ExpandedListAdapter extends BaseExpandableListAdapter {
     private List<String> daysList;
     private Realm realm;
     private RealmResults<EventList> results;
-    private HashMap<String,RealmList<Event>> dayWiseEventList;
+    private HashMap<String, RealmList<Event>> dayWiseEventList;
+
     public ExpandedListAdapter(Context context) {
         this.ctx = context;
         Realm.init(ctx);
         realm = Realm.getDefaultInstance();
         results = realm.where(EventList.class).findAll();
-        daysList  = new ArrayList<>();
+        daysList = new ArrayList<>();
         daysList.add("DAY 1");
         daysList.add("DAY 2");
         daysList.add("DAY 3");
         dayWiseEventList = new HashMap<>();
-        dayWiseEventList.put(daysList.get(0),results.get(0).getEvents());
-        dayWiseEventList.put(daysList.get(1),results.get(1).getEvents());
-        dayWiseEventList.put(daysList.get(2),results.get(2).getEvents());
+        dayWiseEventList.put(daysList.get(0), results.get(0).getEvents());
+        dayWiseEventList.put(daysList.get(1), results.get(1).getEvents());
+        dayWiseEventList.put(daysList.get(2), results.get(2).getEvents());
     }
 
     @Override

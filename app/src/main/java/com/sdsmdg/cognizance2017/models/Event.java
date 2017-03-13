@@ -6,9 +6,9 @@ public class Event extends RealmObject {
     private String title, theme, location;
     private String description;
     private int startDay, startHr, startMin, imageId;
-    private int event,endDay, endHr, endMin;
-    private boolean continuous ,fav;
-    private Double latitude,longitude;
+    private int event, endDay, endHr, endMin;
+    private boolean continuous, fav;
+    private Double latitude, longitude;
 
     public Event(String title, String theme, String location, String description, int startDay,
                  int startHr, int startMin, int imageId, int endDay, int endHr, int endMin, boolean continuous) {
@@ -141,12 +141,12 @@ public class Event extends RealmObject {
         this.fav = fav;
     }
 
-    public String getTime(){
+    public String getTime() {
         String startMin = String.format("%02d", getStartMin());
-        String endMin = String.format("%02d",getEndMin());
-        String startHr = String.format("%02d",getStartHr());
-        String endHr = String.format("%02d",getEndHr());
-        return startHr + ":" + startMin+ "-" + endHr + ":" + endMin;
+        String endMin = String.format("%02d", getEndMin());
+        String startHr = String.format("%02d", getStartHr());
+        String endHr = String.format("%02d", getEndHr());
+        return startHr + ":" + startMin + "-" + endHr + ":" + endMin;
     }
 
     public Double getLatitude() {

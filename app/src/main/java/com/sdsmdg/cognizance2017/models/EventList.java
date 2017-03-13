@@ -7,7 +7,7 @@ import io.realm.RealmObject;
 public class EventList extends RealmObject {
     private RealmList<Event> events;
     private int id;
-    private String title,description;
+    private String title, description;
 
     public RealmList<Event> getEvents() {
         return events;

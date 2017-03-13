@@ -127,17 +127,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mMap.setMyLocationEnabled(true);
                     }
 
-                    } else {
+                } else {
 
-                        // permission denied, boo! Disable the
-                        // functionality that depends on this permission.
-                    }
-                    return;
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
                 }
-
-                // other 'case' lines to check for other
-                // permissions this app might request
-
+                return;
             }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+
+        }
     }
 }

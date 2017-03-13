@@ -10,19 +10,40 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sdsmdg.cognizance2017.adapters.AllEventsVpagerAdapter;
 import com.sdsmdg.cognizance2017.R;
+import com.sdsmdg.cognizance2017.adapters.AllEventsVpagerAdapter;
 
 public class AllEventsFragment extends Fragment {
+
+    private int choice;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null)
+            choice = getArguments().getInt("Choice", 10);
+        else
+            choice = 100;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.all_events_viewpager, container, false);
         ViewPager vPager = (ViewPager) view.findViewById(R.id.all_events_vpager);
-        AllEventsVpagerAdapter mAdapter = new AllEventsVpagerAdapter(getChildFragmentManager());
+        AllEventsVpagerAdapter mAdapter = new AllEventsVpagerAdapter(getChildFragmentManager(), choice);
         vPager.setAdapter(mAdapter);
-        TabLayout tabLayout= (TabLayout) view.findViewById(R.id.vpager_tabs);
+        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.vpager_tabs);
         tabLayout.setupWithViewPager(vPager);
         return view;
+    }
+
+    public static AllEventsFragment newInstance(int choice) {
+        AllEventsFragment fragment = new AllEventsFragment();
+        Bundle args = new Bundle();
+        //choice refers to which kind of events the pager must display e.g.- fav, theme events, robotics etc.
+        args.putInt("Choice", choice);
+        fragment.setArguments(args);
+        return fragment;
     }
 }

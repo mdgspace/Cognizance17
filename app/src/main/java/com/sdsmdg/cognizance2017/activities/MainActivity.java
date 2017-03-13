@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
 import com.sdsmdg.cognizance2017.fragments.AllEventsRecyclerFragment;
-import com.sdsmdg.cognizance2017.fragments.ExpandedListFragment;
 import com.sdsmdg.cognizance2017.models.Event;
 import com.sdsmdg.cognizance2017.models.EventList;
 
@@ -55,15 +54,11 @@ public class MainActivity extends AppCompatActivity
             TextView fav = (TextView) findViewById(R.id.no_favorite_selected_text);
             fav.setVisibility(View.VISIBLE);
         } else {
-            /*ExpandedListFragment expandedListFragment = new ExpandedListFragment();
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.events_container, expandedListFragment, "expandable").commit();*/
-            fragment = getSupportFragmentManager().findFragmentByTag("favList");
+            fragment = getSupportFragmentManager().findFragmentByTag("home");
             if (fragment == null) {
-                fragment = AllEventsRecyclerFragment.newInstance(6);
+                fragment = AllEventsFragment.newInstance(50);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.events_container, fragment, "favList");
+                fragmentTransaction.replace(R.id.events_container, fragment, "home");
                 fragmentTransaction.commit();
             }
         }
@@ -74,38 +69,27 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 if (!isOnFavSelectionFragment) {
-                    fragment = getSupportFragmentManager().findFragmentByTag("fav");
+                    //Go to favorite event selection page
+                    fragment = getSupportFragmentManager().findFragmentByTag("favSelection");
                     if (fragment == null) {
-                        fragment = AllEventsRecyclerFragment.newInstance(5);
+                        fragment = AllEventsRecyclerFragment.newInstance(5, -1);
                         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.events_container, fragment, "fav");
+                        fragmentTransaction.replace(R.id.events_container, fragment, "favSelection");
                         fragmentTransaction.commit();
                         fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_menu_send));
                         isOnFavSelectionFragment = true;
                     }
                 } else {
-                    //List<Event> events = ((AllEventsRecyclerFragment) fragment).getAdapter().getFavEvents();
-                    fragment = getSupportFragmentManager().findFragmentByTag("favRec");
+                    //Go to home page showing all fav events
+                    fragment = getSupportFragmentManager().findFragmentByTag("home");
                     if (fragment == null) {
-                        fragment = AllEventsRecyclerFragment.newInstance(6);
+                        fragment = AllEventsFragment.newInstance(50);
                         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.events_container, fragment, "favRec");
+                        fragmentTransaction.replace(R.id.events_container, fragment, "home");
                         fragmentTransaction.commit();
                     }
                     fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_menu_gallery));
                     isOnFavSelectionFragment = false;
-                    /*realm.beginTransaction();
-                    List<Event> el = realm.where(Event.class).findAll();
-                    for (int i = 0; i < el.size(); i++)
-                        el.get(i).setFav(false);
-                    for (int i = 0; i < events.size(); i++) {
-                        for (int j = 0; j < el.size(); j++) {
-                            if ((events.get(i).getTitle()).equals(el.get(j).getTitle())) {
-                                el.get(j).setFav(true);
-                            }
-                        }
-                    }
-                    realm.commitTransaction();*/
                 }
             }
         });
@@ -173,24 +157,61 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        // AllEventsRecyclerFragment fragment = null;
-        if (id == R.id.all_events) {
-            fragment = getSupportFragmentManager().findFragmentByTag("pager");
+
+        if (id == R.id.home) {
+            fragment = getSupportFragmentManager().findFragmentByTag("home");
             if (fragment == null) {
-                fragment = new AllEventsFragment();
+                fragment = AllEventsFragment.newInstance(50);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.events_container, fragment, "pager");
+                fragmentTransaction.replace(R.id.events_container, fragment, "home");
                 fragmentTransaction.commit();
             }
-        } else {
-            if (id == R.id.home) {
-
-            }
-            fragment = getSupportFragmentManager().findFragmentByTag("expandable");
-            if(fragment == null) {
-                fragment = new ExpandedListFragment();
+        } else if (id == R.id.all_events) {
+            fragment = getSupportFragmentManager().findFragmentByTag("all_events");
+            if (fragment == null) {
+                fragment = AllEventsFragment.newInstance(0);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.events_container, fragment, "expandable");
+                fragmentTransaction.replace(R.id.events_container, fragment, "all_events");
+                fragmentTransaction.commit();
+            }
+        } else if (id == R.id.theme_events) {
+            fragment = getSupportFragmentManager().findFragmentByTag("theme_events");
+            if (fragment == null) {
+                fragment = AllEventsFragment.newInstance(1);
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.events_container, fragment, "theme_events");
+                fragmentTransaction.commit();
+            }
+        } else if (id == R.id.robotics) {
+            fragment = getSupportFragmentManager().findFragmentByTag("robotics");
+            if (fragment == null) {
+                fragment = AllEventsFragment.newInstance(2);
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.events_container, fragment, "robotics");
+                fragmentTransaction.commit();
+            }
+        } else if (id == R.id.literario) {
+            fragment = getSupportFragmentManager().findFragmentByTag("literario");
+            if (fragment == null) {
+                fragment = AllEventsFragment.newInstance(3);
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.events_container, fragment, "literario");
+                fragmentTransaction.commit();
+            }
+        } else if (id == R.id.competitions) {
+            fragment = getSupportFragmentManager().findFragmentByTag("competitions");
+            if (fragment == null) {
+                fragment = AllEventsFragment.newInstance(4);
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.events_container, fragment, "competitions");
+                fragmentTransaction.commit();
+            }
+        } else if (id == R.id.online) {
+            fragment = getSupportFragmentManager().findFragmentByTag("online");
+            if (fragment == null) {
+                fragment = AllEventsFragment.newInstance(5);
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.events_container, fragment, "online");
                 fragmentTransaction.commit();
             }
         }
