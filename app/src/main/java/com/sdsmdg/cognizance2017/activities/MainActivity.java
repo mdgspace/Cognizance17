@@ -2,8 +2,10 @@ package com.sdsmdg.cognizance2017.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -36,17 +38,21 @@ public class MainActivity extends AppCompatActivity
     private Realm realm;
     private RealmResults<Event> results;
     private boolean isOnFavSelectionFragment;
+    private TabLayout tabLayout;
+    private AppBarLayout appBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        tabLayout = (TabLayout) findViewById(R.id.vpager_tabs);
+        appBar = (AppBarLayout) findViewById(R.id.appbar);
         isOnFavSelectionFragment = false;
         Realm.init(this);
         realm = Realm.getDefaultInstance();
         if (realm.isEmpty())
             loadDatabase();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         results = realm.where(Event.class).equalTo("fav", true).findAll();
         Toast.makeText(this, "" + results.size(), Toast.LENGTH_SHORT).show();
@@ -69,6 +75,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 if (!isOnFavSelectionFragment) {
+                    //Make tabs disappear
+                    tabLayout.setVisibility(View.GONE);
                     //Go to favorite event selection page
                     fragment = getSupportFragmentManager().findFragmentByTag("favSelection");
                     if (fragment == null) {
@@ -81,6 +89,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 } else {
                     //Go to home page showing all fav events
+                    tabLayout.setVisibility(View.VISIBLE);
                     fragment = getSupportFragmentManager().findFragmentByTag("home");
                     if (fragment == null) {
                         fragment = AllEventsFragment.newInstance(50);
@@ -157,6 +166,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        tabLayout.setVisibility(View.VISIBLE);
 
         if (id == R.id.home) {
             fragment = getSupportFragmentManager().findFragmentByTag("home");

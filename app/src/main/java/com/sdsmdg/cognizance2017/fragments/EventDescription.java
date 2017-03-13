@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 
 import com.sdsmdg.cognizance2017.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class EventDescription extends Fragment {
 
 
