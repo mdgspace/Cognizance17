@@ -42,7 +42,7 @@ public class AllEventsFragment extends Fragment {
     public static AllEventsFragment newInstance(int choice) {
         AllEventsFragment fragment = new AllEventsFragment();
         Bundle args = new Bundle();
-        //choice refers to which kind of events the pager must display e.g.- fav, theme events, robotics etc.
+        //choice refers to which kind of events the pager must display e.g.- add_fav, theme events, robotics etc.
         args.putInt("Choice", choice);
         fragment.setArguments(args);
         return fragment;
