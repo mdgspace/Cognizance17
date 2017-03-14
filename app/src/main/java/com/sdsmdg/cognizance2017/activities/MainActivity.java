@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -20,8 +19,6 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sdsmdg.cognizance2017.R;
@@ -42,7 +39,6 @@ public class MainActivity extends AppCompatActivity
     private Fragment fragment;
     private Realm realm;
     private RealmResults<Event> results;
-    private boolean isOnFavSelectionFragment;
     private TabLayout tabLayout;
     private AppBarLayout appBar;
     private Toolbar toolbar;
@@ -58,7 +54,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         tabLayout = (TabLayout) findViewById(R.id.vpager_tabs);
         appBar = (AppBarLayout) findViewById(R.id.appbar);
-        isOnFavSelectionFragment = false;
         Realm.init(this);
         realm = Realm.getDefaultInstance();
         if (realm.isEmpty())
@@ -74,8 +69,7 @@ public class MainActivity extends AppCompatActivity
             if (fragment == null) {
                 fragment = AllEventsFragment.newInstance(0);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right)
-                        .replace(R.id.events_container, fragment, "home");
+                fragmentTransaction.replace(R.id.events_container, fragment, "home");
                 fragmentTransaction.commit();
             }
         TypedValue tv = new TypedValue();
@@ -91,10 +85,6 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
                 if(fabState == 0){
-                    tabLayout.setVisibility(View.VISIBLE);
-                    layoutParams.height = 2*actionBarSize;
-                    toolbar.setLayoutParams(layoutParams);
-                    appBar.setExpanded(false);
                     fragment = getSupportFragmentManager().findFragmentByTag("fav");
                     if (fragment == null) {
                         fragment = AllEventsFragment.newInstance(50);
@@ -115,19 +105,13 @@ public class MainActivity extends AppCompatActivity
                     if (fragment == null) {
                         fragment = AllEventsRecyclerFragment.newInstance(5, -1);
                         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right)
-                                .replace(R.id.events_container, fragment, "favSelection");
+                        fragmentTransaction.replace(R.id.events_container, fragment, "favSelection");
                         fragmentTransaction.commit();
                         fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.save));
-                        isOnFavSelectionFragment = true;
                     }
                     fabState = 2;
                 }
                 else {
-                    tabLayout.setVisibility(View.VISIBLE);
-                    layoutParams.height = 2*actionBarSize;
-                    toolbar.setLayoutParams(layoutParams);
-                    appBar.setExpanded(false);
                     fragment = getSupportFragmentManager().findFragmentByTag("fav");
                     if (fragment == null) {
                         fragment = AllEventsFragment.newInstance(50);
@@ -204,11 +188,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
-        tabLayout.setVisibility(View.VISIBLE);
-        layoutParams.height = 2*actionBarSize;
-        toolbar.setLayoutParams(layoutParams);
-
         if (id == R.id.fav) {
             fab.setImageResource(R.drawable.add_fav);
             fabState = 1;
@@ -216,8 +195,7 @@ public class MainActivity extends AppCompatActivity
             if(fragment == null) {
                 fragment = AllEventsFragment.newInstance(50);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                        .replace(R.id.events_container, fragment, "fav");
+                fragmentTransaction.replace(R.id.events_container, fragment, "fav");
                 fragmentTransaction.commit();
             }
             }
@@ -229,8 +207,7 @@ public class MainActivity extends AppCompatActivity
                 if (fragment == null) {
                     fragment = AllEventsFragment.newInstance(0);
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                            .replace(R.id.events_container, fragment, "all_events");
+                    fragmentTransaction.replace(R.id.events_container, fragment, "all_events");
                     fragmentTransaction.commit();
                 }
             } else if (id == R.id.theme_events) {
@@ -238,8 +215,7 @@ public class MainActivity extends AppCompatActivity
                 if (fragment == null) {
                     fragment = AllEventsFragment.newInstance(1);
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                            .replace(R.id.events_container, fragment, "theme_events");
+                    fragmentTransaction.replace(R.id.events_container, fragment, "theme_events");
                     fragmentTransaction.commit();
                 }
             } else if (id == R.id.robotics) {
@@ -247,8 +223,7 @@ public class MainActivity extends AppCompatActivity
                 if (fragment == null) {
                     fragment = AllEventsFragment.newInstance(2);
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                            .replace(R.id.events_container, fragment, "robotics");
+                    fragmentTransaction.replace(R.id.events_container, fragment, "robotics");
                     fragmentTransaction.commit();
                 }
             } else if (id == R.id.literario) {
@@ -256,8 +231,7 @@ public class MainActivity extends AppCompatActivity
                 if (fragment == null) {
                     fragment = AllEventsFragment.newInstance(3);
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                            .replace(R.id.events_container, fragment, "literario");
+                    fragmentTransaction.replace(R.id.events_container, fragment, "literario");
                     fragmentTransaction.commit();
                 }
             } else if (id == R.id.competitions) {
@@ -265,8 +239,7 @@ public class MainActivity extends AppCompatActivity
                 if (fragment == null) {
                     fragment = AllEventsFragment.newInstance(4);
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                            .replace(R.id.events_container, fragment, "competitions");
+                    fragmentTransaction.replace(R.id.events_container, fragment, "competitions");
                     fragmentTransaction.commit();
                 }
             } else if (id == R.id.online) {
@@ -274,8 +247,7 @@ public class MainActivity extends AppCompatActivity
                 if (fragment == null) {
                     fragment = AllEventsFragment.newInstance(5);
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                            .replace(R.id.events_container, fragment, "online");
+                    fragmentTransaction.replace(R.id.events_container, fragment, "online");
                     fragmentTransaction.commit();
                 }
             }
@@ -286,12 +258,27 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
     public void showSingleEventFragment(){
-        fragment = EventDescription.newInstance(1,1);
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction
-                .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
-                .replace(R.id.events_container, fragment, "event")
-                .addToBackStack("AllEventsFragment");
-        fragmentTransaction.commit();
+        CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
+        tabLayout.setVisibility(View.GONE);
+        layoutParams.height = actionBarSize;
+        toolbar.setLayoutParams(layoutParams);
+        appBar.setExpanded(true);
+        fragment = getSupportFragmentManager().findFragmentByTag("event");
+        if(fragment == null) {
+            fragment = EventDescription.newInstance(1, 1);
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+                    .replace(R.id.events_container, fragment, "event")
+                    .addToBackStack("AllEventsFragment");
+            fragmentTransaction.commit();
+        }
+    }
+    public void showTabs(){
+        CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
+        tabLayout.setVisibility(View.VISIBLE);
+        layoutParams.height = 2*actionBarSize;
+        toolbar.setLayoutParams(layoutParams);
+        appBar.setExpanded(true);
     }
 }

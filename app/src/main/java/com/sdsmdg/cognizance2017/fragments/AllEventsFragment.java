@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sdsmdg.cognizance2017.R;
+import com.sdsmdg.cognizance2017.activities.MainActivity;
 import com.sdsmdg.cognizance2017.adapters.AllEventsVpagerAdapter;
 
 public class AllEventsFragment extends Fragment {
@@ -36,6 +37,7 @@ public class AllEventsFragment extends Fragment {
         TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.vpager_tabs);
         if(tabLayout!=null)
             tabLayout.setupWithViewPager(vPager);
+        ((MainActivity)getActivity()).showTabs();
         return view;
     }
 
