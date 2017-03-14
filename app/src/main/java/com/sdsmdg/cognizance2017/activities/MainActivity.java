@@ -2,8 +2,12 @@ package com.sdsmdg.cognizance2017.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -12,9 +16,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,40 +43,73 @@ public class MainActivity extends AppCompatActivity
     private Realm realm;
     private RealmResults<Event> results;
     private boolean isOnFavSelectionFragment;
+    private TabLayout tabLayout;
+    private AppBarLayout appBar;
+    private Toolbar toolbar;
+    private FloatingActionButton fab;
+    private int actionBarSize,fabState;
+    // fabState = 0            other than favorite Fragment and favorite select fragment
+    // fabState = 1            on favorite Fragment
+    // fabState = 2            on favorite select fragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        tabLayout = (TabLayout) findViewById(R.id.vpager_tabs);
+        appBar = (AppBarLayout) findViewById(R.id.appbar);
         isOnFavSelectionFragment = false;
         Realm.init(this);
         realm = Realm.getDefaultInstance();
         if (realm.isEmpty())
             loadDatabase();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         results = realm.where(Event.class).equalTo("fav", true).findAll();
         Toast.makeText(this, "" + results.size(), Toast.LENGTH_SHORT).show();
-        if (results.size() == 0) {
-            TextView fav = (TextView) findViewById(R.id.no_favorite_selected_text);
-            fav.setVisibility(View.VISIBLE);
-        } else {
+
+        //    TextView fav = (TextView) findViewById(R.id.no_favorite_selected_text);
+        //    fav.setVisibility(View.VISIBLE);
             fragment = getSupportFragmentManager().findFragmentByTag("home");
             if (fragment == null) {
-                fragment = AllEventsFragment.newInstance(50);
+                fragment = AllEventsFragment.newInstance(0);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right)
                         .replace(R.id.events_container, fragment, "home");
                 fragmentTransaction.commit();
             }
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            actionBarSize = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
         }
 
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isOnFavSelectionFragment) {
+                CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
+                if(fabState == 0){
+                    tabLayout.setVisibility(View.VISIBLE);
+                    layoutParams.height = 2*actionBarSize;
+                    toolbar.setLayoutParams(layoutParams);
+                    appBar.setExpanded(false);
+                    fragment = getSupportFragmentManager().findFragmentByTag("fav");
+                    if (fragment == null) {
+                        fragment = AllEventsFragment.newInstance(50);
+                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.events_container, fragment, "fav");
+                        fragmentTransaction.commit();
+                    }
+                    fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.add_fav));
+                    fabState = 1;
+                }
+                else if(fabState == 1){
+                    tabLayout.setVisibility(View.GONE);
+                    layoutParams.height = actionBarSize;
+                    toolbar.setLayoutParams(layoutParams);
+                    appBar.setExpanded(false);
                     //Go to favorite event selection page
                     fragment = getSupportFragmentManager().findFragmentByTag("favSelection");
                     if (fragment == null) {
@@ -79,21 +118,25 @@ public class MainActivity extends AppCompatActivity
                         fragmentTransaction.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right)
                                 .replace(R.id.events_container, fragment, "favSelection");
                         fragmentTransaction.commit();
-                        fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_menu_send));
+                        fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.save));
                         isOnFavSelectionFragment = true;
                     }
-                } else {
-                    //Go to home page showing all fav events
-                    fragment = getSupportFragmentManager().findFragmentByTag("home");
+                    fabState = 2;
+                }
+                else {
+                    tabLayout.setVisibility(View.VISIBLE);
+                    layoutParams.height = 2*actionBarSize;
+                    toolbar.setLayoutParams(layoutParams);
+                    appBar.setExpanded(false);
+                    fragment = getSupportFragmentManager().findFragmentByTag("fav");
                     if (fragment == null) {
                         fragment = AllEventsFragment.newInstance(50);
                         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right)
-                                .replace(R.id.events_container, fragment, "home");
+                        fragmentTransaction.replace(R.id.events_container, fragment, "fav");
                         fragmentTransaction.commit();
                     }
-                    fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_menu_gallery));
-                    isOnFavSelectionFragment = false;
+                    fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.add_fav));
+                    fabState = 1;
                 }
             }
         });
@@ -161,69 +204,80 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
+        tabLayout.setVisibility(View.VISIBLE);
+        layoutParams.height = 2*actionBarSize;
+        toolbar.setLayoutParams(layoutParams);
 
-        if (id == R.id.home) {
-            fragment = getSupportFragmentManager().findFragmentByTag("home");
-            if (fragment == null) {
+        if (id == R.id.fav) {
+            fab.setImageResource(R.drawable.add_fav);
+            fabState = 1;
+            fragment = getSupportFragmentManager().findFragmentByTag("fav");
+            if(fragment == null) {
                 fragment = AllEventsFragment.newInstance(50);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right)
-                        .replace(R.id.events_container, fragment, "home");
+                fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                        .replace(R.id.events_container, fragment, "fav");
                 fragmentTransaction.commit();
             }
-        } else if (id == R.id.all_events) {
-            fragment = getSupportFragmentManager().findFragmentByTag("all_events");
-            if (fragment == null) {
-                fragment = AllEventsFragment.newInstance(0);
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right)
-                        .replace(R.id.events_container, fragment, "all_events");
-                fragmentTransaction.commit();
             }
-        } else if (id == R.id.theme_events) {
-            fragment = getSupportFragmentManager().findFragmentByTag("theme_events");
-            if (fragment == null) {
-                fragment = AllEventsFragment.newInstance(1);
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right)
-                        .replace(R.id.events_container, fragment, "theme_events");
-                fragmentTransaction.commit();
-            }
-        } else if (id == R.id.robotics) {
-            fragment = getSupportFragmentManager().findFragmentByTag("robotics");
-            if (fragment == null) {
-                fragment = AllEventsFragment.newInstance(2);
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right)
-                        .replace(R.id.events_container, fragment, "robotics");
-                fragmentTransaction.commit();
-            }
-        } else if (id == R.id.literario) {
-            fragment = getSupportFragmentManager().findFragmentByTag("literario");
-            if (fragment == null) {
-                fragment = AllEventsFragment.newInstance(3);
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right)
-                        .replace(R.id.events_container, fragment, "literario");
-                fragmentTransaction.commit();
-            }
-        } else if (id == R.id.competitions) {
-            fragment = getSupportFragmentManager().findFragmentByTag("competitions");
-            if (fragment == null) {
-                fragment = AllEventsFragment.newInstance(4);
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right)
-                        .replace(R.id.events_container, fragment, "competitions");
-                fragmentTransaction.commit();
-            }
-        } else if (id == R.id.online) {
-            fragment = getSupportFragmentManager().findFragmentByTag("online");
-            if (fragment == null) {
-                fragment = AllEventsFragment.newInstance(5);
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right)
-                        .replace(R.id.events_container, fragment, "online");
-                fragmentTransaction.commit();
+        else {
+            fab.setImageResource(R.drawable.fav);
+            fabState = 0;
+            if (id == R.id.all_events) {
+                fragment = getSupportFragmentManager().findFragmentByTag("all_events");
+                if (fragment == null) {
+                    fragment = AllEventsFragment.newInstance(0);
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                            .replace(R.id.events_container, fragment, "all_events");
+                    fragmentTransaction.commit();
+                }
+            } else if (id == R.id.theme_events) {
+                fragment = getSupportFragmentManager().findFragmentByTag("theme_events");
+                if (fragment == null) {
+                    fragment = AllEventsFragment.newInstance(1);
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                            .replace(R.id.events_container, fragment, "theme_events");
+                    fragmentTransaction.commit();
+                }
+            } else if (id == R.id.robotics) {
+                fragment = getSupportFragmentManager().findFragmentByTag("robotics");
+                if (fragment == null) {
+                    fragment = AllEventsFragment.newInstance(2);
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                            .replace(R.id.events_container, fragment, "robotics");
+                    fragmentTransaction.commit();
+                }
+            } else if (id == R.id.literario) {
+                fragment = getSupportFragmentManager().findFragmentByTag("literario");
+                if (fragment == null) {
+                    fragment = AllEventsFragment.newInstance(3);
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                            .replace(R.id.events_container, fragment, "literario");
+                    fragmentTransaction.commit();
+                }
+            } else if (id == R.id.competitions) {
+                fragment = getSupportFragmentManager().findFragmentByTag("competitions");
+                if (fragment == null) {
+                    fragment = AllEventsFragment.newInstance(4);
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                            .replace(R.id.events_container, fragment, "competitions");
+                    fragmentTransaction.commit();
+                }
+            } else if (id == R.id.online) {
+                fragment = getSupportFragmentManager().findFragmentByTag("online");
+                if (fragment == null) {
+                    fragment = AllEventsFragment.newInstance(5);
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                            .replace(R.id.events_container, fragment, "online");
+                    fragmentTransaction.commit();
+                }
             }
         }
 

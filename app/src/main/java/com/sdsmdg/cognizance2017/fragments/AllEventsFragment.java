@@ -33,15 +33,16 @@ public class AllEventsFragment extends Fragment {
         ViewPager vPager = (ViewPager) view.findViewById(R.id.all_events_vpager);
         AllEventsVpagerAdapter mAdapter = new AllEventsVpagerAdapter(getChildFragmentManager(), choice);
         vPager.setAdapter(mAdapter);
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.vpager_tabs);
-        tabLayout.setupWithViewPager(vPager);
+        TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.vpager_tabs);
+        if(tabLayout!=null)
+            tabLayout.setupWithViewPager(vPager);
         return view;
     }
 
     public static AllEventsFragment newInstance(int choice) {
         AllEventsFragment fragment = new AllEventsFragment();
         Bundle args = new Bundle();
-        //choice refers to which kind of events the pager must display e.g.- fav, theme events, robotics etc.
+        //choice refers to which kind of events the pager must display e.g.- add_fav, theme events, robotics etc.
         args.putInt("Choice", choice);
         fragment.setArguments(args);
         return fragment;
