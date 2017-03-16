@@ -17,7 +17,7 @@
     }
   ],
     "id":1,
-    "title":"Title of Group",
+    "title":"Theme Event",
     "description":"Description of event"
   },
 
@@ -39,7 +39,7 @@
     }
   ],
     "id":2,
-    "title":"Title of Group",
+    "title":"Robotics",
     "description":"Description of event"
   },
 
@@ -61,7 +61,7 @@
     }
   ],
     "id":3,
-    "title":"Title of Group",
+    "title":"Literario",
     "description":"Description of event"
   },
 
@@ -83,7 +83,7 @@
     }
   ],
     "id":4,
-    "title":"Title of Group",
+    "title":"Competition",
     "description":"Description of event"
   },
 
@@ -105,7 +105,7 @@
     }
   ],
     "id":5,
-    "title":"Title of Group",
+    "title":"Online Events",
     "description":"Description of event"
   }
 ]

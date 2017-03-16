@@ -65,11 +65,11 @@ public class MainActivity extends AppCompatActivity
 
         //    TextView fav = (TextView) findViewById(R.id.no_favorite_selected_text);
         //    fav.setVisibility(View.VISIBLE);
-            fragment = getSupportFragmentManager().findFragmentByTag("home");
+            fragment = getSupportFragmentManager().findFragmentByTag("all_events");
             if (fragment == null) {
                 fragment = AllEventsFragment.newInstance(0);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.events_container, fragment, "home");
+                fragmentTransaction.replace(R.id.events_container, fragment, "all_events");
                 fragmentTransaction.commit();
             }
         TypedValue tv = new TypedValue();
@@ -89,7 +89,8 @@ public class MainActivity extends AppCompatActivity
                     if (fragment == null) {
                         fragment = AllEventsFragment.newInstance(50);
                         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.events_container, fragment, "fav");
+                        fragmentTransaction.replace(R.id.events_container, fragment, "fav")
+                        .addToBackStack("AllEventsFragment");
                         fragmentTransaction.commit();
                     }
                     fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.add_fav));
@@ -105,20 +106,16 @@ public class MainActivity extends AppCompatActivity
                     if (fragment == null) {
                         fragment = AllEventsRecyclerFragment.newInstance(5, -1);
                         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.events_container, fragment, "favSelection");
+                        fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left)
+                                .replace(R.id.events_container, fragment, "favSelection")
+                                .addToBackStack("AllEventsFragment");
                         fragmentTransaction.commit();
                         fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.save));
                     }
                     fabState = 2;
                 }
                 else {
-                    fragment = getSupportFragmentManager().findFragmentByTag("fav");
-                    if (fragment == null) {
-                        fragment = AllEventsFragment.newInstance(50);
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.events_container, fragment, "fav");
-                        fragmentTransaction.commit();
-                    }
+                    MainActivity.super.onBackPressed();
                     fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.add_fav));
                     fabState = 1;
                 }
@@ -133,7 +130,14 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.getMenu().getItem(0).setChecked(true);
+        navigationView.getMenu().getItem(1).setChecked(true);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showTabs("All Events");
     }
 
     private void loadDatabase() {
@@ -264,7 +268,7 @@ public class MainActivity extends AppCompatActivity
         toolbar.setLayoutParams(layoutParams);
         appBar.setExpanded(true);
         fragment = getSupportFragmentManager().findFragmentByTag("event");
-        if(fragment == null) {
+
             fragment = EventDescription.newInstance(1, 1);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction
@@ -272,13 +276,15 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.events_container, fragment, "event")
                     .addToBackStack("AllEventsFragment");
             fragmentTransaction.commit();
-        }
+        toolbar.setTitle("Event No.");
+
     }
-    public void showTabs(){
+    public void showTabs(String title){
         CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
         tabLayout.setVisibility(View.VISIBLE);
         layoutParams.height = 2*actionBarSize;
         toolbar.setLayoutParams(layoutParams);
         appBar.setExpanded(true);
+        toolbar.setTitle(title);
     }
 }

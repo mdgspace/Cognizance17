@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -34,7 +35,7 @@ import io.realm.RealmResults;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private boolean isMapReady;
+    private boolean isMapReady,shouldReset;
     private Realm realm;
     private RealmResults<EventList> results;
     private ArrayList<Marker> markers;
@@ -71,12 +72,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         isMapReady = true;
         mMap = googleMap;
         addMarkers();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    12);
-        } else {
+        if(Build.VERSION.SDK_INT>Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        12);
+            } else {
+                mMap.setMyLocationEnabled(true);
+            }
+        }else {
             mMap.setMyLocationEnabled(true);
         }
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -87,6 +92,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mapIntent.setPackage("com.google.android.apps.maps");
                 startActivity(mapIntent);
                 return true;
+            }
+        });
+        mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                if(!shouldReset){
+                    mMap.moveCamera(cu);
+                    shouldReset =  true;
+                }
             }
         });
     }
@@ -108,7 +122,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.setLatLngBoundsForCameraTarget(bounds);
         cu = CameraUpdateFactory.newLatLngBounds(bounds, 300);
-        mMap.animateCamera(cu);
         mMap.setMinZoomPreference(mMap.getCameraPosition().zoom);
     }
 

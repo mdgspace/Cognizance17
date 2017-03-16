@@ -13,6 +13,12 @@ import android.view.ViewGroup;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.activities.MainActivity;
 import com.sdsmdg.cognizance2017.adapters.AllEventsVpagerAdapter;
+import com.sdsmdg.cognizance2017.models.Event;
+import com.sdsmdg.cognizance2017.models.EventList;
+
+import io.realm.Realm;
+import io.realm.RealmObject;
+import io.realm.RealmResults;
 
 public class AllEventsFragment extends Fragment {
 
@@ -37,7 +43,19 @@ public class AllEventsFragment extends Fragment {
         TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.vpager_tabs);
         if(tabLayout!=null)
             tabLayout.setupWithViewPager(vPager);
-        ((MainActivity)getActivity()).showTabs();
+        String title;
+        if(choice == 50){
+            title = "Favourites";
+        }
+        else if(choice == 0){
+            title = "All Events";
+        }
+        else{
+            Realm.init(getActivity());
+            Realm realm = Realm.getDefaultInstance();
+            title = realm.where(EventList.class).equalTo("id", choice).findFirst().getTitle();
+        }
+        ((MainActivity)getActivity()).showTabs(title);
         return view;
     }
 
