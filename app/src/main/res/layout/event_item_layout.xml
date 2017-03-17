@@ -48,11 +48,16 @@
 
     </LinearLayout>
 
-    <CheckBox
+    <ToggleButton
         android:id="@+id/checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="5dp"
-        android:visibility="gone"/>
-
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:background="@drawable/toggle_selector"
+        android:checked="true"
+        android:padding="12dp"
+        android:textOff=""
+        android:textOn="" />
 </LinearLayout>
