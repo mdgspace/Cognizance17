@@ -183,6 +183,9 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(this, MapsActivity.class));
             return true;
         }
+        if (id == R.id.test) {
+            startActivity(new Intent(this, EventDescriptionActivity.class));
+        }
 
         return super.onOptionsItemSelected(item);
     }
