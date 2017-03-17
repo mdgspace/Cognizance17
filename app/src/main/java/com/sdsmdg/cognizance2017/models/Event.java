@@ -1,5 +1,7 @@
 package com.sdsmdg.cognizance2017.models;
 
+import java.util.Calendar;
+
 import io.realm.RealmObject;
 
 public class Event extends RealmObject {
@@ -147,6 +149,9 @@ public class Event extends RealmObject {
         String startHr = String.format("%02d", getStartHr());
         String endHr = String.format("%02d", getEndHr());
         return startHr + ":" + startMin + "-" + endHr + ":" + endMin;
+    }
+    public Calendar getNotificationTime(){
+        return null;
     }
 
     public Double getLatitude() {

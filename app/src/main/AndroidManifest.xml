@@ -42,6 +42,7 @@
         <activity
             android:name=".activities.MapsActivity"
             android:label="@string/title_activity_maps"></activity>
+        <receiver android:name=".FavReceiver"/>
     </application>
 
 </manifest>

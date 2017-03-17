@@ -8,8 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.sdsmdg.cognizance2017.R;
+import com.sdsmdg.cognizance2017.activities.MainActivity;
 import com.sdsmdg.cognizance2017.adapters.RecyclerAdapter;
 import com.sdsmdg.cognizance2017.models.Event;
 import com.sdsmdg.cognizance2017.models.EventList;
@@ -18,6 +20,8 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+
+import static com.sdsmdg.cognizance2017.activities.MainActivity.curDay;
 
 public class AllEventsRecyclerFragment extends Fragment {
 

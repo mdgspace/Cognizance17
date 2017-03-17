@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,8 +21,6 @@ import android.widget.Toast;
 
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
-import com.sdsmdg.cognizance2017.fragments.AllEventsRecyclerFragment;
-import com.sdsmdg.cognizance2017.fragments.EventDescription;
 import com.sdsmdg.cognizance2017.models.Event;
 import com.sdsmdg.cognizance2017.models.EventList;
 
@@ -42,17 +38,15 @@ public class MainActivity extends AppCompatActivity
     private TabLayout tabLayout;
     private AppBarLayout appBar;
     private Toolbar toolbar;
-    private FloatingActionButton fab;
-    private int actionBarSize,fabState;
-    // fabState = 0            other than favorite Fragment and favorite select fragment
-    // fabState = 1            on favorite Fragment
-    // fabState = 2            on favorite select fragment
+    private int actionBarSize;
+    public static int curDay = 24;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tabLayout = (TabLayout) findViewById(R.id.vpager_tabs);
+
         appBar = (AppBarLayout) findViewById(R.id.appbar);
         Realm.init(this);
         realm = Realm.getDefaultInstance();
@@ -77,50 +71,6 @@ public class MainActivity extends AppCompatActivity
         {
             actionBarSize = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
         }
-
-
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
-                if(fabState == 0){
-                    fragment = getSupportFragmentManager().findFragmentByTag("fav");
-                    if (fragment == null) {
-                        fragment = AllEventsFragment.newInstance(50);
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.events_container, fragment, "fav")
-                        .addToBackStack("AllEventsFragment");
-                        fragmentTransaction.commit();
-                    }
-                    fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.add_fav));
-                    fabState = 1;
-                }
-                else if(fabState == 1){
-                    tabLayout.setVisibility(View.GONE);
-                    layoutParams.height = actionBarSize;
-                    toolbar.setLayoutParams(layoutParams);
-                    appBar.setExpanded(false);
-                    //Go to favorite event selection page
-                    fragment = getSupportFragmentManager().findFragmentByTag("favSelection");
-                    if (fragment == null) {
-                        fragment = AllEventsRecyclerFragment.newInstance(5, -1);
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left)
-                                .replace(R.id.events_container, fragment, "favSelection")
-                                .addToBackStack("AllEventsFragment");
-                        fragmentTransaction.commit();
-                        fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.save));
-                    }
-                    fabState = 2;
-                }
-                else {
-                    MainActivity.super.onBackPressed();
-                    fab.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.add_fav));
-                    fabState = 1;
-                }
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -193,8 +143,6 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.fav) {
-            fab.setImageResource(R.drawable.add_fav);
-            fabState = 1;
             fragment = getSupportFragmentManager().findFragmentByTag("fav");
             if(fragment == null) {
                 fragment = AllEventsFragment.newInstance(50);
@@ -204,8 +152,6 @@ public class MainActivity extends AppCompatActivity
             }
             }
         else {
-            fab.setImageResource(R.drawable.fav);
-            fabState = 0;
             if (id == R.id.all_events) {
                 fragment = getSupportFragmentManager().findFragmentByTag("all_events");
                 if (fragment == null) {
@@ -262,21 +208,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
     public void showSingleEventFragment(){
-        CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
-        tabLayout.setVisibility(View.GONE);
-        layoutParams.height = actionBarSize;
-        toolbar.setLayoutParams(layoutParams);
-        appBar.setExpanded(true);
-        fragment = getSupportFragmentManager().findFragmentByTag("event");
-
-            fragment = EventDescription.newInstance(1, 1);
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-                    .replace(R.id.events_container, fragment, "event")
-                    .addToBackStack("AllEventsFragment");
-            fragmentTransaction.commit();
-        toolbar.setTitle("Event No.");
+       // startActivity(new Intent(MainActivity.this,EventActivity.class));
 
     }
     public void showTabs(String title){

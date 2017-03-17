@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.activities.MainActivity;
@@ -19,6 +20,8 @@ import com.sdsmdg.cognizance2017.models.EventList;
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
+
+import static com.sdsmdg.cognizance2017.activities.MainActivity.curDay;
 
 public class AllEventsFragment extends Fragment {
 
@@ -38,6 +41,23 @@ public class AllEventsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.all_events_viewpager, container, false);
         ViewPager vPager = (ViewPager) view.findViewById(R.id.all_events_vpager);
+        vPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                curDay = position + 24;
+                Toast.makeText(getContext(), ""+curDay, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         AllEventsVpagerAdapter mAdapter = new AllEventsVpagerAdapter(getChildFragmentManager(), choice);
         vPager.setAdapter(mAdapter);
         TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.vpager_tabs);
