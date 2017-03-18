@@ -18,6 +18,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.sdsmdg.cognizance2017.FavReceiver;
 import com.sdsmdg.cognizance2017.R;
@@ -49,7 +50,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView eventIcon;
         public TextView titleText, themeText, timeText;
-        public CheckBox checkBox;
+        public ToggleButton checkBox;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -57,7 +58,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             titleText = (TextView) itemView.findViewById(R.id.event_title);
             themeText = (TextView) itemView.findViewById(R.id.event_theme);
             timeText = (TextView) itemView.findViewById(R.id.event_time);
-            checkBox = (CheckBox) itemView.findViewById(R.id.checkbox);
+            checkBox = (ToggleButton) itemView.findViewById(R.id.toggle);
             this.setIsRecyclable(false);
             itemView.setOnClickListener(this);
         }
