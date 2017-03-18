@@ -23,12 +23,18 @@ import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
 import com.sdsmdg.cognizance2017.models.Event;
 import com.sdsmdg.cognizance2017.models.EventList;
+import com.sdsmdg.cognizance2017.models.EventModel;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -40,6 +46,8 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolbar;
     private int actionBarSize;
     public static int curDay = 24;
+    public static final String BASE_URL ="https://cognizance.org.in/";
+    private ArrayList<EventModel> eventList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +88,34 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(1).setChecked(true);
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setEndpoint(BASE_URL)
+                .build();
+
+        DataInterface api = adapter.create(DataInterface.class);
+
+        api.getAllEvents(new Callback<ArrayList<EventModel>>(){
+            @Override
+            public void success(ArrayList<EventModel> eventList, Response response) {
+                MainActivity.this.eventList =  eventList;
+                Toast.makeText(MainActivity.this, eventList.get(0).getName(), Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(MainActivity.this,"error", Toast.LENGTH_SHORT).show();          }
+        });
+
+        api.getEventById(8, new Callback<EventModel>() {
+            @Override
+            public void success(EventModel event, Response response) {
+                Toast.makeText(MainActivity.this, event.getName(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
 
     }
 
@@ -220,5 +256,15 @@ public class MainActivity extends AppCompatActivity
         toolbar.setLayoutParams(layoutParams);
         appBar.setExpanded(true);
         toolbar.setTitle(title);
+    }
+
+    public ArrayList<EventModel> getEventsByType(String type){
+        ArrayList<EventModel> events = new ArrayList<>();
+        for(EventModel event:eventList){
+            if(event.getType().equals(type)){
+                events.add(event);
+            }
+        }
+        return events;
     }
 }
