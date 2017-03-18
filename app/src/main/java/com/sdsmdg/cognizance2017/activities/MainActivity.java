@@ -1,5 +1,6 @@
 package com.sdsmdg.cognizance2017.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity
     public static int curDay = 24;
     public static final String BASE_URL ="https://cognizance.org.in/";
     private ArrayList<EventModel> eventList;
+    private DataInterface api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,11 +90,14 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(1).setChecked(true);
+
+
+        // accessing data from cognizance
         RestAdapter adapter = new RestAdapter.Builder()
                 .setEndpoint(BASE_URL)
                 .build();
 
-        DataInterface api = adapter.create(DataInterface.class);
+        api = adapter.create(DataInterface.class);
 
         api.getAllEvents(new Callback<ArrayList<EventModel>>(){
             @Override
@@ -104,19 +109,6 @@ public class MainActivity extends AppCompatActivity
             public void failure(RetrofitError error) {
                 Toast.makeText(MainActivity.this,"error", Toast.LENGTH_SHORT).show();          }
         });
-
-        api.getEventById(8, new Callback<EventModel>() {
-            @Override
-            public void success(EventModel event, Response response) {
-                Toast.makeText(MainActivity.this, event.getName(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-
     }
 
     @Override
@@ -167,9 +159,6 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.map) {
             startActivity(new Intent(this, MapsActivity.class));
             return true;
-        }
-        if (id == R.id.test) {
-            startActivity(new Intent(this, EventDescriptionActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
@@ -245,9 +234,10 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    public void showSingleEventFragment(){
-       // startActivity(new Intent(MainActivity.this,EventActivity.class));
-
+    public void showEvent(){
+        Intent eventIntent = new Intent(MainActivity.this,EventDescriptionActivity.class);
+        eventIntent.putExtra("id",9);
+        startActivity(eventIntent);
     }
     public void showTabs(String title){
         CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();

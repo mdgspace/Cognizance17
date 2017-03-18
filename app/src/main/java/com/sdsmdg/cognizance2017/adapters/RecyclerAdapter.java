@@ -65,7 +65,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         @Override
         public void onClick(View v) {
-            ((MainActivity)ctx).showSingleEventFragment();
+            ((MainActivity)ctx).showEvent();
         }
     }
 

@@ -1,10 +1,12 @@
 package com.sdsmdg.cognizance2017.models;
 
+import java.io.Serializable;
+
 /**
  * Created by Arihant Jain on 3/18/2017.
  */
 
-public class EventModel {
+public class EventModel{
     private int id;
     private String name, type;
 

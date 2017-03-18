@@ -1,30 +1,40 @@
 package com.sdsmdg.cognizance2017.activities;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sdsmdg.cognizance2017.R;
+import com.sdsmdg.cognizance2017.models.Event;
+import com.sdsmdg.cognizance2017.models.EventModel;
 
-import static com.sdsmdg.cognizance2017.R.id.fab;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+import static com.sdsmdg.cognizance2017.activities.MainActivity.BASE_URL;
 
 public class EventDescriptionActivity extends AppCompatActivity {
-    TextView eventNameTextview, dateTextView, eventDescriptionTextView;
+    TextView eventName, eventDate, eventDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_description);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.event_toolbar);
         setSupportActionBar(toolbar);
-        eventNameTextview = (TextView) findViewById(R.id.event_name_textview);
-        dateTextView = (TextView) findViewById(R.id.date_and_time_textview);
-        eventDescriptionTextView = (TextView) findViewById(R.id.event_description_textview);
-
+        eventName = (TextView) findViewById(R.id.event_name);
+        eventDate = (TextView) findViewById(R.id.event_time);
+        eventDescription = (TextView) findViewById(R.id.event_description);
+        getEventDetails(getIntent().getIntExtra("id",0));
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,6 +43,35 @@ public class EventDescriptionActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+    }
+    public Event getEventDetails(int id){
+        final ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setMessage("loading data");
+        dialog.show();
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setEndpoint(BASE_URL)
+                .build();
+
+        DataInterface api = adapter.create(DataInterface.class);
+        api.getEventById(id, new Callback<EventModel>() {
+            @Override
+            public void success(EventModel event, Response response) {
+                dialog.dismiss();
+                Toast.makeText(EventDescriptionActivity.this, event.getName(), Toast.LENGTH_SHORT).show();
+                eventName.setText(event.getName());
+                CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+                collapsingToolbarLayout.setTitle("Event Category");
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                dialog.dismiss();
+                Toast.makeText(EventDescriptionActivity.this, "Please check your Internet connectivity", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+        return null;
     }
 
 }
