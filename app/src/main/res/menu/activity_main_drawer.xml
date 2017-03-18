@@ -4,31 +4,31 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/fav"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/favorite"
             android:title="Favorites" />
         <item
             android:id="@+id/all_events"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/all_event"
             android:title="All Events" />
         <item
             android:id="@+id/theme_events"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/theme_event"
             android:title="Theme Events" />
         <item
             android:id="@+id/robotics"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/robot"
             android:title="Robotics" />
         <item
             android:id="@+id/literario"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/literario"
             android:title="Literario" />
         <item
             android:id="@+id/competitions"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/trophy"
             android:title="Competitions" />
         <item
             android:id="@+id/online"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/online"
             android:title="Online" />
     </group>
 
