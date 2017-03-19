@@ -2,13 +2,24 @@ package com.sdsmdg.cognizance2017.models;
 
 import java.io.Serializable;
 
+import io.realm.RealmObject;
+
 /**
  * Created by Arihant Jain on 3/18/2017.
  */
 
-public class EventModel{
+public class EventModel extends RealmObject{
     private int id;
-    private String name, type;
+    private String name;
+    private Type type;
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
 
     public int getId() {
         return id;
@@ -26,11 +37,4 @@ public class EventModel{
         this.name = name;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }

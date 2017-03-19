@@ -63,19 +63,6 @@ public class AllEventsFragment extends Fragment {
         TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.vpager_tabs);
         if(tabLayout!=null)
             tabLayout.setupWithViewPager(vPager);
-        String title;
-        if(choice == 50){
-            title = "Favourites";
-        }
-        else if(choice == 0){
-            title = "All Events";
-        }
-        else{
-            Realm.init(getActivity());
-            Realm realm = Realm.getDefaultInstance();
-            title = realm.where(EventList.class).equalTo("id", choice).findFirst().getTitle();
-        }
-        ((MainActivity)getActivity()).showTabs(title);
         return view;
     }
 

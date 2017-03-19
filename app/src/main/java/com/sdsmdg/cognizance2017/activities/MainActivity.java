@@ -13,24 +13,30 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.SessionManager;
 import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
 import com.sdsmdg.cognizance2017.models.Event;
 import com.sdsmdg.cognizance2017.models.EventList;
 import com.sdsmdg.cognizance2017.models.EventModel;
+import com.sdsmdg.cognizance2017.models.Type;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import io.realm.Realm;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -50,6 +56,7 @@ public class MainActivity extends AppCompatActivity
     public static final String BASE_URL = "https://cognizance.org.in/";
     private ArrayList<EventModel> eventList;
     private DataInterface api;
+    private ArrayList<EventModel> eventModels;
     SessionManager session;
 
     @Override
@@ -72,6 +79,7 @@ public class MainActivity extends AppCompatActivity
         realm = Realm.getDefaultInstance();
         if (realm.isEmpty())
             loadDatabase();
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         results = realm.where(Event.class).equalTo("fav", true).findAll();
@@ -120,26 +128,49 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this, "error", Toast.LENGTH_SHORT).show();
             }
         });
+        for(int i=6;i<=176;i++){
+            RealmObject result = realm.where(EventModel.class).equalTo("id",i).findFirst();
+            if(result ==null) {
+                api.getEventById(i, new Callback<JsonObject>() {
+                    @Override
+                    public void success(JsonObject json, Response response) {
+                        final JsonObject jsonObject = json;
+                        realm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                realm.beginTransaction();
+                                realm.createObjectFromJson(EventModel.class, jsonObject.toString());
+                                realm.commitTransaction();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.d("Cogni data", "error");
+                    }
+                });
+            }
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        showTabs("All Events");
+//        showTabs("All Events");
     }
 
     private void loadDatabase() {
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                try {
-                    InputStream is = getAssets().open("events.json");
-                    realm.createAllFromJson(EventList.class, is);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
+        realm.beginTransaction();
+        EventModel model = realm.createObject(EventModel.class);
+        model.setId(0);
+        model.setName("Name");
+        Type type = new Type();
+        type.setName("t_name");
+        Type managedType = realm.copyToRealm(type);
+        type.setCategory("t_category");
+        model.setType(managedType);
+        realm.commitTransaction();
     }
 
     @Override

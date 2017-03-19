@@ -24,6 +24,7 @@ import com.sdsmdg.cognizance2017.FavReceiver;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.activities.MainActivity;
 import com.sdsmdg.cognizance2017.models.Event;
+import com.sdsmdg.cognizance2017.models.EventModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,12 +37,12 @@ import static android.content.Context.ALARM_SERVICE;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
 
     private Context ctx;
-    List<Event> eventsList;
+    List<EventModel> eventsList;
     private boolean isDelete;
-    private List<Event> favEvents = new ArrayList<Event>();
+    private List<EventModel> favEvents = new ArrayList<EventModel>();
     private Realm realm;
 
-    public RecyclerAdapter(Context ctx, List<Event> eventsList, boolean isDelete) {
+    public RecyclerAdapter(Context ctx, List<EventModel> eventsList, boolean isDelete) {
         this.ctx = ctx;
         this.eventsList = eventsList;
         this.isDelete = isDelete;
@@ -78,13 +79,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        final Event currentEvent = eventsList.get(position);
-        holder.titleText.setText(currentEvent.getTitle());
-        holder.themeText.setText(currentEvent.getTheme());
-        holder.timeText.setText(currentEvent.getTime());
+        final EventModel currentEvent = eventsList.get(position);
+        holder.titleText.setText(currentEvent.getName());
+        holder.themeText.setText(currentEvent.getType().getCategory());
+        holder.timeText.setText("Time ");
         //Drawable res = ContextCompat.getDrawable(ctx, R.drawable.ic_menu_send);
         //holder.eventIcon.setImageDrawable(res);
-
+/*
             holder.checkBox.setChecked(currentEvent.isFav());
             holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -104,6 +105,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     }
                 }
             });
+            */
     }
 
     @Override
@@ -111,7 +113,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         return eventsList.size();
     }
 
-    public List<Event> getFavEvents() {
+    public List<EventModel> getFavEvents() {
         return favEvents;
     }
 

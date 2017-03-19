@@ -15,6 +15,7 @@ import com.sdsmdg.cognizance2017.activities.MainActivity;
 import com.sdsmdg.cognizance2017.adapters.RecyclerAdapter;
 import com.sdsmdg.cognizance2017.models.Event;
 import com.sdsmdg.cognizance2017.models.EventList;
+import com.sdsmdg.cognizance2017.models.EventModel;
 
 import java.util.List;
 
@@ -28,13 +29,14 @@ public class AllEventsRecyclerFragment extends Fragment {
     private int choice;
     private int day;
     private Realm realm;
-    private RealmResults<Event> results;
+    private RealmResults<EventModel> results;
     private List<Event> result;
     private RecyclerAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*
         if (getArguments() != null) {
             //Day Indicates which days events are to be shown and on which page of viewpager we are
             day = getArguments().getInt("Page Number", 10);
@@ -68,7 +70,11 @@ public class AllEventsRecyclerFragment extends Fragment {
             realm = Realm.getDefaultInstance();
             //Todo FIlTER QUERY ACCORDING TO DAY
             result = realm.where(EventList.class).equalTo("id", choice).findFirst().getEvents();
-        }
+        }*/
+        Realm.init(getActivity());
+        realm = Realm.getDefaultInstance();
+        results = realm.where(EventModel.class).lessThan("id",8).findAll();
+
     }
 
     @Nullable
@@ -81,7 +87,7 @@ public class AllEventsRecyclerFragment extends Fragment {
         else if (choice == 50 || choice == 0)
             adapter = new RecyclerAdapter(getActivity(), results, false);
         else
-            adapter = new RecyclerAdapter(getActivity(), result, false);
+            adapter = new RecyclerAdapter(getActivity(), results, false);
         eventsRecyclerView.setAdapter(adapter);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return view;
