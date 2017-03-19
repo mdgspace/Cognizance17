@@ -12,6 +12,15 @@ public class EventModel extends RealmObject{
     private int id;
     private String name;
     private Type type;
+    private boolean isFav;
+
+    public boolean isFav() {
+        return isFav;
+    }
+
+    public void setFav(boolean fav) {
+        isFav = fav;
+    }
 
     public Type getType() {
         return type;

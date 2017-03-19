@@ -83,9 +83,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         holder.titleText.setText(currentEvent.getName());
         holder.themeText.setText(currentEvent.getType().getCategory());
         holder.timeText.setText("Time ");
-        //Drawable res = ContextCompat.getDrawable(ctx, R.drawable.ic_menu_send);
-        //holder.eventIcon.setImageDrawable(res);
-/*
+        Drawable res = ContextCompat.getDrawable(ctx, R.drawable.ic_menu_send);
+       // holder.eventIcon.setImageDrawable(res);
+
             holder.checkBox.setChecked(currentEvent.isFav());
             holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -96,16 +96,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     currentEvent.setFav(isChecked);
                     realm.commitTransaction();
                     if(isChecked){
-                        Calendar calendar = currentEvent.getNotificationTime();
+                        //Calendar calendar = currentEvent.getNotificationTime();
                         //createNotification(calendar.getTimeInMillis());
-                        createNotification(System.currentTimeMillis());
+                        //createNotification(System.currentTimeMillis());
                     }
                     else {
                         cancelNotification(0);
                     }
                 }
             });
-            */
     }
 
     @Override

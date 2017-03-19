@@ -1,5 +1,6 @@
 package com.sdsmdg.cognizance2017.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -56,13 +57,14 @@ public class MainActivity extends AppCompatActivity
     public static final String BASE_URL = "https://cognizance.org.in/";
     private ArrayList<EventModel> eventList;
     private DataInterface api;
-    private ArrayList<EventModel> eventModels;
+    public static Activity mainAct;
     SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mainAct = this;
         //session class instance
         session = new SessionManager(getApplicationContext());
         /**
@@ -128,6 +130,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this, "error", Toast.LENGTH_SHORT).show();
             }
         });
+        realm.beginTransaction();
         for(int i=6;i<=176;i++){
             RealmObject result = realm.where(EventModel.class).equalTo("id",i).findFirst();
             if(result ==null) {
@@ -138,9 +141,7 @@ public class MainActivity extends AppCompatActivity
                         realm.executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(Realm realm) {
-                                realm.beginTransaction();
                                 realm.createObjectFromJson(EventModel.class, jsonObject.toString());
-                                realm.commitTransaction();
                             }
                         });
                     }
@@ -152,6 +153,7 @@ public class MainActivity extends AppCompatActivity
                 });
             }
         }
+        realm.commitTransaction();
     }
 
     @Override

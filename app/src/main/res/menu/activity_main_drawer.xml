@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single"
+        android:id="@+id/main_event">
         <item
             android:id="@+id/all_events"
             android:icon="@drawable/all_event"
@@ -15,6 +16,7 @@
             android:id="@+id/center_stage"
             android:title="Center Stage">
             <menu>
+                <group android:id="@+id/center_events">
                 <item
                     android:id="@+id/competitions"
                     android:icon="@drawable/trophy"
@@ -39,8 +41,13 @@
                     android:id="@+id/fun_events"
                     android:icon="@drawable/fun"
                     android:title="Fun Events" />
+                </group>
             </menu>
         </item>
+    </group>
+    <group android:checkableBehavior="single"
+        android:id="@+id/other_group">
+
         <item
             android:id="@+id/barcode"
             android:icon="@drawable/camera"
@@ -65,6 +72,7 @@
             android:id="@+id/mars"
             android:icon="@drawable/mars"
             android:title="Project M.A.R.S" />
+
     </group>
 
 </menu>

@@ -11,6 +11,8 @@ import android.widget.Toast;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.SessionManager;
 
+import static com.sdsmdg.cognizance2017.activities.MainActivity.mainAct;
+
 public class LoginActivity extends AppCompatActivity {
     private String userName;
     private String userNumber;
@@ -52,7 +54,11 @@ public class LoginActivity extends AppCompatActivity {
         }
         else
             Toast.makeText(this, "Login failed due to empty fields", Toast.LENGTH_SHORT).show();
+    }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mainAct.finish();
     }
 }
