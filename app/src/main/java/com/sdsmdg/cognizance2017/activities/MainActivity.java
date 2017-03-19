@@ -26,14 +26,9 @@ import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.SessionManager;
 import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
 import com.sdsmdg.cognizance2017.models.Event;
-import com.sdsmdg.cognizance2017.models.EventList;
 import com.sdsmdg.cognizance2017.models.EventModel;
 import com.sdsmdg.cognizance2017.models.Type;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import io.realm.Realm;
@@ -108,7 +103,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.getMenu().getItem(1).setChecked(true);
+        navigationView.getMenu().getItem(0).setChecked(true);
 
 
         // accessing data from cognizance
@@ -131,9 +126,9 @@ public class MainActivity extends AppCompatActivity
             }
         });
         realm.beginTransaction();
-        for(int i=6;i<=176;i++){
-            RealmObject result = realm.where(EventModel.class).equalTo("id",i).findFirst();
-            if(result ==null) {
+        for (int i = 6; i <= 176; i++) {
+            RealmObject result = realm.where(EventModel.class).equalTo("id", i).findFirst();
+            if (result == null) {
                 api.getEventById(i, new Callback<JsonObject>() {
                     @Override
                     public void success(JsonObject json, Response response) {

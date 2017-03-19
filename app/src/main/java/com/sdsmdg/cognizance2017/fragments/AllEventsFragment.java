@@ -12,14 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.sdsmdg.cognizance2017.R;
-import com.sdsmdg.cognizance2017.activities.MainActivity;
 import com.sdsmdg.cognizance2017.adapters.AllEventsVpagerAdapter;
-import com.sdsmdg.cognizance2017.models.Event;
-import com.sdsmdg.cognizance2017.models.EventList;
-
-import io.realm.Realm;
-import io.realm.RealmObject;
-import io.realm.RealmResults;
 
 import static com.sdsmdg.cognizance2017.activities.MainActivity.curDay;
 
@@ -50,7 +43,7 @@ public class AllEventsFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 curDay = position + 24;
-                Toast.makeText(getContext(), ""+curDay, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "" + curDay, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -61,8 +54,9 @@ public class AllEventsFragment extends Fragment {
         AllEventsVpagerAdapter mAdapter = new AllEventsVpagerAdapter(getChildFragmentManager(), choice);
         vPager.setAdapter(mAdapter);
         TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.vpager_tabs);
-        if(tabLayout!=null)
+        if (tabLayout != null)
             tabLayout.setupWithViewPager(vPager);
+
         return view;
     }
 
