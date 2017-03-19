@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.sdsmdg.cognizance2017.R;
+import com.sdsmdg.cognizance2017.SessionManager;
 import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
 import com.sdsmdg.cognizance2017.models.Event;
 import com.sdsmdg.cognizance2017.models.EventList;
@@ -49,11 +50,21 @@ public class MainActivity extends AppCompatActivity
     public static final String BASE_URL = "https://cognizance.org.in/";
     private ArrayList<EventModel> eventList;
     private DataInterface api;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //session class instance
+        session = new SessionManager(getApplicationContext());
+        /**
+         * call this function when you want to check if the user is logged in or not
+         * this will check if the user is logged in or not and then direct it to login activity
+         */
+        session.checkLogIn();
+
+
         tabLayout = (TabLayout) findViewById(R.id.vpager_tabs);
 
         appBar = (AppBarLayout) findViewById(R.id.appbar);
