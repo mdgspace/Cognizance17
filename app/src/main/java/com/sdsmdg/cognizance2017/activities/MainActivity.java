@@ -1,6 +1,5 @@
 package com.sdsmdg.cognizance2017.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolbar;
     private int actionBarSize;
     public static int curDay = 24;
-    public static final String BASE_URL ="https://cognizance.org.in/";
+    public static final String BASE_URL = "https://cognizance.org.in/";
     private ArrayList<EventModel> eventList;
     private DataInterface api;
 
@@ -69,17 +68,16 @@ public class MainActivity extends AppCompatActivity
 
         //    TextView fav = (TextView) findViewById(R.id.no_favorite_selected_text);
         //    fav.setVisibility(View.VISIBLE);
-            fragment = getSupportFragmentManager().findFragmentByTag("all_events");
-            if (fragment == null) {
-                fragment = AllEventsFragment.newInstance(0);
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.events_container, fragment, "all_events");
-                fragmentTransaction.commit();
-            }
+        fragment = getSupportFragmentManager().findFragmentByTag("all_events");
+        if (fragment == null) {
+            fragment = AllEventsFragment.newInstance(0);
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.events_container, fragment, "all_events");
+            fragmentTransaction.commit();
+        }
         TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-        {
-            actionBarSize = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarSize = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -99,15 +97,17 @@ public class MainActivity extends AppCompatActivity
 
         api = adapter.create(DataInterface.class);
 
-        api.getAllEvents(new Callback<ArrayList<EventModel>>(){
+        api.getAllEvents(new Callback<ArrayList<EventModel>>() {
             @Override
             public void success(ArrayList<EventModel> eventList, Response response) {
-                MainActivity.this.eventList =  eventList;
+                MainActivity.this.eventList = eventList;
                 Toast.makeText(MainActivity.this, eventList.get(0).getName(), Toast.LENGTH_SHORT).show();
             }
+
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(MainActivity.this,"error", Toast.LENGTH_SHORT).show();          }
+                Toast.makeText(MainActivity.this, "error", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -171,14 +171,13 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         if (id == R.id.fav) {
             fragment = getSupportFragmentManager().findFragmentByTag("fav");
-            if(fragment == null) {
+            if (fragment == null) {
                 fragment = AllEventsFragment.newInstance(50);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.events_container, fragment, "fav");
                 fragmentTransaction.commit();
             }
-            }
-        else {
+        } else {
             if (id == R.id.all_events) {
                 fragment = getSupportFragmentManager().findFragmentByTag("all_events");
                 if (fragment == null) {
@@ -227,6 +226,9 @@ public class MainActivity extends AppCompatActivity
                     fragmentTransaction.replace(R.id.events_container, fragment, "online");
                     fragmentTransaction.commit();
                 }
+            } else if (id == R.id.barcode) {
+                Intent i = new Intent(MainActivity.this, BarCodeActivity.class);
+                startActivity(i);
             }
         }
 
@@ -234,24 +236,26 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    public void showEvent(){
-        Intent eventIntent = new Intent(MainActivity.this,EventDescriptionActivity.class);
-        eventIntent.putExtra("id",9);
+
+    public void showEvent() {
+        Intent eventIntent = new Intent(MainActivity.this, EventDescriptionActivity.class);
+        eventIntent.putExtra("id", 9);
         startActivity(eventIntent);
     }
-    public void showTabs(String title){
+
+    public void showTabs(String title) {
         CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
         tabLayout.setVisibility(View.VISIBLE);
-        layoutParams.height = 2*actionBarSize;
+        layoutParams.height = 2 * actionBarSize;
         toolbar.setLayoutParams(layoutParams);
         appBar.setExpanded(true);
         toolbar.setTitle(title);
     }
 
-    public ArrayList<EventModel> getEventsByType(String type){
+    public ArrayList<EventModel> getEventsByType(String type) {
         ArrayList<EventModel> events = new ArrayList<>();
-        for(EventModel event:eventList){
-            if(event.getType().equals(type)){
+        for (EventModel event : eventList) {
+            if (event.getType().equals(type)) {
                 events.add(event);
             }
         }

@@ -54,7 +54,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            eventIcon = (ImageView) itemView.findViewById(R.id.event_icon);
+            //eventIcon = (ImageView) itemView.findViewById(R.id.event_icon);
             titleText = (TextView) itemView.findViewById(R.id.event_title);
             themeText = (TextView) itemView.findViewById(R.id.event_theme);
             timeText = (TextView) itemView.findViewById(R.id.event_time);
@@ -82,8 +82,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         holder.titleText.setText(currentEvent.getTitle());
         holder.themeText.setText(currentEvent.getTheme());
         holder.timeText.setText(currentEvent.getTime());
-        Drawable res = ContextCompat.getDrawable(ctx, R.drawable.ic_menu_send);
-        holder.eventIcon.setImageDrawable(res);
+        //Drawable res = ContextCompat.getDrawable(ctx, R.drawable.ic_menu_send);
+        //holder.eventIcon.setImageDrawable(res);
 
             holder.checkBox.setChecked(currentEvent.isFav());
             holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

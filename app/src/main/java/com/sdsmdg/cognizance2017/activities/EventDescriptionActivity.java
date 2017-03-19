@@ -31,9 +31,9 @@ public class EventDescriptionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_description);
         Toolbar toolbar = (Toolbar) findViewById(R.id.event_toolbar);
         setSupportActionBar(toolbar);
-        eventName = (TextView) findViewById(R.id.event_name);
+        //eventName = (TextView) findViewById(R.id.event_name);
         eventDate = (TextView) findViewById(R.id.event_time);
-        eventDescription = (TextView) findViewById(R.id.event_description);
+        //eventDescription = (TextView) findViewById(R.id.event_description);
         getEventDetails(getIntent().getIntExtra("id",0));
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

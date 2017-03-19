@@ -3,33 +3,68 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/all_events"
+            android:icon="@drawable/all_event"
+            android:title="Home" />
+        <item
             android:id="@+id/fav"
             android:icon="@drawable/favorite"
             android:title="Favorites" />
+
         <item
-            android:id="@+id/all_events"
-            android:icon="@drawable/all_event"
-            android:title="All Events" />
+            android:id="@+id/center_stage"
+            android:title="Center Stage">
+            <menu>
+                <item
+                    android:id="@+id/competitions"
+                    android:icon="@drawable/trophy"
+                    android:title="Competitions" />
+                <item
+                    android:id="@+id/literario"
+                    android:icon="@drawable/literario"
+                    android:title="Literario" />
+                <item
+                    android:id="@+id/robotics"
+                    android:icon="@drawable/robot"
+                    android:title="Robotics" />
+                <item
+                    android:id="@+id/online"
+                    android:icon="@drawable/online"
+                    android:title="Online Events" />
+                <item
+                    android:id="@+id/theme_events"
+                    android:icon="@drawable/theme_event"
+                    android:title="Theme Events" />
+                <item
+                    android:id="@+id/fun_events"
+                    android:icon="@drawable/fun"
+                    android:title="Fun Events" />
+            </menu>
+        </item>
         <item
-            android:id="@+id/theme_events"
-            android:icon="@drawable/theme_event"
-            android:title="Theme Events" />
+            android:id="@+id/barcode"
+            android:icon="@drawable/camera"
+            android:title="BarCode" />
         <item
-            android:id="@+id/robotics"
-            android:icon="@drawable/robot"
-            android:title="Robotics" />
+            android:id="@+id/dept"
+            android:icon="@drawable/dept"
+            android:title="Departmentals" />
         <item
-            android:id="@+id/literario"
-            android:icon="@drawable/literario"
-            android:title="Literario" />
+            android:id="@+id/mainstay"
+            android:icon="@drawable/main_stay"
+            android:title="Main Stay" />
         <item
-            android:id="@+id/competitions"
-            android:icon="@drawable/trophy"
-            android:title="Competitions" />
+            android:id="@+id/workshop"
+            android:icon="@drawable/workshops"
+            android:title="Workshops" />
         <item
-            android:id="@+id/online"
-            android:icon="@drawable/online"
-            android:title="Online" />
+            android:id="@+id/summit"
+            android:icon="@drawable/e_summit"
+            android:title="E-Summit" />
+        <item
+            android:id="@+id/mars"
+            android:icon="@drawable/mars"
+            android:title="Project M.A.R.S" />
     </group>
 
 </menu>
