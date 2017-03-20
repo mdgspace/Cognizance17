@@ -9,29 +9,25 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.ToxicBakery.viewpager.transforms.StackTransformer;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.activities.MainActivity;
 import com.sdsmdg.cognizance2017.adapters.AllEventsVpagerAdapter;
 
 import static com.sdsmdg.cognizance2017.activities.MainActivity.curDay;
-import static com.sdsmdg.cognizance2017.activities.MainActivity.mainAct;
 
 public class AllEventsFragment extends Fragment {
 
-    private int choice;
     private String title;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null){
-            title = getArguments().getString("title","Title");
-            choice = getArguments().getInt("Choice", 10);
-        }
-        else
-            choice = 100;
+        if (getArguments() != null) {
+            title = getArguments().getString("title", "Title");
+        } else
+            title = "Error";
     }
 
     @Nullable
@@ -48,7 +44,6 @@ public class AllEventsFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 curDay = position + 24;
-                Toast.makeText(getContext(), "" + curDay, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -56,9 +51,10 @@ public class AllEventsFragment extends Fragment {
 
             }
         });
-        ((MainActivity)getActivity()).showTabs(title);
+        ((MainActivity) getActivity()).showTabs(title);
         AllEventsVpagerAdapter mAdapter = new AllEventsVpagerAdapter(getChildFragmentManager(), title);
         vPager.setAdapter(mAdapter);
+        vPager.setPageTransformer(true, new StackTransformer());
         TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.vpager_tabs);
         if (tabLayout != null)
             tabLayout.setupWithViewPager(vPager);
@@ -70,7 +66,7 @@ public class AllEventsFragment extends Fragment {
         AllEventsFragment fragment = new AllEventsFragment();
         Bundle args = new Bundle();
         //title refers to which kind of events the pager must display e.g.- add_fav, theme events, robotics etc.
-        args.putString("title",title);
+        args.putString("title", title);
         fragment.setArguments(args);
         return fragment;
 

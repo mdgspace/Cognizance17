@@ -19,12 +19,10 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.sdsmdg.cognizance2017.R;
-import com.sdsmdg.cognizance2017.SessionManager;
 import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
 import com.sdsmdg.cognizance2017.models.EventModel;
 import com.sdsmdg.cognizance2017.models.Type;
@@ -45,7 +43,7 @@ public class MainActivity extends AppCompatActivity
     private TabLayout tabLayout;
     private AppBarLayout appBar;
     private Toolbar toolbar;
-    private int actionBarSize,size;
+    private int actionBarSize, size;
     public static int curDay = 24;
     public static final String BASE_URL = "https://cognizance.org.in/";
     private ArrayList<EventModel> eventList;
@@ -54,6 +52,8 @@ public class MainActivity extends AppCompatActivity
     public static Activity mainAct;
     private ProgressDialog dialog;
     private ArrayList<Integer> ids;
+    private boolean isOnHome;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(0).setChecked(true);
         Realm.init(this);
@@ -91,19 +91,25 @@ public class MainActivity extends AppCompatActivity
         if (realm.isEmpty())
             loadDatabase();
         else {
-            showEvents("all_events","All Events");
+            showEvents("all_events", "Home");
+            isOnHome = true;
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        showTabs("All Events");
+        showTabs("Home");
+        if (!isOnHome) {
+            showEvents("all_events", "Home");
+            navigationView.getMenu().getItem(0).setChecked(true);
+            isOnHome = true;
+        }
     }
 
     private void loadDatabase() {
         realm.beginTransaction();
-        EventModel model = realm.createObject(EventModel.class,0);
+        EventModel model = realm.createObject(EventModel.class, 0);
         model.setName("Name");
         model.setTime("Time");
         model.setVenue("Venue");
@@ -119,7 +125,7 @@ public class MainActivity extends AppCompatActivity
         api.getAllEvents(new Callback<ArrayList<EventModel>>() {
             @Override
             public void success(ArrayList<EventModel> eventModels, Response response) {
-                for(int i=0;i<eventModels.size();i++){
+                for (int i = 0; i < eventModels.size(); i++) {
                     ids.add(eventModels.get(i).getId());
                 }
                 size = ids.size();
@@ -180,35 +186,35 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        isOnHome = false;
         if (id == R.id.all_events) {
-            showEvents("all_events","All Events");
+            showEvents("all_events", "Home");
+            isOnHome = true;
         } else if (id == R.id.theme_events) {
-            showEvents("theme_events","Theme Events");
+            showEvents("theme_events", "Theme Events");
         } else if (id == R.id.robotics) {
-            showEvents("robotics","Robotics");
+            showEvents("robotics", "Robotics");
         } else if (id == R.id.literario) {
-            showEvents("literario","Literario");
+            showEvents("literario", "Literario");
         } else if (id == R.id.competitions) {
-            showEvents("competitions","Competitions");
+            showEvents("competitions", "Competitions");
         } else if (id == R.id.online) {
-            showEvents("online","Online Events");
-        }
-        else if(id == R.id.fun_events){
-            showEvents("fun","FUN EVENTS");
-        } else if(id == R.id.workshop){
-            showEvents("workshop","Workshop");
-        }else if(id == R.id.dept){
-            showEvents("dept","Departmental");
-        }
-        else if(id == R.id.summit){
-            showEvents("summit","E-Summit");
-        }else if(id == R.id.mainstay){
-            showEvents("mainstay","Mainstay");
-        }else if(id == R.id.mars){
-            showEvents("mars","Project M.A.R.S");
-        }else if(id == R.id.fav){
-            showEvents("fav","Favorites");
-        }else if (id == R.id.barcode) {
+            showEvents("online", "Online Events");
+        } else if (id == R.id.fun_events) {
+            showEvents("fun", "FUN EVENTS");
+        } else if (id == R.id.workshop) {
+            showEvents("workshop", "Workshop");
+        } else if (id == R.id.dept) {
+            showEvents("dept", "Departmental");
+        } else if (id == R.id.summit) {
+            showEvents("summit", "E-Summit");
+        } else if (id == R.id.mainstay) {
+            showEvents("mainstay", "Mainstay");
+        } else if (id == R.id.mars) {
+            showEvents("mars", "Project M.A.R.S");
+        } else if (id == R.id.fav) {
+            showEvents("fav", "Favorites");
+        } else if (id == R.id.barcode) {
             Intent i = new Intent(MainActivity.this, BarCodeActivity.class);
             startActivity(i);
         }
@@ -241,8 +247,9 @@ public class MainActivity extends AppCompatActivity
         }
         return events;
     }
-    private void loadEvents(final int id){
-        if(id <ids.size() && shouldLoadEvents) {
+
+    private void loadEvents(final int id) {
+        if (id < ids.size() && shouldLoadEvents) {
             RealmObject result = realm.where(EventModel.class).equalTo("id", ids.get(id)).findFirst();
             if (result == null) {
                 api.getEventById(ids.get(id), new Callback<JsonObject>() {
@@ -258,9 +265,9 @@ public class MainActivity extends AppCompatActivity
                         }, new Realm.Transaction.OnSuccess() {
                             @Override
                             public void onSuccess() {
-                                loadEvents(id+1);
-                                dialog.setProgress(ids.get(id)*100/ids.size());
-                                Log.d("Cogni data",""+ids.get(id));
+                                loadEvents(id + 1);
+                                dialog.setProgress(ids.get(id) * 100 / ids.size());
+                                Log.d("Cogni data", "" + ids.get(id));
                             }
                         }, new Realm.Transaction.OnError() {
                             @Override
@@ -278,18 +285,18 @@ public class MainActivity extends AppCompatActivity
                         dialog.dismiss();
                     }
                 });
-            }else {
-                loadEvents(id+1);
-                dialog.setProgress(ids.get(id)*100/ids.size());
+            } else {
+                loadEvents(id + 1);
+                dialog.setProgress(ids.get(id) * 100 / ids.size());
             }
-        }
-        else {
+        } else {
             dialog.dismiss();
-            Toast.makeText(mainAct, "Download complete"+ids.size(), Toast.LENGTH_SHORT).show();
-            showEvents("all_events","All Events");
+            Toast.makeText(mainAct, "Download complete" + ids.size(), Toast.LENGTH_SHORT).show();
+            showEvents("all_events", "Home");
         }
     }
-    private void showEvents(String tag,String title){
+
+    private void showEvents(String tag, String title) {
         fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if (fragment == null) {
             fragment = AllEventsFragment.newInstance(title);

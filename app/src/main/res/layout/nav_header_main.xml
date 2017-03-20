@@ -16,16 +16,19 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:layout_gravity="center"
         app:srcCompat="@drawable/logo_two_small" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Cognizance'17"
         android:textSize="16sp"
+        android:layout_gravity="center"
+        android:textStyle="bold"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
 </LinearLayout>
