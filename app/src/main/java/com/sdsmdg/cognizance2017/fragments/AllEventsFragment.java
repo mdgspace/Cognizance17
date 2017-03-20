@@ -12,19 +12,24 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.sdsmdg.cognizance2017.R;
+import com.sdsmdg.cognizance2017.activities.MainActivity;
 import com.sdsmdg.cognizance2017.adapters.AllEventsVpagerAdapter;
 
 import static com.sdsmdg.cognizance2017.activities.MainActivity.curDay;
+import static com.sdsmdg.cognizance2017.activities.MainActivity.mainAct;
 
 public class AllEventsFragment extends Fragment {
 
     private int choice;
+    private String title;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
+        if (getArguments() != null){
+            title = getArguments().getString("title","Title");
             choice = getArguments().getInt("Choice", 10);
+        }
         else
             choice = 100;
     }
@@ -51,7 +56,8 @@ public class AllEventsFragment extends Fragment {
 
             }
         });
-        AllEventsVpagerAdapter mAdapter = new AllEventsVpagerAdapter(getChildFragmentManager(), choice);
+        ((MainActivity)getActivity()).showTabs(title);
+        AllEventsVpagerAdapter mAdapter = new AllEventsVpagerAdapter(getChildFragmentManager(), title);
         vPager.setAdapter(mAdapter);
         TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.vpager_tabs);
         if (tabLayout != null)
@@ -60,12 +66,13 @@ public class AllEventsFragment extends Fragment {
         return view;
     }
 
-    public static AllEventsFragment newInstance(int choice) {
+    public static AllEventsFragment newInstance(String title) {
         AllEventsFragment fragment = new AllEventsFragment();
         Bundle args = new Bundle();
-        //choice refers to which kind of events the pager must display e.g.- add_fav, theme events, robotics etc.
-        args.putInt("Choice", choice);
+        //title refers to which kind of events the pager must display e.g.- add_fav, theme events, robotics etc.
+        args.putString("title",title);
         fragment.setArguments(args);
         return fragment;
+
     }
 }

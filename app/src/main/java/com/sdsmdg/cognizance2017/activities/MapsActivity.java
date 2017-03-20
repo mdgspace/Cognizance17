@@ -24,8 +24,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 import com.sdsmdg.cognizance2017.R;
-import com.sdsmdg.cognizance2017.models.Event;
-import com.sdsmdg.cognizance2017.models.EventList;
+import com.sdsmdg.cognizance2017.models.EventModel;
 
 import java.util.ArrayList;
 
@@ -37,7 +36,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private boolean isMapReady,shouldReset;
     private Realm realm;
-    private RealmResults<EventList> results;
+    private RealmResults<EventModel> results;
     private ArrayList<Marker> markers;
     private Button resetBtn;
     private CameraUpdate cu;
@@ -49,7 +48,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Realm.init(this);
         realm = Realm.getDefaultInstance();
-        results = realm.where(EventList.class).findAll();
+        results = realm.where(EventModel.class).findAll();
         isMapReady = false;
         resetBtn = (Button) findViewById(R.id.reset_btn);
         resetBtn.setOnClickListener(new View.OnClickListener() {
@@ -108,16 +107,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void addMarkers() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         IconGenerator icon = new IconGenerator(this);
-        for (int i = 0; i < results.size(); i++) {
-            for (int j = 0; j < results.get(i).getEvents().size(); j++) {
-                Event event = results.get(i).getEvents().get(j);
-                LatLng latLng = new LatLng(event.getLatitude(), event.getLongitude());
+                LatLng latLng = new LatLng(0, 0);
                 Marker marker = mMap.addMarker(new MarkerOptions().position(latLng)
-                        .icon(BitmapDescriptorFactory.fromBitmap(icon.makeIcon(event.getTitle()))));
+                        .icon(BitmapDescriptorFactory.fromBitmap(icon.makeIcon("hello world"))));
                 markers.add(marker);
                 builder.include(marker.getPosition());
-            }
-        }
         LatLngBounds bounds = builder.build();
 
         mMap.setLatLngBoundsForCameraTarget(bounds);

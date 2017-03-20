@@ -13,8 +13,6 @@ import android.widget.Toast;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.activities.MainActivity;
 import com.sdsmdg.cognizance2017.adapters.RecyclerAdapter;
-import com.sdsmdg.cognizance2017.models.Event;
-import com.sdsmdg.cognizance2017.models.EventList;
 import com.sdsmdg.cognizance2017.models.EventModel;
 
 import java.util.List;
@@ -26,27 +24,28 @@ import static com.sdsmdg.cognizance2017.activities.MainActivity.curDay;
 
 public class AllEventsRecyclerFragment extends Fragment {
 
-    private int choice;
+//    private int choice;
     private int day;
+    private String title;
     private Realm realm;
     private RealmResults<EventModel> results;
-    private List<Event> result;
     private RecyclerAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*
         if (getArguments() != null) {
             //Day Indicates which days events are to be shown and on which page of viewpager we are
             day = getArguments().getInt("Page Number", 10);
-            choice = getArguments().getInt("choice", 10);
+            //choice = getArguments().getInt("choice", 10);
+            title = getArguments().getString("title",title);
         } else {
             //error
             day = 10;
-            choice = 10;
+            //choice = 10;
+            title = "Title";
         }
-
+/*
         if (day == 5 && choice == -1) {
             //Enter favorite Event Selection Mode / Send whole list of events to adapter
             Realm.init(getActivity());
@@ -73,7 +72,16 @@ public class AllEventsRecyclerFragment extends Fragment {
         }*/
         Realm.init(getActivity());
         realm = Realm.getDefaultInstance();
-        results = realm.where(EventModel.class).lessThan("id",8).findAll();
+        if(title.equals("All Events"))
+            results = realm.where(EventModel.class).findAll();
+        else if(title.equals("Workshop")||title.equals("Mainstay")||title.equals("Departmental")
+                ||title.equals("E-Summit")||title.equals("Project M.A.R.S")){
+            results = realm.where(EventModel.class).equalTo("type.category",title).findAll();
+        }
+        else {
+            results = realm.where(EventModel.class).equalTo("type.name",title).findAll();
+        }
+        Toast.makeText(getContext(), ""+results.size(), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -82,23 +90,19 @@ public class AllEventsRecyclerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.all_events_recycler_view, container, false);
         RecyclerView eventsRecyclerView = (RecyclerView) view.findViewById(R.id.main_recycler_view);
-        if (day == 5 && choice == -1)
-            adapter = new RecyclerAdapter(getActivity(), results, true);
-        else if (choice == 50 || choice == 0)
-            adapter = new RecyclerAdapter(getActivity(), results, false);
-        else
-            adapter = new RecyclerAdapter(getActivity(), results, false);
+        adapter = new RecyclerAdapter(getActivity(), results);
         eventsRecyclerView.setAdapter(adapter);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return view;
     }
 
-    public static AllEventsRecyclerFragment newInstance(int page, int choice) {
+    public static AllEventsRecyclerFragment newInstance(int page, String title) {
         AllEventsRecyclerFragment fragment = new AllEventsRecyclerFragment();
         Bundle args = new Bundle();
         //page is 0 indexed, to get Day number add 1 to it
         args.putInt("Page Number", page);
-        args.putInt("choice", choice);
+        //args.putInt("choice", choice);
+        args.putString("title",title);
         fragment.setArguments(args);
         return fragment;
     }

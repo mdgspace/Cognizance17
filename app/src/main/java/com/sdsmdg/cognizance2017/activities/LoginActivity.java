@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
                 setUser();
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
+                finish();
 
             }
         });
@@ -54,11 +55,5 @@ public class LoginActivity extends AppCompatActivity {
         }
         else
             Toast.makeText(this, "Login failed due to empty fields", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        mainAct.finish();
     }
 }

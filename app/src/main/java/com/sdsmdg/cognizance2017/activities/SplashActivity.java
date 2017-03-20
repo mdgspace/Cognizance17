@@ -10,11 +10,13 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.sdsmdg.cognizance2017.R;
+import com.sdsmdg.cognizance2017.SessionManager;
 
 public class SplashActivity extends AppCompatActivity {
 
 
     private int SPLASH_TIME_OUT = 2000;
+    private SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,8 @@ public class SplashActivity extends AppCompatActivity {
         final Animation startRotateAnimation = AnimationUtils.loadAnimation(this, R.anim.android_rotate_animation);
         startRotateAnimation.setRepeatCount(Animation.INFINITE);
         imageView.startAnimation(startRotateAnimation);
+        //session class instance
+        session = new SessionManager(getApplicationContext());
 
         new Handler().postDelayed(new Runnable() {
 
@@ -33,12 +37,21 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                // This method will be executed once the timer is over
-                // Start your app main activity
-                Intent i = new Intent(SplashActivity.this, MainActivity.class);
-                startActivity(i);
-                // close this activity
-                finish();
+                if(session.isLoggedIn()){
+                    // This method will be executed once the timer is over
+                    // Start your app main activity
+                    Intent i = new Intent(SplashActivity.this, MainActivity.class);
+                    startActivity(i);
+                    // close this activity
+                    finish();
+                }
+                else {
+                    session.checkLogIn();
+                }
+                /**
+                 * call this function when you want to check if the user is logged in or not
+                 * this will check if the user is logged in or not and then direct it to login activity
+                 */
             }
         }, SPLASH_TIME_OUT);
     }

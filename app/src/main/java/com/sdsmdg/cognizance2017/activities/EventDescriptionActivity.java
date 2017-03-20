@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sdsmdg.cognizance2017.R;
-import com.sdsmdg.cognizance2017.models.Event;
 import com.sdsmdg.cognizance2017.models.EventModel;
 
 import io.realm.Realm;
@@ -50,37 +49,4 @@ public class EventDescriptionActivity extends AppCompatActivity {
         });
 
     }
-    public Event getEventDetails(int id){
-
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage("loading data");
-        dialog.show();
-        RestAdapter adapter = new RestAdapter.Builder()
-                .setEndpoint(BASE_URL)
-                .build();
-
-        DataInterface api = adapter.create(DataInterface.class);
-        /*api.getEventById(id, new Callback<EventModel>() {
-            @Override
-            public void success(EventModel event, Response response) {
-                dialog.dismiss();
-                Toast.makeText(EventDescriptionActivity.this, event.getType().getName(), Toast.LENGTH_SHORT).show();
-                eventName.setText(event.getName());
-                CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-                collapsingToolbarLayout.setTitle("Event Category");
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                dialog.dismiss();
-                Toast.makeText(EventDescriptionActivity.this, "Please check your Internet connectivity", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });*/
-        return null;
-    }
-    private void addEvent(){
-
-    }
-
 }

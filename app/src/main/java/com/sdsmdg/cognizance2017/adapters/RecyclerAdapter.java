@@ -23,7 +23,6 @@ import android.widget.ToggleButton;
 import com.sdsmdg.cognizance2017.FavReceiver;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.activities.MainActivity;
-import com.sdsmdg.cognizance2017.models.Event;
 import com.sdsmdg.cognizance2017.models.EventModel;
 
 import java.util.ArrayList;
@@ -42,22 +41,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     private List<EventModel> favEvents = new ArrayList<EventModel>();
     private Realm realm;
 
-    public RecyclerAdapter(Context ctx, List<EventModel> eventsList, boolean isDelete) {
+    public RecyclerAdapter(Context ctx, List<EventModel> eventsList) {
         this.ctx = ctx;
         this.eventsList = eventsList;
-        this.isDelete = isDelete;
+        //this.isDelete = isDelete;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView eventIcon;
-        public TextView titleText, themeText, timeText;
+        public TextView titleText, locationText, timeText;
         public ToggleButton checkBox;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             //eventIcon = (ImageView) itemView.findViewById(R.id.event_icon);
             titleText = (TextView) itemView.findViewById(R.id.event_title);
-            themeText = (TextView) itemView.findViewById(R.id.event_theme);
+            locationText = (TextView) itemView.findViewById(R.id.event_location);
             timeText = (TextView) itemView.findViewById(R.id.event_time);
             checkBox = (ToggleButton) itemView.findViewById(R.id.toggle);
             this.setIsRecyclable(false);
@@ -81,8 +80,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final EventModel currentEvent = eventsList.get(position);
         holder.titleText.setText(currentEvent.getName());
-        holder.themeText.setText(currentEvent.getType().getCategory());
-        holder.timeText.setText("Time ");
+        if(currentEvent.getTime().equals(""))
+        holder.timeText.setText("Time");
+        else {
+            holder.timeText.setText(currentEvent.getTime());
+        }
+        if(currentEvent.getVenue().equals("")){
+            holder.locationText.setText("Venue");
+        }
+        else {
+            holder.locationText.setText(currentEvent.getVenue());
+        }
         Drawable res = ContextCompat.getDrawable(ctx, R.drawable.ic_menu_send);
        // holder.eventIcon.setImageDrawable(res);
 
