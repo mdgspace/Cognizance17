@@ -72,6 +72,11 @@ public class MainActivity extends AppCompatActivity
         tabLayout = (TabLayout) findViewById(R.id.vpager_tabs);
 
         appBar = (AppBarLayout) findViewById(R.id.appbar);
+        //Is related to transparent toolbar
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
         Realm.init(this);
         realm = Realm.getDefaultInstance();
         if (realm.isEmpty())

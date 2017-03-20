@@ -38,7 +38,7 @@
                 android:layout_height="100dp"
                 android:gravity="top"
                 android:minHeight="?android:attr/actionBarSize"
-                android:title="All Events"
+                android:title="Home"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
                 app:titleMarginTop="15dp" />
