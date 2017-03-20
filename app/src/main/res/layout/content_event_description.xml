@@ -6,51 +6,16 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.sdsmdg.cognizance2017.activities.EventDescriptionActivity"
-    tools:showIn="@layout/activity_event_description">
+    tools:showIn="@layout/activity_event_description"
+    android:background="@color/colorAccent">
 
     <LinearLayout
+        android:paddingTop="16dp"
         android:layout_width="368dp"
         android:layout_height="551dp"
         android:orientation="vertical"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-light"
-            android:padding="8dp"
-            android:text="Event Name"
-            android:textAlignment="center"
-            android:id="@+id/event_name"
-            android:textAppearance="?android:textAppearanceLarge"
-            android:textSize="32sp"
-            android:textStyle="italic" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/clock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/clock" />
-
-            <TextView
-                android:id="@+id/event_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:fontFamily="sans-serif-medium"
-                android:padding="8dp"
-                android:text="21st January 3 pm"
-                android:textAlignment="center"
-                android:textAppearance="?android:textAppearanceSmall" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,7 +27,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/info" />
+                app:srcCompat="@drawable/info"
+                android:paddingLeft="8dp"/>
 
             <TextView
                 android:id="@+id/event_description"
@@ -73,15 +39,40 @@
                 android:layout_weight="1"
                 android:padding="8dp"
                 android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                android:textAlignment="center" />
+                android:textColor="@color/colorPrimary"/>
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/prizes"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cash Prizes worth INR 10,000" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            >
+
+            <ImageView
+                android:id="@+id/clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/clock"
+                android:paddingLeft="8dp"/>
+
+            <TextView
+                android:id="@+id/event_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-medium"
+                android:paddingLeft="16dp"
+                android:text="21st January 3 pm"
+
+                android:textColor="@color/colorPrimary"
+                android:textAppearance="?android:textAppearanceSmall" />
+        </LinearLayout>
+
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -94,6 +85,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
                 app:srcCompat="@drawable/phone" />
 
             <TextView
@@ -102,20 +95,22 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:gravity="end"
-                android:text="Contact Details" />
+                android:text="Contact Details"
+                android:padding="8dp"
+                android:paddingLeft="16dp"
+                android:textColor="@color/colorPrimary"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="8dp">
 
             <ImageView
                 android:id="@+id/marker"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_height="30dp"
                 app:srcCompat="@drawable/marker" />
             <!--Clicking this view opens the location
              in google maps activity-->
@@ -123,7 +118,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:text="LHC 002" />
+                android:text="LHC 002"
+                android:textColor="@color/colorPrimary"/>
         </LinearLayout>
 
     </LinearLayout>

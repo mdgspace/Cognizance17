@@ -35,11 +35,11 @@ public class EventDescriptionActivity extends AppCompatActivity {
         Toast.makeText(this, realm.where(EventModel.class).equalTo("id",35).findFirst().getType().getCategory(), Toast.LENGTH_SHORT).show();
         Toolbar toolbar = (Toolbar) findViewById(R.id.event_toolbar);
         setSupportActionBar(toolbar);
-        eventName = (TextView) findViewById(R.id.event_name);
+        //eventName = (TextView) findViewById(R.id.event_name);
         eventDate = (TextView) findViewById(R.id.event_time);
         eventDescription = (TextView) findViewById(R.id.event_description);
        // getEventDetails(getIntent().getIntExtra("id",0));
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,6 +47,6 @@ public class EventDescriptionActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
+*/
     }
 }
