@@ -48,7 +48,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public ImageView eventIcon;
+        public ImageView clockIcon,markerIcon;
         public TextView titleText, locationText, timeText;
         public ToggleButton checkBox;
 
@@ -59,6 +59,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             locationText = (TextView) itemView.findViewById(R.id.event_location);
             timeText = (TextView) itemView.findViewById(R.id.event_time);
             checkBox = (ToggleButton) itemView.findViewById(R.id.toggle);
+            clockIcon = (ImageView) itemView.findViewById(R.id.clock);
+            markerIcon = (ImageView) itemView.findViewById(R.id.marker);
             this.setIsRecyclable(false);
             itemView.setOnClickListener(this);
         }
@@ -77,7 +79,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         final EventModel currentEvent = eventsList.get(position);
         holder.titleText.setText(currentEvent.getName());
         if(currentEvent.getTime().equals(""))
@@ -91,8 +93,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         else {
             holder.locationText.setText(currentEvent.getVenue());
         }
-        Drawable res = ContextCompat.getDrawable(ctx, R.drawable.ic_menu_send);
-       // holder.eventIcon.setImageDrawable(res);
+        if (currentEvent.isFav()){
+            holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+            holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+            holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+            holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
+            holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
+        }
+        else{
+            holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+            holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+            holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+            holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
+            holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
+
+        }
 
             holder.checkBox.setChecked(currentEvent.isFav());
             holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -107,9 +122,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                         //Calendar calendar = currentEvent.getNotificationTime();
                         //createNotification(calendar.getTimeInMillis());
                         //createNotification(System.currentTimeMillis());
+                        holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                        holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                        holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                        holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                        holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
+
+
                     }
                     else {
                         cancelNotification(0);
+                        holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                        holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                        holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                        holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
+                        holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
                     }
                 }
             });

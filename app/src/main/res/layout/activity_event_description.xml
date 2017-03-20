@@ -61,7 +61,8 @@
         app:layout_anchorGravity="bottom|right"
         android:tint="@android:color/white"
         android:backgroundTint="@color/colorPrimaryDark"
-        android:src="@drawable/toggle_vector_boundary" />
+        
+        />
 
     <include layout="@layout/content_event_description" />
 
