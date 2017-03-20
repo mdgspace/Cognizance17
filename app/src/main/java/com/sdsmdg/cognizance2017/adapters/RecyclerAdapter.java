@@ -51,6 +51,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         public ImageView clockIcon,markerIcon;
         public TextView titleText, locationText, timeText;
         public ToggleButton checkBox;
+        View divider;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -61,6 +62,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             checkBox = (ToggleButton) itemView.findViewById(R.id.toggle);
             clockIcon = (ImageView) itemView.findViewById(R.id.clock);
             markerIcon = (ImageView) itemView.findViewById(R.id.marker);
+            divider = itemView.findViewById(R.id.divider);
             this.setIsRecyclable(false);
             itemView.setOnClickListener(this);
         }
@@ -99,6 +101,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
             holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
             holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
+            holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
         }
         else{
             holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
@@ -106,6 +109,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
             holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
             holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
+            holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimary));
 
         }
 
@@ -127,6 +131,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                         holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                         holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
                         holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                        holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
 
 
                     }
@@ -137,6 +142,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                         holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
                         holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
                         holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
+                        holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimary));
                     }
                 }
             });
