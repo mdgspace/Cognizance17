@@ -1,0 +1,287 @@
+[
+  {
+    "Location": "ABN Grounds",
+    "Latitude": 29.869257,
+    "Longitude": 77.896247
+  },
+  {
+    "Location": "AHEC",
+    "Latitude": 29.868689,
+    "Longitude": 77.89548
+  },
+  {
+    "Location": "Alpahar",
+    "Latitude": 29.864391,
+    "Longitude": 77.895978
+  },
+  {
+    "Location": "Architecture",
+    "Latitude": 29.863395,
+    "Longitude": 77.899862
+  },
+  {
+    "Location": "Azad Bhawan",
+    "Latitude": 29.865117,
+    "Longitude": 77.890979
+  },
+  {
+    "Location": "Cautley Bhawan",
+    "Latitude": 29.871141,
+    "Longitude": 77.896842
+  },
+  {
+    "Location": "Century Gate",
+    "Latitude": 29.867647,
+    "Longitude": 77.890672
+  },
+  {
+    "Location": "Chemical Dept.",
+    "Latitude": 29.866777,
+    "Longitude": 77.893945
+  },
+  {
+    "Location": "Civil Dept.",
+    "Latitude": 29.862707,
+    "Longitude": 77.899245
+  },
+  {
+    "Location": "Convocation Hall",
+    "Latitude": 29.867861,
+    "Longitude": 77.890872
+  },
+  {
+    "Location": "CSE Dept.",
+    "Latitude": 29.86326,
+    "Longitude": 77.895732
+  },
+  {
+    "Location": "Dept. Of Earthquake Engineering",
+    "Latitude": 29.86594,
+    "Longitude": 77.901064
+  },
+  {
+    "Location": "Dept. of Management Studies",
+    "Latitude": 29.864772,
+    "Longitude": 77.894766
+  },
+  {
+    "Location": "ECE Dept.",
+    "Latitude": 29.86347,
+    "Longitude": 77.896219
+  },
+  {
+    "Location": "Ganga Bhawan",
+    "Latitude": 29.871304,
+    "Longitude": 77.89402
+  },
+  {
+    "Location": "Govind Bhawan",
+    "Latitude": 29.861567,
+    "Longitude": 77.894385
+  },
+  {
+    "Location": "Hobbies Club",
+    "Latitude": 29.863172,
+    "Longitude": 77.894921
+  },
+  {
+    "Location": "Jawahar Bhawan",
+    "Latitude": 29.863814,
+    "Longitude": 77.901155
+  },
+  {
+    "Location": "KIH",
+    "Latitude": 29.861437,
+    "Longitude": 77.89865
+  },
+  {
+    "Location": "LBS Stadium",
+    "Latitude": 29.867294,
+    "Longitude": 77.895629
+  },
+  {
+    "Location": "LHC",
+    "Latitude": 29.864856,
+    "Longitude": 77.893848
+  },
+  {
+    "Location": "Main Building Lawns",
+    "Latitude": 29.865866,
+    "Longitude": 77.896316
+  },
+  {
+    "Location": "Mech. Dept.",
+    "Latitude": 29.862288,
+    "Longitude": 77.897281
+  },
+  {
+    "Location": "Mettalurgy Dept.",
+    "Latitude": 29.867201,
+    "Longitude": 77.893087
+  },
+  {
+    "Location": "Library",
+    "Latitude": 29.865275,
+    "Longitude": 77.895146
+  },
+  {
+    "Location": "Multi Activity Center",
+    "Latitude": 29.8702005,
+    "Longitude": 77.8962106
+  },
+  {
+    "Location": "N C Nigam",
+    "Latitude": 29.864321,
+    "Longitude": 77.899181
+  },
+  {
+    "Location": "New Kasturba Bhawan",
+    "Latitude": 29.867294,
+    "Longitude": 77.901182
+  },
+  {
+    "Location": "NIH",
+    "Latitude": 29.868736,
+    "Longitude": 77.894165
+  },
+  {
+    "Location": "Open Air Theatre",
+    "Latitude": 29.867084,
+    "Longitude": 77.897507
+  },
+  {
+    "Location": "OP Jain Auditorium",
+    "Latitude": 29.86307,
+    "Longitude": 77.898859
+  },
+  {
+    "Location": "Rajendra Bhawan",
+    "Latitude": 29.870499,
+    "Longitude": 77.893699
+  },
+  {
+    "Location": "Rajiv Bhawan",
+    "Latitude": 29.869741,
+    "Longitude": 77.894889
+  },
+  {
+    "Location": "Ravindra Bhawan",
+    "Latitude": 29.864963,
+    "Longitude": 77.892835
+  },
+  {
+    "Location": "Sarojini Bhawan",
+    "Latitude": 29.865089,
+    "Longitude": 77.900184
+  },
+  {
+    "Location": "Students Club",
+    "Latitude": 29.863777,
+    "Longitude": 77.894873
+  },
+  {
+    "Location": "Department BioTech",
+    "Latitude": 29.862856,
+    "Longitude": 77.892443
+  },
+  {
+    "Location": "Department Earth Science",
+    "Latitude": 29.863358,
+    "Longitude": 77.898911
+  },
+  {
+    "Location": "Department EE",
+    "Latitude": 29.863472,
+    "Longitude": 77.897258
+  },
+  {
+    "Location": "Department HS",
+    "Latitude": 29.863325,
+    "Longitude": 77.89658
+  },
+  {
+    "Location": "Department Hydrology",
+    "Latitude": 29.868515,
+    "Longitude": 77.89504
+  },
+  {
+    "Location": "Department Industrial",
+    "Latitude": 29.86373,
+    "Longitude": 77.893243
+  },
+  {
+    "Location": "Department Maths",
+    "Latitude": 29.862269,
+    "Longitude": 77.8964
+  },
+  {
+    "Location": "Department Physics",
+    "Latitude": 29.862274,
+    "Longitude": 77.895882
+  },
+  {
+    "Location": "Department Water",
+    "Latitude": 29.863635,
+    "Longitude": 77.898299
+  },
+  {
+    "Location": "Hospital",
+    "Latitude": 29.861841,
+    "Longitude": 77.892807
+  },
+  {
+    "Location": "IIT Main Gate",
+    "Latitude": 29.865461,
+    "Longitude": 77.889504
+  },
+  {
+    "Location": "Institute Computer Centre",
+    "Latitude": 29.862914,
+    "Longitude": 77.896397
+  },
+  {
+    "Location": "Khosla Bhawan",
+    "Latitude": 29.862051,
+    "Longitude": 77.899565
+  },
+  {
+    "Location": "Khosla House",
+    "Latitude": 29.861544,
+    "Longitude": 77.898669
+  },
+  {
+    "Location": "Placement Cell",
+    "Latitude": 29.867424,
+    "Longitude": 77.891252
+  },
+  {
+    "Location": "PNB Bank",
+    "Latitude": 29.863819,
+    "Longitude": 77.894396
+  },
+  {
+    "Location": "RadhaKrishnan Bhawan",
+    "Latitude": 29.871099,
+    "Longitude": 77.895598
+  },
+  {
+    "Location": "Ravindra Lounge",
+    "Latitude": 29.865056,
+    "Longitude": 77.892631
+  },
+  {
+    "Location": "Saraswati Mandir",
+    "Latitude": 29.868233,
+    "Longitude": 77.897668
+  },
+  {
+    "Location": "SBI Bank",
+    "Latitude": 29.864549,
+    "Longitude": 77.895909
+  },
+  {
+    "Location": "Snack Point",
+    "Latitude": 29.86868,
+    "Longitude": 77.890157
+  }
+]
