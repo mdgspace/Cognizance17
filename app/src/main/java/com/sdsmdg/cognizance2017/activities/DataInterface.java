@@ -1,5 +1,6 @@
 package com.sdsmdg.cognizance2017.activities;
 
+import com.google.gson.JsonObject;
 import com.sdsmdg.cognizance2017.models.EventModel;
 
 import java.util.ArrayList;
@@ -16,5 +17,5 @@ public interface DataInterface {
     @GET("/json/getEventSummary")
     void getAllEvents(Callback<ArrayList<EventModel>> response);
     @GET("/json/getEventDetails/{id}")
-    void getEventById(@Path("id") int id, Callback<EventModel> response);
+    void getEventById(@Path("id") int id, Callback<JsonObject> response);
 }

@@ -3,6 +3,7 @@ package com.sdsmdg.cognizance2017.activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,11 +23,20 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.MarkerManager;
+import com.google.maps.android.clustering.ClusterItem;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 import com.sdsmdg.cognizance2017.R;
-import com.sdsmdg.cognizance2017.models.Event;
-import com.sdsmdg.cognizance2017.models.EventList;
+import com.sdsmdg.cognizance2017.models.EventModel;
+import com.sdsmdg.cognizance2017.models.MarkerData;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import io.realm.Realm;
@@ -35,94 +45,106 @@ import io.realm.RealmResults;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private boolean isMapReady,shouldReset;
+    private boolean isMapReady, shouldReset;
     private Realm realm;
-    private RealmResults<EventList> results;
-    private ArrayList<Marker> markers;
     private Button resetBtn;
     private CameraUpdate cu;
+    private ArrayList<MarkerData> markersData;
+    // Declare a variable for the cluster manager.
+    private ClusterManager<MyItem> mClusterManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
-        Realm.init(this);
-        realm = Realm.getDefaultInstance();
-        results = realm.where(EventList.class).findAll();
         isMapReady = false;
         resetBtn = (Button) findViewById(R.id.reset_btn);
         resetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isMapReady) {
-                    mMap.animateCamera(cu);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(29.865866,77.896316), 18));
                 }
             }
         });
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        markers = new ArrayList<>();
+        loadJSONFromAsset();
+    }
+
+    public void loadJSONFromAsset() {
+        String json = null;
+        try {
+            InputStream is = getAssets().open("campus_locations.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        try {
+            markersData = new ArrayList<>();
+            JSONArray mArray = new JSONArray(json);
+            for (int i = 0; i < mArray.length(); i++) {
+                MarkerData markerData = new MarkerData();
+                markerData.setLatitude(mArray.getJSONObject(i).getDouble("Latitude"));
+                markerData.setLongitude(mArray.getJSONObject(i).getDouble("Longitude"));
+                markerData.setTitle(mArray.getJSONObject(i).getString("Location"));
+                markersData.add(markerData);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         isMapReady = true;
         mMap = googleMap;
-        addMarkers();
-        if(Build.VERSION.SDK_INT>Build.VERSION_CODES.M) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        12);
+        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(29.865866,77.896316), 18));
+        setUpClusterManager();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            12);
+                } else {
+                    mMap.setMyLocationEnabled(true);
+                }
             } else {
                 mMap.setMyLocationEnabled(true);
             }
-        }else {
-            mMap.setMyLocationEnabled(true);
         }
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                Uri gmmIntentUri = Uri.parse("google.navigation:q=29.865866,77.896316");
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                startActivity(mapIntent);
-                return true;
-            }
-        });
-        mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-                if(!shouldReset){
-                    mMap.moveCamera(cu);
-                    shouldReset =  true;
-                }
-            }
-        });
     }
 
     private void addMarkers() {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
         IconGenerator icon = new IconGenerator(this);
-        for (int i = 0; i < results.size(); i++) {
-            for (int j = 0; j < results.get(i).getEvents().size(); j++) {
-                Event event = results.get(i).getEvents().get(j);
-                LatLng latLng = new LatLng(event.getLatitude(), event.getLongitude());
-                Marker marker = mMap.addMarker(new MarkerOptions().position(latLng)
-                        .icon(BitmapDescriptorFactory.fromBitmap(icon.makeIcon(event.getTitle()))));
-                markers.add(marker);
-                builder.include(marker.getPosition());
-            }
+        icon.setStyle(IconGenerator.STYLE_RED);
+        for(int i=0;i<markersData.size();i++){
+            mClusterManager.addItem(new MyItem(markersData.get(i),i));
         }
-        LatLngBounds bounds = builder.build();
+    }
 
-        mMap.setLatLngBoundsForCameraTarget(bounds);
-        cu = CameraUpdateFactory.newLatLngBounds(bounds, 300);
-        mMap.setMinZoomPreference(mMap.getCameraPosition().zoom);
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus)
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
     @Override
@@ -151,6 +173,88 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // other 'case' lines to check for other
             // permissions this app might request
 
+        }
+    }
+    private void setUpClusterManager() {
+        mClusterManager = new ClusterManager<>(this, mMap);
+        mMap.setOnCameraIdleListener(mClusterManager);
+        mMap.setOnMarkerClickListener(mClusterManager);
+        addMarkers();
+        mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MyItem>() {
+            @Override
+            public boolean onClusterItemClick(MyItem myItem) {
+                String location = "google.navigation:q="+myItem.getPosition().latitude+","+myItem.getPosition().longitude;
+                Uri gmmIntentUri = Uri.parse(location);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+                return true;
+            }
+        });
+        mClusterManager.setRenderer(new MyClusterRenderer(this, mMap,
+                mClusterManager));
+    }
+
+
+
+    public class MyClusterRenderer extends DefaultClusterRenderer<MyItem> {
+
+        public MyClusterRenderer(Context context, GoogleMap map,
+                                 ClusterManager<MyItem> clusterManager) {
+            super(context, map, clusterManager);
+        }
+
+        @Override
+        protected void onBeforeClusterItemRendered(MyItem item, MarkerOptions markerOptions) {
+            IconGenerator iconGenerator = new IconGenerator(getApplicationContext());
+            iconGenerator.setStyle(IconGenerator.STYLE_RED);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon(markersData.get(item.getId()).getTitle())
+            ));
+        }
+
+        @Override
+        protected void onClusterItemRendered(MyItem clusterItem, Marker marker) {
+            super.onClusterItemRendered(clusterItem, marker);
+        }
+    }
+
+    public class MyItem implements ClusterItem {
+        private LatLng mPosition;
+        private String mTitle,mSnippet;
+        private int mId;
+
+        public MyItem(double lat, double lng) {
+            mPosition = new LatLng(lat, lng);
+
+        }
+
+        public MyItem(MarkerData markerData,int id) {
+            mPosition = new LatLng(markerData.getLatitude(), markerData.getLongitude());
+            mId = id;
+        }
+
+        public MyItem(double lat, double lng, String title, String snippet) {
+            mPosition = new LatLng(lat, lng);
+            mTitle = title;
+            mSnippet = snippet;
+        }
+
+        @Override
+        public LatLng getPosition() {
+            return mPosition;
+        }
+
+        @Override
+        public String getTitle() {
+            return mTitle;
+        }
+
+        @Override
+        public String getSnippet() {
+            return mSnippet;
+        }
+        public int getId(){
+            return mId;
         }
     }
 }

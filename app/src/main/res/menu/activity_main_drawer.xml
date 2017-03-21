@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/main_event"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/all_events"
             android:icon="@drawable/all_event"
@@ -15,32 +17,41 @@
             android:id="@+id/center_stage"
             android:title="Center Stage">
             <menu>
-                <item
-                    android:id="@+id/competitions"
-                    android:icon="@drawable/trophy"
-                    android:title="Competitions" />
-                <item
-                    android:id="@+id/literario"
-                    android:icon="@drawable/literario"
-                    android:title="Literario" />
-                <item
-                    android:id="@+id/robotics"
-                    android:icon="@drawable/robot"
-                    android:title="Robotics" />
-                <item
-                    android:id="@+id/online"
-                    android:icon="@drawable/online"
-                    android:title="Online Events" />
-                <item
-                    android:id="@+id/theme_events"
-                    android:icon="@drawable/theme_event"
-                    android:title="Theme Events" />
-                <item
-                    android:id="@+id/fun_events"
-                    android:icon="@drawable/fun"
-                    android:title="Fun Events" />
+                <group
+                    android:id="@+id/center_events"
+                    android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/competitions"
+                        android:icon="@drawable/trophy"
+                        android:title="Competitions" />
+                    <item
+                        android:id="@+id/literario"
+                        android:icon="@drawable/literario"
+                        android:title="Literario" />
+                    <item
+                        android:id="@+id/robotics"
+                        android:icon="@drawable/robot"
+                        android:title="Robotics" />
+                    <item
+                        android:id="@+id/online"
+                        android:icon="@drawable/online"
+                        android:title="Online Events" />
+                    <item
+                        android:id="@+id/theme_events"
+                        android:icon="@drawable/theme_event"
+                        android:title="Theme Events" />
+                    <item
+                        android:id="@+id/fun_events"
+                        android:icon="@drawable/fun"
+                        android:title="Fun Events" />
+                </group>
             </menu>
         </item>
+    </group>
+    <group
+        android:id="@+id/other_group"
+        android:checkableBehavior="single">
+
         <item
             android:id="@+id/barcode"
             android:icon="@drawable/camera"
@@ -65,6 +76,6 @@
             android:id="@+id/mars"
             android:icon="@drawable/mars"
             android:title="Project M.A.R.S" />
-    </group>
 
+    </group>
 </menu>
