@@ -38,7 +38,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_weight="1"
                 android:padding="8dp"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                android:hint="Description"
                 android:textColor="@color/colorPrimary"/>
 
         </LinearLayout>
@@ -65,7 +65,7 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
                 android:paddingLeft="16dp"
-                android:text="21st January 3 pm"
+                android:hint="Time"
 
                 android:textColor="@color/colorPrimary"
                 android:textAppearance="?android:textAppearanceSmall" />
@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:text="Contact Details"
+                android:hint="Contact Details"
                 android:padding="8dp"
                 android:paddingLeft="16dp"
                 android:textColor="@color/colorPrimary"/>
@@ -118,7 +118,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:text="LHC 002"
+                android:hint="Location"
+                android:id="@+id/event_location"
                 android:textColor="@color/colorPrimary"/>
         </LinearLayout>
 

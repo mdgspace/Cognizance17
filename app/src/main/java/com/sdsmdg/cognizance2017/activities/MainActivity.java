@@ -4,9 +4,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -26,22 +25,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.maps.android.clustering.Cluster;
-import com.google.maps.android.clustering.ClusterItem;
-import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.view.DefaultClusterRenderer;
-import com.google.maps.android.ui.IconGenerator;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
 import com.sdsmdg.cognizance2017.models.EventModel;
-import com.sdsmdg.cognizance2017.models.Type;
 
 import java.util.ArrayList;
 
@@ -68,7 +56,7 @@ public class MainActivity extends AppCompatActivity
     public static Activity mainAct;
     private ProgressDialog dialog;
     private ArrayList<Integer> ids;
-    private boolean isOnHome;
+    private boolean isOnHome,isReady;
     NavigationView navigationView;
 
     @Override
@@ -110,19 +98,21 @@ public class MainActivity extends AppCompatActivity
                 .setEndpoint(BASE_URL)
                 .build();
         api = adapter.create(DataInterface.class);
-        if (realm.isEmpty())
+        loadDatabase();
+        /*if (realm.isEmpty())
             loadDatabase();
         else {
+            isReady = true;
             showEvents("all_events", "Home");
             isOnHome = true;
-        }
+        }*/
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         showTabs("Home");
-        if (!isOnHome) {
+        if (!isOnHome && isReady) {
             showEvents("all_events", "Home");
             navigationView.getMenu().getItem(0).setChecked(true);
             isOnHome = true;
@@ -130,8 +120,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadDatabase() {
+        /*
         realm.beginTransaction();
-        EventModel model = realm.createObject(EventModel.class, 0);
+        EventModel model = realm.cre(EventModel.class, 0);
         model.setName("Name");
         model.setTime("Time");
         model.setVenue("Venue");
@@ -141,33 +132,50 @@ public class MainActivity extends AppCompatActivity
         Type managedType = realm.copyToRealm(type);
         model.setType(managedType);
         realm.commitTransaction();
+        */
 
         // To get all ID's
         ids = new ArrayList<>();
-        api.getAllEvents(new Callback<ArrayList<EventModel>>() {
-            @Override
-            public void success(ArrayList<EventModel> eventModels, Response response) {
-                for (int i = 0; i < eventModels.size(); i++) {
-                    ids.add(eventModels.get(i).getId());
+        if(isNetworkAvailable()){
+
+            dialog = new ProgressDialog(MainActivity.this);
+            dialog.setMessage("please wait");
+            dialog.show();
+            api.getAllEvents(new Callback<JsonArray>() {
+                @Override
+                public void success(final JsonArray json, Response response) {
+                    realm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.createOrUpdateAllFromJson(EventModel.class,json.toString());
+                        }
+                    }, new Realm.Transaction.OnSuccess() {
+                        @Override
+                        public void onSuccess() {
+                            dialog.dismiss();
+                            Toast.makeText(mainAct, "Download complete" + ids.size(), Toast.LENGTH_SHORT).show();
+                            showEvents("all_events", "Home");
+                        }
+                    }, new Realm.Transaction.OnError() {
+                        @Override
+                        public void onError(Throwable error) {
+                            Toast.makeText(mainAct, "Error while fetching from server" + ids.size(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
-                size = ids.size();
 
-                shouldLoadEvents = true;
+                @Override
+                public void failure(RetrofitError error) {
 
-                dialog = new ProgressDialog(MainActivity.this);
-                dialog.setMessage("please wait");
-                dialog.setTitle("loading");
-                dialog.setMax(100);
-                dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                dialog.show();
-                loadEvents(0);
+                }
+            });
+        }else {
+            if(!realm.isEmpty()){
+                showEvents("all_events", "Home");
+            }else {
+                Toast.makeText(mainAct, "Please connect to Internet", Toast.LENGTH_SHORT).show();
             }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
+        }
     }
 
     @Override
@@ -246,10 +254,15 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void showEvent() {
+    public void showEvent(int id) {
         Intent eventIntent = new Intent(MainActivity.this, EventDescriptionActivity.class);
-        eventIntent.putExtra("id", 9);
+        eventIntent.putExtra("id", id);
         startActivity(eventIntent);
+        if(isNetworkAvailable()){
+            Toast.makeText(mainAct, "connected", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(mainAct, "not connected", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void showTabs(String title) {
@@ -326,6 +339,13 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.replace(R.id.events_container, fragment, tag);
             fragmentTransaction.commit();
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 

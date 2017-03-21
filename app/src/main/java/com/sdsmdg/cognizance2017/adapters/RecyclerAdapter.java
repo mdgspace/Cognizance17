@@ -71,7 +71,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         @Override
         public void onClick(View v) {
-            ((MainActivity) ctx).showEvent();
+            ((MainActivity) ctx).showEvent(normalEventList.get(getAdapterPosition()).getId());
         }
     }
 

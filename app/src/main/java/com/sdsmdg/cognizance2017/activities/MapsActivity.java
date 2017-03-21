@@ -20,16 +20,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.MarkerManager;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 import com.sdsmdg.cognizance2017.R;
-import com.sdsmdg.cognizance2017.models.EventModel;
 import com.sdsmdg.cognizance2017.models.MarkerData;
 
 import org.json.JSONArray;
@@ -40,15 +37,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private boolean isMapReady, shouldReset;
-    private Realm realm;
+    private boolean isMapReady;
     private Button resetBtn;
-    private CameraUpdate cu;
     private ArrayList<MarkerData> markersData;
     // Declare a variable for the cluster manager.
     private ClusterManager<MyItem> mClusterManager;

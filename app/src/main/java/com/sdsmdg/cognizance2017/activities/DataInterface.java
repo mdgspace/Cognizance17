@@ -1,5 +1,6 @@
 package com.sdsmdg.cognizance2017.activities;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.sdsmdg.cognizance2017.models.EventModel;
 
@@ -15,7 +16,7 @@ import retrofit.http.Path;
 
 public interface DataInterface {
     @GET("/json/getEventSummary")
-    void getAllEvents(Callback<ArrayList<EventModel>> response);
+    void getAllEvents(Callback<JsonArray> response);
     @GET("/json/getEventDetails/{id}")
     void getEventById(@Path("id") int id, Callback<JsonObject> response);
 }
