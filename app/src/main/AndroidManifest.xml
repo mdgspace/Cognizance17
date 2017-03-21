@@ -42,7 +42,8 @@
 
         <activity
             android:name=".activities.MapsActivity"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:theme="@style/AppTheme.NoTitle"/>
 
         <receiver android:name=".FavReceiver" />
 
@@ -66,7 +67,8 @@
             android:theme="@style/AppTheme.NoTitle" />
 
 
-        <activity android:name=".activities.LoginActivity"></activity>
+        <activity android:name=".activities.LoginActivity"
+            android:theme="@style/LoginActivityTheme"/>
 
     </application>
 

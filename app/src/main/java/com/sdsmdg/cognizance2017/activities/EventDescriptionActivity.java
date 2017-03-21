@@ -30,6 +30,10 @@ public class EventDescriptionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_description);
+        //Is related to transparent toolbar
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         Realm.init(this);
         Realm realm = Realm.getDefaultInstance();
         Toast.makeText(this, realm.where(EventModel.class).equalTo("id",35).findFirst().getType().getCategory(), Toast.LENGTH_SHORT).show();
