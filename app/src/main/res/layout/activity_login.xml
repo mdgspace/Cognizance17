@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".activities.LoginActivity">
+    tools:context=".activities.LoginActivity"
+    android:background="@color/colorAccent">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,15 +25,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:textColorHint="@color/colorPrimary"
+            app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
+            android:theme="@style/TextLabel">
 
             <EditText
                 android:id="@+id/userPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="Phone Number"
-                android:textColorHint="@color/colorPrimary" />
+                android:hint="Your Cognizance Id"
+                android:textColorHint="@color/colorPrimary"
+                android:textColor="@color/colorPrimary"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -40,7 +46,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:textColorHint="@color/colorPrimary"
+            android:theme="@style/TextLabel"
+            app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
+            >
 
             <EditText
                 android:id="@+id/userName"
@@ -49,7 +59,8 @@
                 android:ems="10"
                 android:hint="Your Name"
                 android:inputType="textPersonName"
-                android:textColorHint="@color/colorPrimary" />
+                android:textColorHint="@color/colorPrimary"
+                android:textColor="@color/colorPrimary"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.v7.widget.AppCompatButton
@@ -60,7 +71,7 @@
             android:layout_marginBottom="24dp"
             android:padding="12dp"
             android:text="Login"
-            android:background="@color/colorAccent"
+            android:background="@color/colorPrimary"
             android:textColor="#ffffff"/>
 
 
