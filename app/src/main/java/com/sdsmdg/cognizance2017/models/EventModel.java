@@ -1,19 +1,16 @@
 package com.sdsmdg.cognizance2017.models;
 
-import java.io.Serializable;
-
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-/**
- * Created by Arihant Jain on 3/18/2017.
- */
 
-public class EventModel extends RealmObject{
+public class EventModel extends RealmObject {
     @PrimaryKey
     private int id;
-    private String name, contact_person,contact_email ,contact_phone,
-            prize ,description, contact_person2, contact_phone2, venue, date, time;
+    private String name, contact_person, contact_email, contact_phone,
+            prize, description, contact_person2, contact_phone2, venue, date, time;
+    private Type type;
+    private boolean isFav;
 
     public String getContact_person() {
         return contact_person;
@@ -94,9 +91,6 @@ public class EventModel extends RealmObject{
     public void setTime(String time) {
         this.time = time;
     }
-
-    private Type type;
-    private boolean isFav;
 
     public boolean isFav() {
         return isFav;

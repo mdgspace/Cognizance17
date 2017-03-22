@@ -64,7 +64,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.BarCodeActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoTitle" />
 
 

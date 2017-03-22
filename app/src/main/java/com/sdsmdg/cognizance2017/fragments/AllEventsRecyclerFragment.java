@@ -8,11 +8,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.adapters.RecyclerAdapter;
 import com.sdsmdg.cognizance2017.models.EventModel;
+import com.sdsmdg.cognizance2017.models.Type;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -26,6 +32,8 @@ public class AllEventsRecyclerFragment extends Fragment {
     private Realm realm;
     private RealmResults<EventModel> results;
     private RecyclerAdapter adapter;
+    private List<String> mDeptList;
+    private List<Type> mType;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,15 +53,27 @@ public class AllEventsRecyclerFragment extends Fragment {
         realm = Realm.getDefaultInstance();
         if (title.equals("Home"))
             results = realm.where(EventModel.class).findAll();
-        else if (title.equals("Workshop") || title.equals("Mainstay") || title.equals("Departmental")
+        else if (title.equals("Workshop") || title.equals("Mainstay")
                 || title.equals("E-Summit") || title.equals("Project M.A.R.S")) {
             results = realm.where(EventModel.class).equalTo("type.category", title).findAll();
         } else if (title.equals("Favorites")) {
             results = realm.where(EventModel.class).equalTo("isFav", true).findAll();
+        } else if (title.equals("DepartmentList")) {
+            mDeptList = new ArrayList<String>();
+            mType = realm.where(Type.class).equalTo("category", "Departmental").findAll();
+            for (int i = 0; i < mType.size(); i++) {
+                mDeptList.add(mType.get(i).getName());
+            }
+            //to remove duplicate elts.
+            Set<String> hs = new HashSet<>();
+            hs.addAll(mDeptList);
+            mDeptList.clear();
+            mDeptList.addAll(hs);
+            Collections.sort(mDeptList);
         } else {
             results = realm.where(EventModel.class).equalTo("type.name", title).findAll();
         }
-        Toast.makeText(getContext(), "" + results.size(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), "" + results.size(), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -64,6 +84,8 @@ public class AllEventsRecyclerFragment extends Fragment {
         RecyclerView eventsRecyclerView = (RecyclerView) view.findViewById(R.id.main_recycler_view);
         if (title.equals("Favorites")) {
             adapter = new RecyclerAdapter(getActivity(), results, true);
+        } else if (title.equals("DepartmentList")) {
+            adapter = new RecyclerAdapter(getActivity(), mDeptList);
         } else {
             adapter = new RecyclerAdapter(getActivity(), results, false);
         }

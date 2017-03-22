@@ -54,6 +54,8 @@ public class BarCodeActivity extends AppCompatActivity implements ZXingScannerVi
 
                 } else {
                     // permission denied
+                    MainActivity mainActivity = (MainActivity) MainActivity.mainAct;
+                    mainActivity.navigationView.setCheckedItem(mainActivity.getCurrentSelectedFragmentId());
                     finish();
                 }
                 return;
@@ -75,12 +77,21 @@ public class BarCodeActivity extends AppCompatActivity implements ZXingScannerVi
     }
 
     @Override
+    public void onBackPressed() {
+        MainActivity mainActivity = (MainActivity) MainActivity.mainAct;
+        mainActivity.navigationView.setCheckedItem(mainActivity.getCurrentSelectedFragmentId());
+        finish();
+    }
+
+    @Override
     public void handleResult(Result rawResult) {
         // Do something with the result here
         //Log.v(TAG, rawResult.getText()); // Prints scan results
         //Log.v(TAG, rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
         barCodeResult = rawResult.getText();
         Toast.makeText(this, barCodeResult, Toast.LENGTH_SHORT).show();
+        MainActivity mainActivity = (MainActivity) MainActivity.mainAct;
+        mainActivity.navigationView.setCheckedItem(mainActivity.getCurrentSelectedFragmentId());
         finish();
 
         // If you would like to resume scanning, call this method below:

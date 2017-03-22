@@ -29,6 +29,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
+import com.sdsmdg.cognizance2017.fragments.AllEventsRecyclerFragment;
 import com.sdsmdg.cognizance2017.models.EventModel;
 
 import java.util.ArrayList;
@@ -56,7 +57,9 @@ public class MainActivity extends AppCompatActivity
     public static Activity mainAct;
     private ProgressDialog dialog;
     private ArrayList<Integer> ids;
-    private boolean isOnHome,isReady;
+    private boolean isOnHome, isReady;
+    private int currentSelectedFragmentId;
+    public boolean isOnDeptViewPagerFragment;
     NavigationView navigationView;
 
     @Override
@@ -64,6 +67,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainAct = this;
+        isOnDeptViewPagerFragment = false;
 
 
         tabLayout = (TabLayout) findViewById(R.id.vpager_tabs);
@@ -111,12 +115,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        showTabs("Home");
-        if (!isOnHome && isReady) {
+        /*showTabs("Home");
+        if (!isOnHome) {
             showEvents("all_events", "Home");
             navigationView.getMenu().getItem(0).setChecked(true);
             isOnHome = true;
-        }
+        }*/
     }
 
     private void loadDatabase() {
@@ -136,7 +140,7 @@ public class MainActivity extends AppCompatActivity
 
         // To get all ID's
         ids = new ArrayList<>();
-        if(isNetworkAvailable()){
+        if (isNetworkAvailable()) {
 
             dialog = new ProgressDialog(MainActivity.this);
             dialog.setMessage("please wait");
@@ -147,7 +151,7 @@ public class MainActivity extends AppCompatActivity
                     realm.executeTransactionAsync(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
-                            realm.createOrUpdateAllFromJson(EventModel.class,json.toString());
+                            realm.createOrUpdateAllFromJson(EventModel.class, json.toString());
                         }
                     }, new Realm.Transaction.OnSuccess() {
                         @Override
@@ -169,10 +173,10 @@ public class MainActivity extends AppCompatActivity
 
                 }
             });
-        }else {
-            if(!realm.isEmpty()){
+        } else {
+            if (!realm.isEmpty()) {
                 showEvents("all_events", "Home");
-            }else {
+            } else {
                 Toast.makeText(mainAct, "Please connect to Internet", Toast.LENGTH_SHORT).show();
             }
         }
@@ -181,7 +185,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+        if (isOnDeptViewPagerFragment) {
+            getSupportFragmentManager().popBackStack();
+            isOnDeptViewPagerFragment = false;
+            hideTabs("Departmentals");
+            navigationView.setCheckedItem(R.id.dept);
+        } else if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
@@ -216,6 +225,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        if (id != R.id.barcode) currentSelectedFragmentId = id;
         isOnHome = false;
         if (id == R.id.all_events) {
             showEvents("all_events", "Home");
@@ -235,7 +245,14 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.workshop) {
             showEvents("workshop", "Workshop");
         } else if (id == R.id.dept) {
-            showEvents("dept", "Departmental");
+            fragment = getSupportFragmentManager().findFragmentByTag("dept");
+            if (fragment == null) {
+                fragment = AllEventsRecyclerFragment.newInstance(4, "DepartmentList");
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.events_container, fragment, "dept");
+                fragmentTransaction.commit();
+            }
+            hideTabs("Departmentals");
         } else if (id == R.id.summit) {
             showEvents("summit", "E-Summit");
         } else if (id == R.id.mainstay) {
@@ -258,9 +275,9 @@ public class MainActivity extends AppCompatActivity
         Intent eventIntent = new Intent(MainActivity.this, EventDescriptionActivity.class);
         eventIntent.putExtra("id", id);
         startActivity(eventIntent);
-        if(isNetworkAvailable()){
+        if (isNetworkAvailable()) {
             Toast.makeText(mainAct, "connected", Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             Toast.makeText(mainAct, "not connected", Toast.LENGTH_SHORT).show();
         }
     }
@@ -268,6 +285,7 @@ public class MainActivity extends AppCompatActivity
     public void showTabs(String title) {
         CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
         layoutParams.height = 2 * actionBarSize;
+        tabLayout.setVisibility(View.VISIBLE);
         toolbar.setLayoutParams(layoutParams);
         appBar.setExpanded(true);
         toolbar.setTitle(title);
@@ -331,12 +349,14 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void showEvents(String tag, String title) {
+    public void showEvents(String tag, String title) {
         fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if (fragment == null) {
             fragment = AllEventsFragment.newInstance(title);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.events_container, fragment, tag);
+            if (isOnDeptViewPagerFragment)
+                fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         }
     }
@@ -348,5 +368,17 @@ public class MainActivity extends AppCompatActivity
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    public int getCurrentSelectedFragmentId() {
+        return currentSelectedFragmentId;
+    }
 
+    public void hideTabs(String title) {
+        CollapsingToolbarLayout.LayoutParams
+                layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
+        tabLayout.setVisibility(View.GONE);
+        layoutParams.height = actionBarSize;
+        toolbar.setLayoutParams(layoutParams);
+        appBar.setExpanded(true);
+        toolbar.setTitle(title);
+    }
 }
