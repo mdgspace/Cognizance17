@@ -12,12 +12,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -71,8 +65,6 @@
         <activity
             android:name=".activities.LoginActivity"
             android:theme="@style/LoginActivityTheme" />
-
-        <activity android:name=".activities.TestAct"></activity>
 
         <activity android:name=".activities.FirebaseTestActivity"></activity>
 

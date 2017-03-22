@@ -8,13 +8,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.adapters.RecyclerAdapter;
 import com.sdsmdg.cognizance2017.models.EventModel;
 import com.sdsmdg.cognizance2017.models.Type;
-import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +34,6 @@ public class AllEventsRecyclerFragment extends Fragment {
     private RecyclerAdapter adapter;
     private List<String> mDeptList;
     private List<Type> mType;
-    private PullToRefreshView mPullToRefreshView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,10 +48,9 @@ public class AllEventsRecyclerFragment extends Fragment {
         }
         Realm.init(getActivity());
         realm = Realm.getDefaultInstance();
-        if (title.equals("Home")){
-            results = realm.where(EventModel.class).notEqualTo("day"+day,"").findAll();
-        }
-        else if (title.equals("Workshop") || title.equals("Mainstay")
+        if (title.equals("Home")) {
+            results = realm.where(EventModel.class).notEqualTo("day" + day, "").findAll();
+        } else if (title.equals("Workshop") || title.equals("Mainstay")
                 || title.equals("E-Summit") || title.equals("Project M.A.R.S")) {
             results = realm.where(EventModel.class).equalTo("type.category", title).findAll();
         } else if (title.equals("Favorites")) {
@@ -96,19 +92,6 @@ public class AllEventsRecyclerFragment extends Fragment {
         eventsRecyclerView.getItemAnimator().setRemoveDuration(500);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         eventsRecyclerView.setNestedScrollingEnabled(true);
-        mPullToRefreshView = (PullToRefreshView) view.findViewById(R.id.pull_to_refresh);
-        mPullToRefreshView.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mPullToRefreshView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mPullToRefreshView.setRefreshing(false);
-                        Toast.makeText(getContext(), "heeleere", Toast.LENGTH_SHORT).show();
-                    }
-                }, 5000);
-            }
-        });
         return view;
     }
 

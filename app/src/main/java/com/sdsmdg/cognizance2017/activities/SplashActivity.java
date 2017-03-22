@@ -22,7 +22,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        ImageView imageView = (ImageView) findViewById(R.id.circle);
+        ImageView imageView = (ImageView) findViewById(R.id.outer_circle);
         final Animation startRotateAnimation = AnimationUtils.loadAnimation(this, R.anim.android_rotate_animation);
         startRotateAnimation.setRepeatCount(Animation.INFINITE);
         imageView.startAnimation(startRotateAnimation);

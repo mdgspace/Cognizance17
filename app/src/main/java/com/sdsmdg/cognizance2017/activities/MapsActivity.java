@@ -1,9 +1,9 @@
 package com.sdsmdg.cognizance2017.activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,9 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
-import android.widget.Button;
 
-import com.google.android.gms.maps.CameraUpdate;
+import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,13 +35,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import io.realm.Realm;
-
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private boolean isMapReady;
-    private Button resetBtn;
+    private FloatingActionButton resetBtn;
     private ArrayList<MarkerData> markersData;
     // Declare a variable for the cluster manager.
     private ClusterManager<MyItem> mClusterManager;
@@ -52,12 +49,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         isMapReady = false;
-        resetBtn = (Button) findViewById(R.id.reset_btn);
+        resetBtn = (FloatingActionButton) findViewById(R.id.reset_btn);
         resetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isMapReady) {
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(29.865866,77.896316), 18));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(29.865866, 77.896316), 18));
                 }
             }
         });
@@ -101,7 +98,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         isMapReady = true;
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(29.865866,77.896316), 18));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(29.865866, 77.896316), 18));
         setUpClusterManager();
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
@@ -123,8 +120,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void addMarkers() {
         IconGenerator icon = new IconGenerator(this);
         icon.setStyle(IconGenerator.STYLE_RED);
-        for(int i=0;i<markersData.size();i++){
-            mClusterManager.addItem(new MyItem(markersData.get(i),i));
+        for (int i = 0; i < markersData.size(); i++) {
+            mClusterManager.addItem(new MyItem(markersData.get(i), i));
         }
     }
 
@@ -169,6 +166,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
     }
+
     private void setUpClusterManager() {
         mClusterManager = new ClusterManager<>(this, mMap);
         mMap.setOnCameraIdleListener(mClusterManager);
@@ -177,7 +175,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MyItem>() {
             @Override
             public boolean onClusterItemClick(MyItem myItem) {
-                String location = "google.navigation:q="+myItem.getPosition().latitude+","+myItem.getPosition().longitude;
+                String location = "google.navigation:q=" + myItem.getPosition().latitude + "," + myItem.getPosition().longitude;
                 Uri gmmIntentUri = Uri.parse(location);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
@@ -188,7 +186,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mClusterManager.setRenderer(new MyClusterRenderer(this, mMap,
                 mClusterManager));
     }
-
 
 
     public class MyClusterRenderer extends DefaultClusterRenderer<MyItem> {
@@ -214,7 +211,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public class MyItem implements ClusterItem {
         private LatLng mPosition;
-        private String mTitle,mSnippet;
+        private String mTitle, mSnippet;
         private int mId;
 
         public MyItem(double lat, double lng) {
@@ -222,7 +219,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
 
-        public MyItem(MarkerData markerData,int id) {
+        public MyItem(MarkerData markerData, int id) {
             mPosition = new LatLng(markerData.getLatitude(), markerData.getLongitude());
             mId = id;
         }
@@ -247,7 +244,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         public String getSnippet() {
             return mSnippet;
         }
-        public int getId(){
+
+        public int getId() {
             return mId;
         }
     }
