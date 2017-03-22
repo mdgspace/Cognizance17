@@ -31,7 +31,6 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Phone Number"
-                android:inputType="phone"
                 android:textColorHint="@color/colorPrimary" />
 
         </android.support.design.widget.TextInputLayout>

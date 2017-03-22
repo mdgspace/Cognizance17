@@ -1,6 +1,7 @@
 package com.sdsmdg.cognizance2017.activities;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,14 +12,22 @@ import android.widget.Toast;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.SessionManager;
 
-import static com.sdsmdg.cognizance2017.activities.MainActivity.mainAct;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static com.sdsmdg.cognizance2017.activities.MainActivity.BASE_URL;
 
 public class LoginActivity extends AppCompatActivity {
     private String userName;
-    private String userNumber;
+    private String userCogniId;
     EditText nameEditText;
     EditText passwordEditText;
     SessionManager session;
+    DataInterface api;
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +36,11 @@ public class LoginActivity extends AppCompatActivity {
         session = new SessionManager(getApplicationContext());
         nameEditText = (EditText) findViewById(R.id.userName);
         passwordEditText = (EditText) findViewById(R.id.userPhoneNumber);
+        button = (Button) findViewById(R.id.loginButton);
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setEndpoint(BASE_URL)
+                .build();
+        api = adapter.create(DataInterface.class);
 
 
         Toast.makeText(this, "User Login Status :" + session.isLoggedIn(), Toast.LENGTH_SHORT).show();
@@ -34,26 +48,47 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setUser();
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-
+                checkUser();
             }
         });
 
     }
 
     private void setUser() {
-        //get username and usernumber from editText
-        userName = nameEditText.getText().toString();
-        userNumber = passwordEditText.getText().toString();
-        if (userName.trim().length() > 0 && userNumber.trim().length() > 0) {
+
+
+        if (userName.trim().length() > 0 && userCogniId.trim().length() > 0) {
 
             //creating user login session
-            session.createLoginSession(userName,userNumber);
+            session.createLoginSession(userName, userCogniId);
         }
         else
             Toast.makeText(this, "Login failed due to empty fields", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void checkUser(){
+        //get username and usernumber from editText
+        userName = nameEditText.getText().toString();
+        userCogniId = passwordEditText.getText().toString();
+        api.checkUser(userCogniId, new Callback<String>() {
+
+            @Override
+            public void success(String s, Response response) {
+                if (s.equals("200"))
+                    setUser();
+                else if (s.equals("401"))
+                    Snackbar.make(button,"Incorrect Cognizance Id",Snackbar.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Snackbar.make(button,"Network error",Snackbar.LENGTH_SHORT).show();
+
+            }
+        });
+
     }
 }

@@ -47,6 +47,7 @@ public class SplashActivity extends AppCompatActivity {
                 }
                 else {
                     session.checkLogIn();
+                    finish();
                 }
                 /**
                  * call this function when you want to check if the user is logged in or not

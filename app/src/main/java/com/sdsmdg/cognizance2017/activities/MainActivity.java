@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity
             });
         } else {
             if (!realm.isEmpty()) {
-                Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_SHORT).show();
+                //Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_SHORT).show();
                 showEvents("all_events", "Home");
             } else {
                 Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_INDEFINITE).show();
@@ -218,6 +218,10 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.map) {
             startActivity(new Intent(this, MapsActivity.class));
+            return true;
+        }
+        if (id == R.id.firebaseTest) {
+            startActivity(new Intent(this, FirebaseTestActivity.class));
             return true;
         }
 
