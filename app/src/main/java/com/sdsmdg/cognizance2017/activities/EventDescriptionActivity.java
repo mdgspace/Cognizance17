@@ -72,7 +72,7 @@ public class EventDescriptionActivity extends AppCompatActivity {
                             EventModel model = realm.where(EventModel.class).equalTo("id", getIntent().getIntExtra("id", 6)).findFirst();
                             CollapsingToolbarLayout appBar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
                             appBar.setTitle(model.getName());
-                            eventDate.setText(model.getDate());
+                            eventDate.setText(model.getDay1());
                             String description = Html.fromHtml(model.getDescription()).toString();
                             eventDescription.setText(description);
                             eventLocation.setText(model.getVenue());
@@ -97,7 +97,7 @@ public class EventDescriptionActivity extends AppCompatActivity {
             EventModel model = realm.where(EventModel.class).equalTo("id", getIntent().getIntExtra("id", 6)).findFirst();
             CollapsingToolbarLayout appBar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             appBar.setTitle(model.getName());
-            eventDate.setText(model.getDate());
+            eventDate.setText(model.getDay1());
             if(model.getDescription() !=null){
                 String description = Html.fromHtml(model.getDescription()).toString();
                 eventDescription.setText(description);

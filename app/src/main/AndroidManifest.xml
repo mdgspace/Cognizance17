@@ -9,7 +9,7 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
@@ -44,7 +44,7 @@
         <activity
             android:name=".activities.MapsActivity"
             android:label="@string/title_activity_maps"
-            android:theme="@style/AppTheme.NoTitle"/>
+            android:theme="@style/AppTheme.NoTitle" />
 
         <receiver android:name=".FavReceiver" />
 
@@ -61,17 +61,16 @@
         <activity
             android:name=".activities.EventDescriptionActivity"
             android:label="@string/title_activity_event_description"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".activities.MainActivity"/>
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.BarCodeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoTitle" />
-
-
-        <activity android:name=".activities.LoginActivity"
-            android:theme="@style/LoginActivityTheme"/>
-
+        <activity
+            android:name=".activities.LoginActivity"
+            android:theme="@style/LoginActivityTheme" />
+        <activity android:name=".activities.TestAct"></activity>
     </application>
 
 </manifest>

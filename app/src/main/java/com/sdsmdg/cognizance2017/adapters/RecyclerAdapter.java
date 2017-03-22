@@ -24,6 +24,7 @@ import java.util.List;
 
 import io.realm.Realm;
 
+import static com.sdsmdg.cognizance2017.activities.MainActivity.curDay;
 import static com.sdsmdg.cognizance2017.activities.MainActivity.mainAct;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
@@ -104,10 +105,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         if (deptList == null) {
             final EventModel currentEvent = normalEventList.get(position);
             holder.titleText.setText(currentEvent.getName());
-            if (currentEvent.getTime().equals(""))
-                holder.timeText.setText("Time");
-            else {
-                holder.timeText.setText(currentEvent.getTime());
+            if(curDay == 24){
+                holder.timeText.setText(currentEvent.getDay1());
+            }else if(curDay ==25){
+
+                holder.timeText.setText(currentEvent.getDay2());
+            }else {
+
+                holder.timeText.setText(currentEvent.getDay3());
             }
             if (currentEvent.getVenue().equals("")) {
                 holder.locationText.setText("Venue");
@@ -144,10 +149,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 realm.commitTransaction();
                 currentEvent.setFav(isChecked);
                 if (isChecked) {
-                    if(!(currentEvent.getTime().equals("") || currentEvent.getDate().equals(""))){
-                        int hr = Integer.parseInt(currentEvent.getTime().substring(0,2));
-                        int min = Integer.parseInt(currentEvent.getTime().substring(2,4));
-                        int day = Integer.parseInt(currentEvent.getDate().substring(0,2));
+                    if(!(currentEvent.getCurDay().equals(""))){
+                        int hr = Integer.parseInt(currentEvent.getCurDay().substring(0,2));
+                        int min = Integer.parseInt(currentEvent.getCurDay().substring(2,4));
+                        int day = curDay;
                         Calendar calender = Calendar.getInstance();
                         calender.set(Calendar.MONTH,Calendar.MARCH);
                         calender.set(Calendar.YEAR,2017);
@@ -169,8 +174,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
                     holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                 } else {
-                    if(!currentEvent.getDate().equals("")) {
-                        int day = Integer.parseInt(currentEvent.getDate().substring(0, 2));
+                    if(!currentEvent.getCurDay().equals("")) {
+                        int day = curDay;
                         ((MainActivity)mainAct).cancelNotification(Integer.parseInt(day + "" + currentEvent.getId()));
                     }
                     if (isInFav) {

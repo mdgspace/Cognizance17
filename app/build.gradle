@@ -36,6 +36,8 @@ dependencies {
     compile 'me.dm7.barcodescanner:zxing:1.9'
     compile 'com.github.jd-alexander:LikeButton:0.2.0'
     compile 'jp.wasabeef:recyclerview-animators:2.2.6'
+    compile 'com.yalantis:phoenix:1.2.3'
     compile 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.2.32@aar'
+    compile 'com.android.support.constraint:constraint-layout:1.0.1'
     testCompile 'junit:junit:4.12'
 }

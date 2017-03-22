@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity
     private TabLayout tabLayout;
     private AppBarLayout appBar;
     private Toolbar toolbar;
-    private int actionBarSize, size;
+    private int actionBarSize;
     public static int curDay = 24;
     public static final String BASE_URL = "https://cognizance.org.in/";
     private ArrayList<EventModel> eventList;
@@ -62,11 +63,10 @@ public class MainActivity extends AppCompatActivity
     private boolean shouldLoadEvents;
     public static Activity mainAct;
     private ProgressDialog dialog;
-    private ArrayList<Integer> ids;
     private boolean isOnHome, isReady;
     private int currentSelectedFragmentId;
     public boolean isOnDeptViewPagerFragment;
-    NavigationView navigationView;
+    public NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,10 +139,9 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onSuccess() {
                             dialog.dismiss();
-                            Toast.makeText(mainAct, "Download complete", Toast.LENGTH_SHORT).show();
                             showEvents("all_events", "Home");
                             RealmResults<EventModel> eventModels = realm.where(EventModel.class).equalTo("isFav",true).findAll();
-                            for(EventModel model:eventModels){
+                           /* for(EventModel model:eventModels){
                                 if(!(model.getTime().equals("") || model.getDate().equals(""))){
                                     int hr = Integer.parseInt(model.getTime().substring(0,2));
                                     int min = Integer.parseInt(model.getTime().substring(2,4));
@@ -162,26 +161,27 @@ public class MainActivity extends AppCompatActivity
                                 }else {
                                     Toast.makeText(mainAct, "can't set alarm date is null", Toast.LENGTH_SHORT).show();
                                 }
-                            }
+                            }*/
                         }
                     }, new Realm.Transaction.OnError() {
                         @Override
                         public void onError(Throwable error) {
-                            Toast.makeText(mainAct, "Error while fetching from server", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
-
+                    Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_INDEFINITE).show();
+                    dialog.dismiss();
                 }
             });
         } else {
             if (!realm.isEmpty()) {
+                Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_SHORT).show();
                 showEvents("all_events", "Home");
             } else {
-                Toast.makeText(mainAct, "Please connect to Internet", Toast.LENGTH_SHORT).show();
+                Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_INDEFINITE).show();
             }
         }
     }
@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity
         }
         return events;
     }
-
+/*
     private void loadEvents(final int id) {
         if (id < ids.size() && shouldLoadEvents) {
             RealmObject result = realm.where(EventModel.class).equalTo("id", ids.get(id)).findFirst();
@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity
             showEvents("all_events", "Home");
         }
     }
-
+*/
     public void showEvents(String tag, String title) {
         fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if (fragment == null) {
