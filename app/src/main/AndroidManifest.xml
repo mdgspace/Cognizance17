@@ -61,7 +61,8 @@
         <activity
             android:name=".activities.EventDescriptionActivity"
             android:label="@string/title_activity_event_description"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activities.MainActivity"/>
         <activity
             android:name=".activities.BarCodeActivity"
             android:screenOrientation="portrait"

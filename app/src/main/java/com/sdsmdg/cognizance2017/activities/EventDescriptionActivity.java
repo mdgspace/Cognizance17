@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import static com.sdsmdg.cognizance2017.activities.MainActivity.BASE_URL;
+import static com.sdsmdg.cognizance2017.activities.MainActivity.mainAct;
 
 
 public class EventDescriptionActivity extends AppCompatActivity {
@@ -38,6 +40,8 @@ public class EventDescriptionActivity extends AppCompatActivity {
         realm = Realm.getDefaultInstance();
         Toolbar toolbar = (Toolbar) findViewById(R.id.event_toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         dialog = new ProgressDialog(this);
         dialog.setMessage("fetching data");
         eventDate = (TextView)findViewById(R.id.event_time);
@@ -46,48 +50,60 @@ public class EventDescriptionActivity extends AppCompatActivity {
 
         // accessing data from cognizance website
         dialog.setCancelable(false);
-        dialog.show();
-        RestAdapter adapter = new RestAdapter.Builder()
-                .setEndpoint(BASE_URL)
-                .build();
-        final DataInterface api = adapter.create(DataInterface.class);
-        api.getEventById(getIntent().getIntExtra("id",6), new Callback<JsonObject>() {
-            @Override
-            public void success(JsonObject json, Response response) {
-                final JsonObject jsonObject = json;
+        if(((MainActivity)mainAct).isNetworkAvailable()) {
+            dialog.show();
+            RestAdapter adapter = new RestAdapter.Builder()
+                    .setEndpoint(BASE_URL)
+                    .build();
+            final DataInterface api = adapter.create(DataInterface.class);
+            api.getEventById(getIntent().getIntExtra("id", 6), new Callback<JsonObject>() {
+                @Override
+                public void success(JsonObject json, Response response) {
+                    final JsonObject jsonObject = json;
 
-                realm.executeTransactionAsync(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        realm.createOrUpdateObjectFromJson(EventModel.class, jsonObject.toString());
-                    }
-                }, new Realm.Transaction.OnSuccess() {
-                    @Override
-                    public void onSuccess() {
-                        EventModel model = realm.where(EventModel.class).equalTo("id",getIntent().getIntExtra("id",6)).findFirst();
-                        CollapsingToolbarLayout appBar = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
-                        appBar.setTitle(model.getName());
-                        eventDate.setText(model.getDate());
-                        String ss = model.getDescription();
-                        int endIndex = ss.length()-15;
-                        eventDescription.setText(ss.substring(11,endIndex));
-                        eventLocation.setText(model.getVenue());
-                        dialog.dismiss();
+                    realm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.createOrUpdateObjectFromJson(EventModel.class, jsonObject.toString());
+                        }
+                    }, new Realm.Transaction.OnSuccess() {
+                        @Override
+                        public void onSuccess() {
+                            EventModel model = realm.where(EventModel.class).equalTo("id", getIntent().getIntExtra("id", 6)).findFirst();
+                            CollapsingToolbarLayout appBar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+                            appBar.setTitle(model.getName());
+                            eventDate.setText(model.getDate());
+                            String description = Html.fromHtml(model.getDescription()).toString();
+                            eventDescription.setText(description);
+                            eventLocation.setText(model.getVenue());
+                            dialog.dismiss();
 
-                    }
-                }, new Realm.Transaction.OnError() {
-                    @Override
-                    public void onError(Throwable error) {
+                        }
+                    }, new Realm.Transaction.OnError() {
+                        @Override
+                        public void onError(Throwable error) {
 
-                    }
-                });
+                        }
+                    });
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Toast.makeText(EventDescriptionActivity.this, "error while fetching data", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+            });
+        }else{
+            EventModel model = realm.where(EventModel.class).equalTo("id", getIntent().getIntExtra("id", 6)).findFirst();
+            CollapsingToolbarLayout appBar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+            appBar.setTitle(model.getName());
+            eventDate.setText(model.getDate());
+            if(model.getDescription() !=null){
+                String description = Html.fromHtml(model.getDescription()).toString();
+                eventDescription.setText(description);
             }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Toast.makeText(EventDescriptionActivity.this, "error while fetching data", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
-        });
+            eventLocation.setText(model.getVenue());
+            dialog.dismiss();
+        }
     }
 }

@@ -1,6 +1,9 @@
 package com.sdsmdg.cognizance2017.activities;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -27,15 +30,18 @@ import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.sdsmdg.cognizance2017.FavReceiver;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
 import com.sdsmdg.cognizance2017.fragments.AllEventsRecyclerFragment;
 import com.sdsmdg.cognizance2017.models.EventModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
+import io.realm.RealmResults;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -103,13 +109,6 @@ public class MainActivity extends AppCompatActivity
                 .build();
         api = adapter.create(DataInterface.class);
         loadDatabase();
-        /*if (realm.isEmpty())
-            loadDatabase();
-        else {
-            isReady = true;
-            showEvents("all_events", "Home");
-            isOnHome = true;
-        }*/
     }
 
     @Override
@@ -124,24 +123,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadDatabase() {
-        /*
-        realm.beginTransaction();
-        EventModel model = realm.cre(EventModel.class, 0);
-        model.setName("Name");
-        model.setTime("Time");
-        model.setVenue("Venue");
-        Type type = new Type();
-        type.setName("t_name");
-        type.setCategory("t_category");
-        Type managedType = realm.copyToRealm(type);
-        model.setType(managedType);
-        realm.commitTransaction();
-        */
-
-        // To get all ID's
-        ids = new ArrayList<>();
-        if (isNetworkAvailable()) {
-
+        if(isNetworkAvailable()){
             dialog = new ProgressDialog(MainActivity.this);
             dialog.setMessage("please wait");
             dialog.show();
@@ -157,13 +139,35 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onSuccess() {
                             dialog.dismiss();
-                            Toast.makeText(mainAct, "Download complete" + ids.size(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mainAct, "Download complete", Toast.LENGTH_SHORT).show();
                             showEvents("all_events", "Home");
+                            RealmResults<EventModel> eventModels = realm.where(EventModel.class).equalTo("isFav",true).findAll();
+                            for(EventModel model:eventModels){
+                                if(!(model.getTime().equals("") || model.getDate().equals(""))){
+                                    int hr = Integer.parseInt(model.getTime().substring(0,2));
+                                    int min = Integer.parseInt(model.getTime().substring(2,4));
+                                    int day = Integer.parseInt(model.getDate().substring(0,2));
+                                    // Toast.makeText(ctx, ""+hr+" " + min+" "+ day, Toast.LENGTH_SHORT).show();
+                                    Calendar calender = Calendar.getInstance();
+                                    calender.set(Calendar.MONTH,Calendar.MARCH);
+                                    calender.set(Calendar.YEAR,2017);
+                                    calender.set(Calendar.DAY_OF_MONTH,day);
+                                    calender.set(Calendar.HOUR_OF_DAY,hr);
+                                    calender.set(Calendar.MINUTE,min);
+                                    if(System.currentTimeMillis()<calender.getTimeInMillis())
+                                    createNotification(calender,model);
+                                    else {
+                                        Toast.makeText(mainAct, "This event has already started", Toast.LENGTH_SHORT).show();
+                                    }
+                                }else {
+                                    Toast.makeText(mainAct, "can't set alarm date is null", Toast.LENGTH_SHORT).show();
+                                }
+                            }
                         }
                     }, new Realm.Transaction.OnError() {
                         @Override
                         public void onError(Throwable error) {
-                            Toast.makeText(mainAct, "Error while fetching from server" + ids.size(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mainAct, "Error while fetching from server", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -361,7 +365,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private boolean isNetworkAvailable() {
+    public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
@@ -380,5 +384,29 @@ public class MainActivity extends AppCompatActivity
         toolbar.setLayoutParams(layoutParams);
         appBar.setExpanded(true);
         toolbar.setTitle(title);
+    }
+
+    public void createNotification(Calendar cal,EventModel model) {
+        Intent intent = new Intent(mainAct, FavReceiver.class);
+        int idString = Integer.parseInt(cal.get(Calendar.DAY_OF_MONTH)+""+model.getId());
+        intent.putExtra("id",idString);
+        intent.putExtra("realId",model.getId());
+        intent.putExtra("title",model.getName());
+        Log.d("Alarm:","id:" + idString+" Cal: "+cal.getTime());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+    }
+
+    public void cancelNotification(int id) {
+        Intent intent = new Intent(mainAct, FavReceiver.class);
+        intent.putExtra("id",id);
+        Log.d("alarm cancel",""+id);
+        intent.putExtra("cancel",true);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, id, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+        ((NotificationManager)mainAct.getSystemService(mainAct.NOTIFICATION_SERVICE)).cancel(id);
+        Toast.makeText(mainAct, "Alarm has been cancelled", Toast.LENGTH_LONG).show();
     }
 }
