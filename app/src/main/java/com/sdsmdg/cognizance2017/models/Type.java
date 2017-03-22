@@ -2,9 +2,6 @@ package com.sdsmdg.cognizance2017.models;
 
 import io.realm.RealmObject;
 
-/**
- * Created by Arihant Jain on 3/19/2017.
- */
 
 public class Type extends RealmObject{
     private String category, name;

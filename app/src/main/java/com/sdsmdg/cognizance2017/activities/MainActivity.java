@@ -1,16 +1,19 @@
 package com.sdsmdg.cognizance2017.activities;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -26,27 +29,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.maps.android.clustering.Cluster;
-import com.google.maps.android.clustering.ClusterItem;
-import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.view.DefaultClusterRenderer;
-import com.google.maps.android.ui.IconGenerator;
+import com.sdsmdg.cognizance2017.FavReceiver;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
+import com.sdsmdg.cognizance2017.fragments.AllEventsRecyclerFragment;
 import com.sdsmdg.cognizance2017.models.EventModel;
-import com.sdsmdg.cognizance2017.models.Type;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
+import io.realm.RealmResults;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -59,7 +55,7 @@ public class MainActivity extends AppCompatActivity
     private TabLayout tabLayout;
     private AppBarLayout appBar;
     private Toolbar toolbar;
-    private int actionBarSize, size;
+    private int actionBarSize;
     public static int curDay = 24;
     public static final String BASE_URL = "https://cognizance.org.in/";
     private ArrayList<EventModel> eventList;
@@ -67,15 +63,17 @@ public class MainActivity extends AppCompatActivity
     private boolean shouldLoadEvents;
     public static Activity mainAct;
     private ProgressDialog dialog;
-    private ArrayList<Integer> ids;
-    private boolean isOnHome;
-    NavigationView navigationView;
+    private boolean isOnHome, isReady;
+    private int currentSelectedFragmentId;
+    public boolean isOnDeptViewPagerFragment;
+    public NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainAct = this;
+        isOnDeptViewPagerFragment = false;
 
 
         tabLayout = (TabLayout) findViewById(R.id.vpager_tabs);
@@ -110,70 +108,93 @@ public class MainActivity extends AppCompatActivity
                 .setEndpoint(BASE_URL)
                 .build();
         api = adapter.create(DataInterface.class);
-        if (realm.isEmpty())
-            loadDatabase();
-        else {
-            showEvents("all_events", "Home");
-            isOnHome = true;
-        }
+        loadDatabase();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        showTabs("Home");
+        /*showTabs("Home");
         if (!isOnHome) {
             showEvents("all_events", "Home");
             navigationView.getMenu().getItem(0).setChecked(true);
             isOnHome = true;
-        }
+        }*/
     }
 
     private void loadDatabase() {
-        realm.beginTransaction();
-        EventModel model = realm.createObject(EventModel.class, 0);
-        model.setName("Name");
-        model.setTime("Time");
-        model.setVenue("Venue");
-        Type type = new Type();
-        type.setName("t_name");
-        type.setCategory("t_category");
-        Type managedType = realm.copyToRealm(type);
-        model.setType(managedType);
-        realm.commitTransaction();
-
-        // To get all ID's
-        ids = new ArrayList<>();
-        api.getAllEvents(new Callback<ArrayList<EventModel>>() {
-            @Override
-            public void success(ArrayList<EventModel> eventModels, Response response) {
-                for (int i = 0; i < eventModels.size(); i++) {
-                    ids.add(eventModels.get(i).getId());
+        if(isNetworkAvailable()){
+            dialog = new ProgressDialog(MainActivity.this);
+            dialog.setMessage("please wait");
+            dialog.show();
+            api.getAllEvents(new Callback<JsonArray>() {
+                @Override
+                public void success(final JsonArray json, Response response) {
+                    realm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.createOrUpdateAllFromJson(EventModel.class, json.toString());
+                        }
+                    }, new Realm.Transaction.OnSuccess() {
+                        @Override
+                        public void onSuccess() {
+                            dialog.dismiss();
+                            showEvents("all_events", "Home");
+                            RealmResults<EventModel> eventModels = realm.where(EventModel.class).equalTo("isFav",true).findAll();
+                           /* for(EventModel model:eventModels){
+                                if(!(model.getTime().equals("") || model.getDate().equals(""))){
+                                    int hr = Integer.parseInt(model.getTime().substring(0,2));
+                                    int min = Integer.parseInt(model.getTime().substring(2,4));
+                                    int day = Integer.parseInt(model.getDate().substring(0,2));
+                                    // Toast.makeText(ctx, ""+hr+" " + min+" "+ day, Toast.LENGTH_SHORT).show();
+                                    Calendar calender = Calendar.getInstance();
+                                    calender.set(Calendar.MONTH,Calendar.MARCH);
+                                    calender.set(Calendar.YEAR,2017);
+                                    calender.set(Calendar.DAY_OF_MONTH,day);
+                                    calender.set(Calendar.HOUR_OF_DAY,hr);
+                                    calender.set(Calendar.MINUTE,min);
+                                    if(System.currentTimeMillis()<calender.getTimeInMillis())
+                                    createNotification(calender,model);
+                                    else {
+                                        Toast.makeText(mainAct, "This event has already started", Toast.LENGTH_SHORT).show();
+                                    }
+                                }else {
+                                    Toast.makeText(mainAct, "can't set alarm date is null", Toast.LENGTH_SHORT).show();
+                                }
+                            }*/
+                        }
+                    }, new Realm.Transaction.OnError() {
+                        @Override
+                        public void onError(Throwable error) {
+                        }
+                    });
                 }
-                size = ids.size();
 
-                shouldLoadEvents = true;
-
-                dialog = new ProgressDialog(MainActivity.this);
-                dialog.setMessage("please wait");
-                dialog.setTitle("loading");
-                dialog.setMax(100);
-                dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                dialog.show();
-                loadEvents(0);
+                @Override
+                public void failure(RetrofitError error) {
+                    Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_INDEFINITE).show();
+                    dialog.dismiss();
+                }
+            });
+        } else {
+            if (!realm.isEmpty()) {
+                //Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_SHORT).show();
+                showEvents("all_events", "Home");
+            } else {
+                Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_INDEFINITE).show();
             }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
+        }
     }
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+        if (isOnDeptViewPagerFragment) {
+            getSupportFragmentManager().popBackStack();
+            isOnDeptViewPagerFragment = false;
+            hideTabs("Departmentals");
+            navigationView.setCheckedItem(R.id.dept);
+        } else if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
@@ -199,6 +220,10 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(this, MapsActivity.class));
             return true;
         }
+        if (id == R.id.firebaseTest) {
+            startActivity(new Intent(this, FirebaseTestActivity.class));
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -208,6 +233,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        if (id != R.id.barcode) currentSelectedFragmentId = id;
         isOnHome = false;
         if (id == R.id.all_events) {
             showEvents("all_events", "Home");
@@ -227,7 +253,14 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.workshop) {
             showEvents("workshop", "Workshop");
         } else if (id == R.id.dept) {
-            showEvents("dept", "Departmental");
+            fragment = getSupportFragmentManager().findFragmentByTag("dept");
+            if (fragment == null) {
+                fragment = AllEventsRecyclerFragment.newInstance(4, "DepartmentList");
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.events_container, fragment, "dept");
+                fragmentTransaction.commit();
+            }
+            hideTabs("Departmentals");
         } else if (id == R.id.summit) {
             showEvents("summit", "E-Summit");
         } else if (id == R.id.mainstay) {
@@ -246,15 +279,21 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void showEvent() {
+    public void showEvent(int id) {
         Intent eventIntent = new Intent(MainActivity.this, EventDescriptionActivity.class);
-        eventIntent.putExtra("id", 9);
+        eventIntent.putExtra("id", id);
         startActivity(eventIntent);
+        if (isNetworkAvailable()) {
+            Toast.makeText(mainAct, "connected", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(mainAct, "not connected", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void showTabs(String title) {
         CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
         layoutParams.height = 2 * actionBarSize;
+        tabLayout.setVisibility(View.VISIBLE);
         toolbar.setLayoutParams(layoutParams);
         appBar.setExpanded(true);
         toolbar.setTitle(title);
@@ -269,7 +308,7 @@ public class MainActivity extends AppCompatActivity
         }
         return events;
     }
-
+/*
     private void loadEvents(final int id) {
         if (id < ids.size() && shouldLoadEvents) {
             RealmObject result = realm.where(EventModel.class).equalTo("id", ids.get(id)).findFirst();
@@ -317,16 +356,61 @@ public class MainActivity extends AppCompatActivity
             showEvents("all_events", "Home");
         }
     }
-
-    private void showEvents(String tag, String title) {
+*/
+    public void showEvents(String tag, String title) {
         fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if (fragment == null) {
             fragment = AllEventsFragment.newInstance(title);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.events_container, fragment, tag);
+            if (isOnDeptViewPagerFragment)
+                fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         }
     }
 
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
+    public int getCurrentSelectedFragmentId() {
+        return currentSelectedFragmentId;
+    }
+
+    public void hideTabs(String title) {
+        CollapsingToolbarLayout.LayoutParams
+                layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
+        tabLayout.setVisibility(View.GONE);
+        layoutParams.height = actionBarSize;
+        toolbar.setLayoutParams(layoutParams);
+        appBar.setExpanded(true);
+        toolbar.setTitle(title);
+    }
+
+    public void createNotification(Calendar cal,EventModel model) {
+        Intent intent = new Intent(mainAct, FavReceiver.class);
+        int idString = Integer.parseInt(cal.get(Calendar.DAY_OF_MONTH)+""+model.getId());
+        intent.putExtra("id",idString);
+        intent.putExtra("realId",model.getId());
+        intent.putExtra("title",model.getName());
+        Log.d("Alarm:","id:" + idString+" Cal: "+cal.getTime());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+    }
+
+    public void cancelNotification(int id) {
+        Intent intent = new Intent(mainAct, FavReceiver.class);
+        intent.putExtra("id",id);
+        Log.d("alarm cancel",""+id);
+        intent.putExtra("cancel",true);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, id, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+        ((NotificationManager)mainAct.getSystemService(mainAct.NOTIFICATION_SERVICE)).cancel(id);
+        Toast.makeText(mainAct, "Alarm has been cancelled", Toast.LENGTH_LONG).show();
+    }
 }

@@ -20,11 +20,11 @@ public class AllEventsVpagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0: // Fragment # 0 - This will correspond to Day1
-                return AllEventsRecyclerFragment.newInstance(0, title);
-            case 1: // Fragment # 1 - This will correspond to Day2
                 return AllEventsRecyclerFragment.newInstance(1, title);
-            case 2: // Fragment # 2 - This will correspond to Day3
+            case 1: // Fragment # 1 - This will correspond to Day2
                 return AllEventsRecyclerFragment.newInstance(2, title);
+            case 2: // Fragment # 2 - This will correspond to Day3
+                return AllEventsRecyclerFragment.newInstance(3, title);
             default:
                 return null;
         }

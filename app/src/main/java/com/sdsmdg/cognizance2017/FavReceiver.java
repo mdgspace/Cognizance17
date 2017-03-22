@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.sdsmdg.cognizance2017.activities.EventDescriptionActivity;
 import com.sdsmdg.cognizance2017.activities.MainActivity;
 
 import java.util.Calendar;
@@ -25,29 +26,22 @@ import static android.content.Context.ALARM_SERVICE;
 public class FavReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent intent1 = new Intent(context,MainActivity.class);
-        intent1.putExtra("message","hello everyone");
-        PendingIntent pendingIntent = PendingIntent.getActivity(context,0,intent1,PendingIntent.FLAG_ONE_SHOT);
-        //  TaskStackBuilder task = TaskStackBuilder.create(this);
-        Notification.Builder builder = new Notification.Builder(context)
-                .setContentTitle ("Sample Notification")
-                .setContentText ("Hello World! This is my first notification!")
-                .setSmallIcon (R.mipmap.ic_launcher)
-                .setContentIntent(pendingIntent)
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),R.mipmap.ic_launcher))
-                .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
-        Notification.BigTextStyle textStyle = new Notification.BigTextStyle();
-        String longTextMessage = "I went up one pair of stairs.";
-        longTextMessage += " / Just like me. ";
-//...
-        textStyle.bigText(longTextMessage);
+        if(intent.getBooleanExtra("cancel",false)){
+            ((NotificationManager)context.getSystemService(context.NOTIFICATION_SERVICE)).cancel(intent.getIntExtra("id",0));
+        }
+        else {
+            Intent mainIntent = new Intent(context,EventDescriptionActivity.class);
+            mainIntent.putExtra("id",intent.getIntExtra("realId",6));
+            PendingIntent pendingIntent = PendingIntent.getActivity(context,0,mainIntent,PendingIntent.FLAG_ONE_SHOT);
+            Notification.Builder builder = new Notification.Builder(context)
+                    .setContentTitle ("Cognizance")
+                    .setContentText (intent.getStringExtra("title")+" is about to start")
+                    .setSmallIcon (R.mipmap.ic_launcher)
+                    .setContentIntent(pendingIntent)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setAutoCancel(true)
+                    .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+            ((NotificationManager)context.getSystemService(context.NOTIFICATION_SERVICE)).notify(intent.getIntExtra("id",0),builder.build());
 
-// Set the summary text:
-        textStyle.setSummaryText ("The summary text goes here.");
-
-// Plug this style into the builder:
-        builder.setStyle (textStyle);
-        ((NotificationManager)context.getSystemService(context.NOTIFICATION_SERVICE)).notify(12,builder.build());
-    }
+        }}
 }

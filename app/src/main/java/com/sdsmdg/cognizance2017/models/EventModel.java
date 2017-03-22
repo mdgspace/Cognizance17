@@ -1,19 +1,41 @@
 package com.sdsmdg.cognizance2017.models;
 
-import java.io.Serializable;
-
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-/**
- * Created by Arihant Jain on 3/18/2017.
- */
+import static com.sdsmdg.cognizance2017.activities.MainActivity.curDay;
 
-public class EventModel extends RealmObject{
+
+public class EventModel extends RealmObject {
     @PrimaryKey
     private int id;
-    private String name, contact_person,contact_email ,contact_phone,
-            prize ,description, contact_person2, contact_phone2, venue, date, time;
+    private String name, contact_person, contact_email, contact_phone, prize, description, contact_person2, contact_phone2, venue,day1,day2,day3;
+    private Type type;
+    private boolean isFav;
+
+    public String getDay1() {
+        return day1;
+    }
+
+    public void setDay1(String day1) {
+        this.day1 = day1;
+    }
+
+    public String getDay2() {
+        return day2;
+    }
+
+    public void setDay2(String day2) {
+        this.day2 = day2;
+    }
+
+    public String getDay3() {
+        return day3;
+    }
+
+    public void setDay3(String day3) {
+        this.day3 = day3;
+    }
 
     public String getContact_person() {
         return contact_person;
@@ -79,25 +101,6 @@ public class EventModel extends RealmObject{
         this.venue = venue;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    private Type type;
-    private boolean isFav;
-
     public boolean isFav() {
         return isFav;
     }
@@ -128,6 +131,15 @@ public class EventModel extends RealmObject{
 
     public void setName(String name) {
         this.name = name;
+    }
+    public String getCurDay(){
+        if(curDay == 24){
+            return getDay1();
+        }else if(curDay == 25){
+            return getDay2();
+        }else {
+            return getDay3();
+        }
     }
 
 }

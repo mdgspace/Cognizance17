@@ -55,7 +55,7 @@
         <item
             android:id="@+id/barcode"
             android:icon="@drawable/camera"
-            android:title="BarCode" />
+            android:title="QR Code Scanner" />
         <item
             android:id="@+id/dept"
             android:icon="@drawable/dept"

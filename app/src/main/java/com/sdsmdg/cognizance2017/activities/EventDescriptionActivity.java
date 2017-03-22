@@ -3,14 +3,14 @@ package com.sdsmdg.cognizance2017.activities;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.models.EventModel;
 
@@ -21,10 +21,13 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import static com.sdsmdg.cognizance2017.activities.MainActivity.BASE_URL;
+import static com.sdsmdg.cognizance2017.activities.MainActivity.mainAct;
 
 
 public class EventDescriptionActivity extends AppCompatActivity {
-    TextView eventName, eventDate, eventDescription;
+    private TextView eventDate, eventDescription, eventLocation;;
+    private Realm realm;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,23 +37,73 @@ public class EventDescriptionActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        Realm.init(this);
-        Realm realm = Realm.getDefaultInstance();
-        Toast.makeText(this, realm.where(EventModel.class).equalTo("id",35).findFirst().getType().getCategory(), Toast.LENGTH_SHORT).show();
+        realm = Realm.getDefaultInstance();
         Toolbar toolbar = (Toolbar) findViewById(R.id.event_toolbar);
         setSupportActionBar(toolbar);
-        //eventName = (TextView) findViewById(R.id.event_name);
-        eventDate = (TextView) findViewById(R.id.event_time);
-        eventDescription = (TextView) findViewById(R.id.event_description);
-       // getEventDetails(getIntent().getIntExtra("id",0));
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("fetching data");
+        eventDate = (TextView)findViewById(R.id.event_time);
+        eventDescription = (TextView)findViewById(R.id.event_description);
+        eventLocation = (TextView)findViewById(R.id.event_location);
+
+        // accessing data from cognizance website
+        dialog.setCancelable(false);
+        if(((MainActivity)mainAct).isNetworkAvailable()) {
+            dialog.show();
+            RestAdapter adapter = new RestAdapter.Builder()
+                    .setEndpoint(BASE_URL)
+                    .build();
+            final DataInterface api = adapter.create(DataInterface.class);
+            api.getEventById(getIntent().getIntExtra("id", 6), new Callback<JsonObject>() {
+                @Override
+                public void success(JsonObject json, Response response) {
+                    final JsonObject jsonObject = json;
+
+                    realm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.createOrUpdateObjectFromJson(EventModel.class, jsonObject.toString());
+                        }
+                    }, new Realm.Transaction.OnSuccess() {
+                        @Override
+                        public void onSuccess() {
+                            EventModel model = realm.where(EventModel.class).equalTo("id", getIntent().getIntExtra("id", 6)).findFirst();
+                            CollapsingToolbarLayout appBar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+                            appBar.setTitle(model.getName());
+                            eventDate.setText(model.getDay1());
+                            String description = Html.fromHtml(model.getDescription()).toString();
+                            eventDescription.setText(description);
+                            eventLocation.setText(model.getVenue());
+                            dialog.dismiss();
+
+                        }
+                    }, new Realm.Transaction.OnError() {
+                        @Override
+                        public void onError(Throwable error) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Toast.makeText(EventDescriptionActivity.this, "error while fetching data", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+            });
+        }else{
+            EventModel model = realm.where(EventModel.class).equalTo("id", getIntent().getIntExtra("id", 6)).findFirst();
+            CollapsingToolbarLayout appBar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+            appBar.setTitle(model.getName());
+            eventDate.setText(model.getDay1());
+            if(model.getDescription() !=null){
+                String description = Html.fromHtml(model.getDescription()).toString();
+                eventDescription.setText(description);
             }
-        });
-*/
+            eventLocation.setText(model.getVenue());
+            dialog.dismiss();
+        }
     }
 }

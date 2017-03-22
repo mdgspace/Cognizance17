@@ -22,7 +22,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        ImageView imageView = (ImageView) findViewById(R.id.circle);
+        ImageView imageView = (ImageView) findViewById(R.id.outer_circle);
         final Animation startRotateAnimation = AnimationUtils.loadAnimation(this, R.anim.android_rotate_animation);
         startRotateAnimation.setRepeatCount(Animation.INFINITE);
         imageView.startAnimation(startRotateAnimation);
@@ -47,6 +47,7 @@ public class SplashActivity extends AppCompatActivity {
                 }
                 else {
                     session.checkLogIn();
+                    finish();
                 }
                 /**
                  * call this function when you want to check if the user is logged in or not

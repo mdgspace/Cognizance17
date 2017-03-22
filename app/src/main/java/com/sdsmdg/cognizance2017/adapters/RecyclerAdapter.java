@@ -1,11 +1,10 @@
 package com.sdsmdg.cognizance2017.adapters;
 
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.sdsmdg.cognizance2017.FavReceiver;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.activities.MainActivity;
 import com.sdsmdg.cognizance2017.models.EventModel;
@@ -26,7 +24,8 @@ import java.util.List;
 
 import io.realm.Realm;
 
-import static android.content.Context.ALARM_SERVICE;
+import static com.sdsmdg.cognizance2017.activities.MainActivity.curDay;
+import static com.sdsmdg.cognizance2017.activities.MainActivity.mainAct;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
 
@@ -34,7 +33,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     private List<EventModel> eventsList;
     private boolean isInFav;
     private List<EventModel> normalEventList;
+    private List<String> deptList;
     private Realm realm;
+
+    public RecyclerAdapter(Context ctx, List<String> deptList) {
+        this.ctx = ctx;
+        this.deptList = deptList;
+    }
 
     public RecyclerAdapter(Context ctx, List<EventModel> eventsList, boolean isInFav) {
         this.ctx = ctx;
@@ -59,60 +64,77 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            titleText = (TextView) itemView.findViewById(R.id.event_title);
-            locationText = (TextView) itemView.findViewById(R.id.event_location);
-            timeText = (TextView) itemView.findViewById(R.id.event_time);
-            checkBox = (ToggleButton) itemView.findViewById(R.id.toggle);
-            clockIcon = (ImageView) itemView.findViewById(R.id.clock);
-            markerIcon = (ImageView) itemView.findViewById(R.id.marker);
-            divider = itemView.findViewById(R.id.divider);
+            if (deptList == null) {
+                titleText = (TextView) itemView.findViewById(R.id.event_title);
+                locationText = (TextView) itemView.findViewById(R.id.event_location);
+                timeText = (TextView) itemView.findViewById(R.id.event_time);
+                checkBox = (ToggleButton) itemView.findViewById(R.id.toggle);
+                clockIcon = (ImageView) itemView.findViewById(R.id.clock);
+                markerIcon = (ImageView) itemView.findViewById(R.id.marker);
+                divider = itemView.findViewById(R.id.divider);
+            } else {
+                titleText = (TextView) itemView.findViewById(R.id.department_name);
+            }
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            ((MainActivity) ctx).showEvent();
+            if (deptList == null)
+                ((MainActivity) ctx).showEvent(normalEventList.get(getAdapterPosition()).getId());
+            else {
+                ((MainActivity) ctx).isOnDeptViewPagerFragment = true;
+                ((MainActivity) ctx).showEvents(deptList.get(getAdapterPosition()),
+                        deptList.get(getAdapterPosition()));
+            }
         }
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
-        itemView = LayoutInflater.from(ctx).inflate(R.layout.event_item_layout, parent, false);
+        if (deptList == null)
+            itemView = LayoutInflater.from(ctx).inflate(R.layout.event_item_layout, parent, false);
+        else
+            itemView = LayoutInflater.from(ctx).inflate(R.layout.department_list_row_layout, parent, false);
         return new MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        final EventModel currentEvent = normalEventList.get(position);
-        holder.titleText.setText(currentEvent.getName());
-        if (currentEvent.getTime().equals(""))
-            holder.timeText.setText("Time");
-        else {
-            holder.timeText.setText(currentEvent.getTime());
-        }
-        if (currentEvent.getVenue().equals("")) {
-            holder.locationText.setText("Venue");
-        } else {
-            holder.locationText.setText(currentEvent.getVenue());
-        }
-        if (currentEvent.isFav()) {
-            holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
-            holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
-            holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
-            holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
-            holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
-            holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
-        } else {
-            holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
-            holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
-            holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
-            holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
-            holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
-            holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimary));
+        if (deptList == null) {
+            final EventModel currentEvent = normalEventList.get(position);
+            holder.titleText.setText(currentEvent.getName());
+            if(curDay == 24){
+                holder.timeText.setText(currentEvent.getDay1());
+            }else if(curDay ==25){
 
-        }
+                holder.timeText.setText(currentEvent.getDay2());
+            }else {
 
+                holder.timeText.setText(currentEvent.getDay3());
+            }
+            if (currentEvent.getVenue().equals("")) {
+                holder.locationText.setText("Venue");
+            } else {
+                holder.locationText.setText(currentEvent.getVenue());
+            }
+            if (currentEvent.isFav()) {
+                holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+            } else {
+                holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
+                holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
+                holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimary));
+
+            }
         //in some cases, it will prevent unwanted situations
         holder.checkBox.setOnCheckedChangeListener(null);
         holder.checkBox.setChecked(currentEvent.isFav());
@@ -127,9 +149,24 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 realm.commitTransaction();
                 currentEvent.setFav(isChecked);
                 if (isChecked) {
-                    //Calendar calendar = currentEvent.getNotificationTime();
-                    //createNotification(calendar.getTimeInMillis());
-                    //createNotification(System.currentTimeMillis());
+                    if(!(currentEvent.getCurDay().equals(""))){
+                        int hr = Integer.parseInt(currentEvent.getCurDay().substring(0,2));
+                        int min = Integer.parseInt(currentEvent.getCurDay().substring(2,4));
+                        int day = curDay;
+                        Calendar calender = Calendar.getInstance();
+                        calender.set(Calendar.MONTH,Calendar.MARCH);
+                        calender.set(Calendar.YEAR,2017);
+                        calender.set(Calendar.DAY_OF_MONTH,day);
+                        calender.set(Calendar.HOUR_OF_DAY,hr);
+                        calender.set(Calendar.MINUTE,min);
+                        if(System.currentTimeMillis()<calender.getTimeInMillis())
+                            ((MainActivity)mainAct).createNotification(calender,currentEvent);
+                        else {
+                            Toast.makeText(ctx, "This event has already started", Toast.LENGTH_SHORT).show();
+                        }
+                    }else {
+                        Toast.makeText(ctx, "can't set alarm ,date is null", Toast.LENGTH_SHORT).show();
+                    }
                     holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                     holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                     holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
@@ -137,7 +174,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
                     holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                 } else {
-                    cancelNotification(0);
+                    if(!currentEvent.getCurDay().equals("")) {
+                        int day = curDay;
+                        ((MainActivity)mainAct).cancelNotification(Integer.parseInt(day + "" + currentEvent.getId()));
+                    }
                     if (isInFav) {
                         deleteFromFav(holder.getAdapterPosition());
                     } else {
@@ -151,33 +191,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 }
             }
         });
+        }
+        else {
+            if (!deptList.get(position).equals(""))
+                holder.titleText.setText(deptList.get(position));
+        }
     }
 
     @Override
     public int getItemCount() {
-        return normalEventList.size();
-    }
-
-
-    private void createNotification(long time) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 47);
-        Intent intent = new Intent(ctx, FavReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 12, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(ALARM_SERVICE);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        Toast.makeText(ctx, "" + time, Toast.LENGTH_LONG).show();
-    }
-
-    private void cancelNotification(int id) {
-
-        Intent intent = new Intent(ctx, FavReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 12, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(ALARM_SERVICE);
-        alarmManager.cancel(pendingIntent);
-        Toast.makeText(ctx, "Alarm has been cancelled" + System.currentTimeMillis() + 60 * 1000, Toast.LENGTH_LONG).show();
+        if (deptList == null)
+            return normalEventList.size();
+        else
+            return deptList.size();
     }
 
     private void deleteFromFav(int index) {
