@@ -141,27 +141,10 @@ public class MainActivity extends AppCompatActivity
                             dialog.dismiss();
                             showEvents("all_events", "Home");
                             RealmResults<EventModel> eventModels = realm.where(EventModel.class).equalTo("isFav",true).findAll();
-                           /* for(EventModel model:eventModels){
-                                if(!(model.getTime().equals("") || model.getDate().equals(""))){
-                                    int hr = Integer.parseInt(model.getTime().substring(0,2));
-                                    int min = Integer.parseInt(model.getTime().substring(2,4));
-                                    int day = Integer.parseInt(model.getDate().substring(0,2));
-                                    // Toast.makeText(ctx, ""+hr+" " + min+" "+ day, Toast.LENGTH_SHORT).show();
-                                    Calendar calender = Calendar.getInstance();
-                                    calender.set(Calendar.MONTH,Calendar.MARCH);
-                                    calender.set(Calendar.YEAR,2017);
-                                    calender.set(Calendar.DAY_OF_MONTH,day);
-                                    calender.set(Calendar.HOUR_OF_DAY,hr);
-                                    calender.set(Calendar.MINUTE,min);
-                                    if(System.currentTimeMillis()<calender.getTimeInMillis())
-                                    createNotification(calender,model);
-                                    else {
-                                        Toast.makeText(mainAct, "This event has already started", Toast.LENGTH_SHORT).show();
-                                    }
-                                }else {
-                                    Toast.makeText(mainAct, "can't set alarm date is null", Toast.LENGTH_SHORT).show();
-                                }
-                            }*/
+                            for(EventModel model:eventModels){
+                                if(model.isFav())
+                                    createNotification(model);
+                            }
                         }
                     }, new Realm.Transaction.OnError() {
                         @Override
@@ -390,27 +373,112 @@ public class MainActivity extends AppCompatActivity
         toolbar.setTitle(title);
     }
 
-    public void createNotification(Calendar cal,EventModel model) {
-        Intent intent = new Intent(mainAct, FavReceiver.class);
-        int idString = Integer.parseInt(cal.get(Calendar.DAY_OF_MONTH)+""+model.getId());
-        intent.putExtra("id",idString);
-        intent.putExtra("realId",model.getId());
-        intent.putExtra("title",model.getName());
-        Log.d("Alarm:","id:" + idString+" Cal: "+cal.getTime());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+
+    public void createNotification(EventModel model) {
+        if(!(model.getDay1().equals(""))) {
+            int hr = Integer.parseInt(model.getDay1().substring(0, 2));
+            int min = Integer.parseInt(model.getDay1().substring(2, 4));
+            int day = 24;
+            Calendar calender = Calendar.getInstance();
+            calender.set(Calendar.MONTH, Calendar.MARCH);
+            calender.set(Calendar.YEAR, 2017);
+            calender.set(Calendar.DAY_OF_MONTH, day);
+            calender.set(Calendar.HOUR_OF_DAY, hr);
+            calender.set(Calendar.MINUTE, min);
+            if (System.currentTimeMillis() < calender.getTimeInMillis()) {
+                Intent intent = new Intent(mainAct, FavReceiver.class);
+                int idString = Integer.parseInt(calender.get(Calendar.DAY_OF_MONTH) + "" + model.getId());
+                intent.putExtra("id", idString);
+                intent.putExtra("realId", model.getId());
+                intent.putExtra("title", model.getName());
+                Log.d("Alarm:", "id:" + idString + " Cal: " + calender.getTime());
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
+                AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis(), pendingIntent);
+            }
+        }
+        if(!(model.getDay2().equals(""))) {
+            int hr = Integer.parseInt(model.getDay2().substring(0, 2));
+            int min = Integer.parseInt(model.getDay2().substring(2, 4));
+            int day = 25;
+            Calendar calender = Calendar.getInstance();
+            calender.set(Calendar.MONTH, Calendar.MARCH);
+            calender.set(Calendar.YEAR, 2017);
+            calender.set(Calendar.DAY_OF_MONTH, day);
+            calender.set(Calendar.HOUR_OF_DAY, hr);
+            calender.set(Calendar.MINUTE, min);
+            // testing to be remove before launch
+            calender.set(Calendar.DAY_OF_MONTH,21);
+            calender.set(Calendar.HOUR_OF_DAY,23);
+            calender.set(Calendar.MINUTE,50);
+            if (System.currentTimeMillis() < calender.getTimeInMillis()||true) {
+                Intent intent = new Intent(mainAct, FavReceiver.class);
+                int idString = Integer.parseInt(calender.get(Calendar.DAY_OF_MONTH) + "" + model.getId());
+                intent.putExtra("id", idString);
+                intent.putExtra("realId", model.getId());
+                intent.putExtra("title", model.getName());
+                Log.d("Alarm:", "id:" + idString + " Cal: " + calender.getTime());
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
+                AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis(), pendingIntent);
+            }
+        }
+        if(!(model.getDay3().equals(""))) {
+            int hr = Integer.parseInt(model.getDay3().substring(0, 2));
+            int min = Integer.parseInt(model.getDay3().substring(2, 4));
+            int day = 25;
+            Calendar calender = Calendar.getInstance();
+            calender.set(Calendar.MONTH, Calendar.MARCH);
+            calender.set(Calendar.YEAR, 2017);
+            calender.set(Calendar.DAY_OF_MONTH, day);
+            calender.set(Calendar.HOUR_OF_DAY, hr);
+            calender.set(Calendar.MINUTE, min);
+
+            //testing to be remove before launch
+            calender.set(Calendar.DAY_OF_MONTH,22);
+            calender.set(Calendar.HOUR_OF_DAY,23);
+            calender.set(Calendar.MINUTE,51);
+            if (System.currentTimeMillis() < calender.getTimeInMillis()||true) {
+                Intent intent = new Intent(mainAct, FavReceiver.class);
+                int idString = Integer.parseInt(calender.get(Calendar.DAY_OF_MONTH) + "" + model.getId());
+                intent.putExtra("id", idString);
+                intent.putExtra("realId", model.getId());
+                intent.putExtra("title", model.getName());
+                Log.d("Alarm:", "id:" + idString + " Cal: " + calender.getTime());
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
+                AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis(), pendingIntent);
+            }
+        }
     }
 
     public void cancelNotification(int id) {
-        Intent intent = new Intent(mainAct, FavReceiver.class);
-        intent.putExtra("id",id);
-        Log.d("alarm cancel",""+id);
-        intent.putExtra("cancel",true);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, id, intent, 0);
         AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(mainAct, FavReceiver.class);
+        int idString = Integer.parseInt(24 + "" + id);
+        intent.putExtra("idString",idString);
+        intent.putExtra("cancel",true);
+        Log.d("Alarm",""+idString);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
         alarmManager.cancel(pendingIntent);
-        ((NotificationManager)mainAct.getSystemService(mainAct.NOTIFICATION_SERVICE)).cancel(id);
+        ((NotificationManager)mainAct.getSystemService(mainAct.NOTIFICATION_SERVICE)).cancel(idString);
+        Intent intent2 = new Intent(mainAct, FavReceiver.class);
+        int idString2 = Integer.parseInt(25 + "" + id);
+        intent2.putExtra("idString",idString2);
+        intent2.putExtra("cancel",true);
+        PendingIntent pendingIntent2 = PendingIntent.getBroadcast(mainAct, idString2, intent, 0);
+        alarmManager.cancel(pendingIntent2);
+        ((NotificationManager)mainAct.getSystemService(mainAct.NOTIFICATION_SERVICE)).cancel(idString2);
+        Log.d("Alarm",""+idString2);
+        Intent intent3 = new Intent(mainAct, FavReceiver.class);
+        int idString3 = Integer.parseInt(26 + "" + id);
+        intent3.putExtra("idString",idString3);
+        intent3.putExtra("cancel",true);
+        PendingIntent pendingIntent3 = PendingIntent.getBroadcast(mainAct, idString2, intent, 0);
+        alarmManager.cancel(pendingIntent3);
+        Log.d("Alarm",""+idString3);
+        ((NotificationManager)mainAct.getSystemService(mainAct.NOTIFICATION_SERVICE)).cancel(idString3);
         Toast.makeText(mainAct, "Alarm has been cancelled", Toast.LENGTH_LONG).show();
     }
+
 }

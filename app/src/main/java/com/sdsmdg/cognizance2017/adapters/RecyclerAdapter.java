@@ -35,6 +35,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     private List<EventModel> normalEventList;
     private List<String> deptList;
     private Realm realm;
+    private AdapterListener mListener;
+
+    public interface AdapterListener {
+        public void itemsRemoved();
+    }
+
+    public void setmListener(AdapterListener mListener) {
+        this.mListener = mListener;
+    }
 
     public RecyclerAdapter(Context ctx, List<String> deptList) {
         this.ctx = ctx;
@@ -105,14 +114,26 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         if (deptList == null) {
             final EventModel currentEvent = normalEventList.get(position);
             holder.titleText.setText(currentEvent.getName());
-            if(curDay == 24){
-                holder.timeText.setText(currentEvent.getDay1());
-            }else if(curDay ==25){
+            String time = "";
+            if (curDay == 24) {
+                time = currentEvent.getDay1();
+            } else if (curDay == 25) {
+                time = currentEvent.getDay2();
+            } else {
+                time = currentEvent.getDay3();
+            }
+            try {
+                if (!time.equals("")) {
+                    String hr = time.substring(0, 2);
+                    String min = time.substring(2, 4);
 
-                holder.timeText.setText(currentEvent.getDay2());
-            }else {
-
-                holder.timeText.setText(currentEvent.getDay3());
+                    String hr2 = time.substring(5, 7);
+                    String min2 = time.substring(7, 9);
+                    String modifiedTime = hr + ":" + min + " - " + hr2 + ":" + min2;
+                    holder.timeText.setText(modifiedTime);
+                }
+            } catch (Exception e) {
+                //Toast.makeText(ctx,""+currentEvent.getId(),Toast.LENGTH_SHORT).show();
             }
             if (currentEvent.getVenue().equals("")) {
                 holder.locationText.setText("Venue");
@@ -149,24 +170,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 realm.commitTransaction();
                 currentEvent.setFav(isChecked);
                 if (isChecked) {
-                    if(!(currentEvent.getCurDay().equals(""))){
-                        int hr = Integer.parseInt(currentEvent.getCurDay().substring(0,2));
-                        int min = Integer.parseInt(currentEvent.getCurDay().substring(2,4));
-                        int day = curDay;
-                        Calendar calender = Calendar.getInstance();
-                        calender.set(Calendar.MONTH,Calendar.MARCH);
-                        calender.set(Calendar.YEAR,2017);
-                        calender.set(Calendar.DAY_OF_MONTH,day);
-                        calender.set(Calendar.HOUR_OF_DAY,hr);
-                        calender.set(Calendar.MINUTE,min);
-                        if(System.currentTimeMillis()<calender.getTimeInMillis())
-                            ((MainActivity)mainAct).createNotification(calender,currentEvent);
-                        else {
-                            Toast.makeText(ctx, "This event has already started", Toast.LENGTH_SHORT).show();
-                        }
-                    }else {
-                        Toast.makeText(ctx, "can't set alarm ,date is null", Toast.LENGTH_SHORT).show();
-                    }
+                            ((MainActivity)mainAct).createNotification(currentEvent);
                     holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                     holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                     holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
@@ -174,10 +178,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
                     holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                 } else {
-                    if(!currentEvent.getCurDay().equals("")) {
-                        int day = curDay;
-                        ((MainActivity)mainAct).cancelNotification(Integer.parseInt(day + "" + currentEvent.getId()));
-                    }
+                        ((MainActivity)mainAct).cancelNotification(currentEvent.getId());
                     if (isInFav) {
                         deleteFromFav(holder.getAdapterPosition());
                     } else {
@@ -210,5 +211,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         normalEventList.remove(index);
         notifyItemRemoved(index);
         notifyItemRangeChanged(index, normalEventList.size());
+        if(normalEventList.isEmpty()){
+            if(mListener!=null)
+                mListener.itemsRemoved();
+        }
     }
 }

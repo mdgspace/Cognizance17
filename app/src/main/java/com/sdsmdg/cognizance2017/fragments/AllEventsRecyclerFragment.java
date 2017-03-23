@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.adapters.RecyclerAdapter;
@@ -34,6 +35,7 @@ public class AllEventsRecyclerFragment extends Fragment {
     private RecyclerAdapter adapter;
     private List<String> mDeptList;
     private List<Type> mType;
+    private TextView holderText;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,7 +56,7 @@ public class AllEventsRecyclerFragment extends Fragment {
                 || title.equals("E-Summit") || title.equals("Project M.A.R.S")) {
             results = realm.where(EventModel.class).equalTo("type.category", title).findAll();
         } else if (title.equals("Favorites")) {
-            results = realm.where(EventModel.class).equalTo("isFav", true).findAll();
+            results = realm.where(EventModel.class).equalTo("isFav", true).notEqualTo("day" + day, "").findAll();
         } else if (title.equals("DepartmentList")) {
             mDeptList = new ArrayList<String>();
             mType = realm.where(Type.class).equalTo("category", "Departmental").findAll();
@@ -68,7 +70,7 @@ public class AllEventsRecyclerFragment extends Fragment {
             mDeptList.addAll(hs);
             Collections.sort(mDeptList);
         } else {
-            results = realm.where(EventModel.class).equalTo("type.name", title).findAll();
+            results = realm.where(EventModel.class).equalTo("type.name", title).notEqualTo("day" + day, "").findAll();
         }
         //Toast.makeText(getContext(), "" + results.size(), Toast.LENGTH_SHORT).show();
 
@@ -92,6 +94,29 @@ public class AllEventsRecyclerFragment extends Fragment {
         eventsRecyclerView.getItemAnimator().setRemoveDuration(500);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         eventsRecyclerView.setNestedScrollingEnabled(true);
+
+        String message;
+        if(title.equals("Favorites")) {
+            message = "You have not selected any events for this day. Click the favorite button next to Events" +
+                    " to receive notifications before event starts";
+        }else {
+            message = "No events on this day";
+        }
+
+        holderText = (TextView) view.findViewById(R.id.text_holder);
+        holderText.setText(message);
+        adapter.setmListener(new RecyclerAdapter.AdapterListener() {
+            @Override
+            public void itemsRemoved() {
+                holderText.setVisibility(View.VISIBLE);
+            }
+        });
+
+        if(results.isEmpty()){
+            holderText.setVisibility(View.VISIBLE);
+        }else {
+            holderText.setVisibility(View.GONE);
+        }
         return view;
     }
 
