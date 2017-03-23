@@ -292,6 +292,9 @@ public class MainActivity extends AppCompatActivity
             Intent i = new Intent(MainActivity.this, SponsorsActivity.class);
             i.putExtra("isOnSponser", false);
             startActivity(i);
+        } else if(id==R.id.contacts){
+            Intent i = new Intent(MainActivity.this, ContactUsActivity.class);
+            startActivity(i);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
