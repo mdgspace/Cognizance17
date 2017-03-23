@@ -49,6 +49,10 @@
         android:checkableBehavior="single">
 
         <item
+            android:id="@+id/techtainment"
+            android:icon="@drawable/camera"
+            android:title="Techtainment" />
+        <item
             android:id="@+id/barcode"
             android:icon="@drawable/camera"
             android:title="QR Code Scanner" />

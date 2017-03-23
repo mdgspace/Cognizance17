@@ -259,6 +259,11 @@ public class MainActivity extends AppCompatActivity
             startActivity(i);
         } else if (id == R.id.about_us) {
             Intent i = new Intent(MainActivity.this, AboutUs.class);
+            i.putExtra("isOnSponser", true);
+            startActivity(i);
+        } else if (id == R.id.techtainment) {
+            Intent i = new Intent(MainActivity.this, AboutUs.class);
+            i.putExtra("isOnSponser", false);
             startActivity(i);
         }
 
