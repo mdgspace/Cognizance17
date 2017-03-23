@@ -23,9 +23,14 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         ImageView imageView = (ImageView) findViewById(R.id.outer_circle);
+        ImageView view = (ImageView) findViewById(R.id.inner_circle);
         final Animation startRotateAnimation = AnimationUtils.loadAnimation(this, R.anim.android_rotate_animation);
         startRotateAnimation.setRepeatCount(Animation.INFINITE);
         imageView.startAnimation(startRotateAnimation);
+        final Animation leftAnim = AnimationUtils.loadAnimation(this, R.anim.android_rotate_left);
+        startRotateAnimation.setRepeatCount(Animation.INFINITE);
+        view.startAnimation(leftAnim);
+
         //session class instance
         session = new SessionManager(getApplicationContext());
 

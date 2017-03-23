@@ -5,4 +5,5 @@
     <color name="colorPrimarySelected">#FCF465</color>
     <color name="colorPrimaryDark">#44432C</color>
     <color name="colorAccent">#212121</color>
+    <color name="gray_light_trans">#33999999</color>
 </resources>

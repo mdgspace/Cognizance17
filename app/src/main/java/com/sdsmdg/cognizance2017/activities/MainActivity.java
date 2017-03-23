@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressDialog dialog;
     private boolean isOnHome, isReady;
     private int currentSelectedFragmentId;
+
     public boolean isOnDeptViewPagerFragment;
     public NavigationView navigationView;
     public ImageView toolbarImageView;
@@ -79,8 +80,7 @@ public class MainActivity extends AppCompatActivity
         mainAct = this;
         isOnDeptViewPagerFragment = false;
         toolbarImageView =(ImageView) findViewById(R.id.imageview_toolbar);
-
-
+        currentSelectedFragmentId = R.id.all_events;
         tabLayout = (TabLayout) findViewById(R.id.vpager_tabs);
 
         appBar = (AppBarLayout) findViewById(R.id.appbar);
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadDatabase() {
-        if(isNetworkAvailable()){
+        if (isNetworkAvailable()) {
             dialog = new ProgressDialog(MainActivity.this);
             dialog.setMessage("please wait");
             dialog.show();
@@ -148,14 +148,13 @@ public class MainActivity extends AppCompatActivity
                             dialog.dismiss();
                             showEvents("all_events", "Home");
                             RealmResults<EventModel> eventModels = realm.where(EventModel.class).equalTo("isFav1",true).findAll();
-                            for(EventModel model:eventModels){
-                                if(model.isFav1())
-                                    createNotification(model,24);
-                                else if(model.isFav2()){
-                                    createNotification(model,25);
-                                }
-                                else if(model.isFav3()){
-                                    createNotification(model,26);
+                            for(EventModel model:eventModels) {
+                                if (model.isFav1())
+                                    createNotification(model, 24);
+                                else if (model.isFav2()) {
+                                    createNotification(model, 25);
+                                } else if (model.isFav3()) {
+                                    createNotification(model, 26);
                                 }
                             }
                         }
@@ -168,7 +167,7 @@ public class MainActivity extends AppCompatActivity
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_INDEFINITE).show();
+                    Snackbar.make(getWindow().getDecorView().getRootView(), "make sure that you have an active internet connection to get latest updates", Snackbar.LENGTH_INDEFINITE).show();
                     dialog.dismiss();
                 }
             });
@@ -177,7 +176,7 @@ public class MainActivity extends AppCompatActivity
                 //Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_SHORT).show();
                 showEvents("all_events", "Home");
             } else {
-                Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_INDEFINITE).show();
+                Snackbar.make(getWindow().getDecorView().getRootView(), "make sure that you have an active internet connection to get latest updates", Snackbar.LENGTH_INDEFINITE).show();
             }
         }
     }
@@ -216,7 +215,6 @@ public class MainActivity extends AppCompatActivity
             Intent mapIntent = new Intent(MainActivity.this,MapsActivity.class);
                 mapIntent.putExtra("location","Main Building Lawns");
             startActivity(mapIntent);
-            startActivity(new Intent(this, MapsActivity.class));
             return true;
         }
 
@@ -229,7 +227,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        if (id != R.id.barcode) currentSelectedFragmentId = id;
+        if (id != R.id.barcode && id != R.id.about_us && id != R.id.sponsors)
+            currentSelectedFragmentId = id;
         isOnHome = false;
         if (id == R.id.all_events) {
             toolbarImageView.setImageResource(R.drawable.main_placeholder);
@@ -281,6 +280,17 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.barcode) {
             Intent i = new Intent(MainActivity.this, BarCodeActivity.class);
             startActivity(i);
+        } else if (id == R.id.sponsors) {
+            Intent i = new Intent(MainActivity.this, SponsorsActivity.class);
+            startActivity(i);
+        } else if (id == R.id.about_us) {
+            Intent i = new Intent(MainActivity.this, AboutUs.class);
+            i.putExtra("isOnSponser", true);
+            startActivity(i);
+        } else if (id == R.id.techtainment) {
+            Intent i = new Intent(MainActivity.this, AboutUs.class);
+            i.putExtra("isOnSponser", false);
+            startActivity(i);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -317,55 +327,56 @@ public class MainActivity extends AppCompatActivity
         }
         return events;
     }
-/*
-    private void loadEvents(final int id) {
-        if (id < ids.size() && shouldLoadEvents) {
-            RealmObject result = realm.where(EventModel.class).equalTo("id", ids.get(id)).findFirst();
-            if (result == null) {
-                api.getEventById(ids.get(id), new Callback<JsonObject>() {
-                    @Override
-                    public void success(JsonObject json, Response response) {
-                        final JsonObject jsonObject = json;
 
-                        realm.executeTransactionAsync(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                realm.createOrUpdateObjectFromJson(EventModel.class, jsonObject.toString());
-                            }
-                        }, new Realm.Transaction.OnSuccess() {
-                            @Override
-                            public void onSuccess() {
-                                loadEvents(id + 1);
-                                dialog.setProgress(ids.get(id) * 100 / ids.size());
-                                Log.d("Cogni data", "" + ids.get(id));
-                            }
-                        }, new Realm.Transaction.OnError() {
-                            @Override
-                            public void onError(Throwable error) {
-                                // Transaction failed and was automatically canceled.
-                            }
-                        });
-                    }
+    /*
+        private void loadEvents(final int id) {
+            if (id < ids.size() && shouldLoadEvents) {
+                RealmObject result = realm.where(EventModel.class).equalTo("id", ids.get(id)).findFirst();
+                if (result == null) {
+                    api.getEventById(ids.get(id), new Callback<JsonObject>() {
+                        @Override
+                        public void success(JsonObject json, Response response) {
+                            final JsonObject jsonObject = json;
 
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Log.d("Cogni data", "error");
-                        shouldLoadEvents = false;
-                        Toast.makeText(MainActivity.this, "error while downloading", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                    }
-                });
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.createOrUpdateObjectFromJson(EventModel.class, jsonObject.toString());
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    loadEvents(id + 1);
+                                    dialog.setProgress(ids.get(id) * 100 / ids.size());
+                                    Log.d("Cogni data", "" + ids.get(id));
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    // Transaction failed and was automatically canceled.
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            Log.d("Cogni data", "error");
+                            shouldLoadEvents = false;
+                            Toast.makeText(MainActivity.this, "error while downloading", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
+                    });
+                } else {
+                    loadEvents(id + 1);
+                    dialog.setProgress(ids.get(id) * 100 / ids.size());
+                }
             } else {
-                loadEvents(id + 1);
-                dialog.setProgress(ids.get(id) * 100 / ids.size());
+                dialog.dismiss();
+                Toast.makeText(mainAct, "Download complete" + ids.size(), Toast.LENGTH_SHORT).show();
+                showEvents("all_events", "Home");
             }
-        } else {
-            dialog.dismiss();
-            Toast.makeText(mainAct, "Download complete" + ids.size(), Toast.LENGTH_SHORT).show();
-            showEvents("all_events", "Home");
         }
-    }
-*/
+    */
     public void showEvents(String tag, String title) {
         fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if (fragment == null) {
@@ -399,78 +410,75 @@ public class MainActivity extends AppCompatActivity
         toolbar.setTitle(title);
     }
 
-
     public void createNotification(EventModel model,int day) {
         if(day == 24 && !(model.getDay1().equals(""))) {
-            int hr = Integer.parseInt(model.getDay1().substring(0, 2));
-            int min = Integer.parseInt(model.getDay1().substring(2, 4));
-            Calendar calender = Calendar.getInstance();
-            calender.set(Calendar.MONTH, Calendar.MARCH);
-            calender.set(Calendar.YEAR, 2017);
-            calender.set(Calendar.DAY_OF_MONTH, day);
-            calender.set(Calendar.HOUR_OF_DAY, hr);
-            calender.set(Calendar.MINUTE, min);
-            if (System.currentTimeMillis() < calender.getTimeInMillis()) {
-                Intent intent = new Intent(mainAct, FavReceiver.class);
-                int idString = Integer.parseInt(calender.get(Calendar.DAY_OF_MONTH) + "" + model.getId());
-                intent.putExtra("id", idString);
-                intent.putExtra("realId", model.getId());
-                intent.putExtra("title", model.getName());
-                Log.d("Alarm:", "id:" + idString + " Cal: " + calender.getTime());
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
-                AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis(), pendingIntent);
+            if (!(model.getDay1().equals(""))) {
+                int hr = Integer.parseInt(model.getDay1().substring(0, 2));
+                int min = Integer.parseInt(model.getDay1().substring(2, 4));
+                Calendar calender = Calendar.getInstance();
+                calender.set(Calendar.MONTH, Calendar.MARCH);
+                calender.set(Calendar.YEAR, 2017);
+                calender.set(Calendar.DAY_OF_MONTH, day);
+                calender.set(Calendar.HOUR_OF_DAY, hr);
+                calender.set(Calendar.MINUTE, min);
+                if (System.currentTimeMillis() < calender.getTimeInMillis()) {
+                    Intent intent = new Intent(mainAct, FavReceiver.class);
+                    int idString = Integer.parseInt(calender.get(Calendar.DAY_OF_MONTH) + "" + model.getId());
+                    intent.putExtra("id", idString);
+                    intent.putExtra("realId", model.getId());
+                    intent.putExtra("title", model.getName());
+                    Log.d("Alarm:", "id:" + idString + " Cal: " + calender.getTime());
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
+                    AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis(), pendingIntent);
+                }
             }
         }
         else if(day == 25 && !(model.getDay2().equals(""))) {
-            int hr = Integer.parseInt(model.getDay2().substring(0, 2));
-            int min = Integer.parseInt(model.getDay2().substring(2, 4));
-            Calendar calender = Calendar.getInstance();
-            calender.set(Calendar.MONTH, Calendar.MARCH);
-            calender.set(Calendar.YEAR, 2017);
-            calender.set(Calendar.DAY_OF_MONTH, day);
-            calender.set(Calendar.HOUR_OF_DAY, hr);
-            calender.set(Calendar.MINUTE, min);
-           /* // testing to be remove before launch
-            calender.set(Calendar.DAY_OF_MONTH,23);
-            calender.set(Calendar.HOUR_OF_DAY,12);
-            calender.set(Calendar.MINUTE,0);*/
-            if (System.currentTimeMillis() < calender.getTimeInMillis()) {
-                Intent intent = new Intent(mainAct, FavReceiver.class);
-                int idString = Integer.parseInt(calender.get(Calendar.DAY_OF_MONTH) + "" + model.getId());
-                intent.putExtra("id", idString);
-                intent.putExtra("realId", model.getId());
-                intent.putExtra("title", model.getName());
-                Log.d("Alarm:", "id:" + idString + " Cal: " + calender.getTime());
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
-                AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis(), pendingIntent);
+            if (!(model.getDay2().equals(""))) {
+                int hr = Integer.parseInt(model.getDay2().substring(0, 2));
+                int min = Integer.parseInt(model.getDay2().substring(2, 4));
+                Calendar calender = Calendar.getInstance();
+                calender.set(Calendar.MONTH, Calendar.MARCH);
+                calender.set(Calendar.YEAR, 2017);
+                calender.set(Calendar.DAY_OF_MONTH, day);
+                calender.set(Calendar.HOUR_OF_DAY, hr);
+                calender.set(Calendar.MINUTE, min);
+                if (System.currentTimeMillis() < calender.getTimeInMillis()) {
+                    Intent intent = new Intent(mainAct, FavReceiver.class);
+                    int idString = Integer.parseInt(calender.get(Calendar.DAY_OF_MONTH) + "" + model.getId());
+                    intent.putExtra("id", idString);
+                    intent.putExtra("realId", model.getId());
+                    intent.putExtra("title", model.getName());
+                    Log.d("Alarm:", "id:" + idString + " Cal: " + calender.getTime());
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
+                    AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis(), pendingIntent);
+                }
             }
         }
         if(day == 26 && !(model.getDay3().equals(""))) {
-            int hr = Integer.parseInt(model.getDay3().substring(0, 2));
-            int min = Integer.parseInt(model.getDay3().substring(2, 4));
-            Calendar calender = Calendar.getInstance();
-            calender.set(Calendar.MONTH, Calendar.MARCH);
-            calender.set(Calendar.YEAR, 2017);
-            calender.set(Calendar.DAY_OF_MONTH, day);
-            calender.set(Calendar.HOUR_OF_DAY, hr);
-            calender.set(Calendar.MINUTE, min);
+            if (!(model.getDay3().equals(""))) {
+                int hr = Integer.parseInt(model.getDay3().substring(0, 2));
+                int min = Integer.parseInt(model.getDay3().substring(2, 4));
+                Calendar calender = Calendar.getInstance();
+                calender.set(Calendar.MONTH, Calendar.MARCH);
+                calender.set(Calendar.YEAR, 2017);
+                calender.set(Calendar.DAY_OF_MONTH, day);
+                calender.set(Calendar.HOUR_OF_DAY, hr);
+                calender.set(Calendar.MINUTE, min);
 
-            /*//testing to be remove before launch
-            calender.set(Calendar.DAY_OF_MONTH,23);
-            calender.set(Calendar.HOUR_OF_DAY,12);
-            calender.set(Calendar.MINUTE,0);*/
-            if (System.currentTimeMillis() < calender.getTimeInMillis()) {
-                Intent intent = new Intent(mainAct, FavReceiver.class);
-                int idString = Integer.parseInt(calender.get(Calendar.DAY_OF_MONTH) + "" + model.getId());
-                intent.putExtra("id", idString);
-                intent.putExtra("realId", model.getId());
-                intent.putExtra("title", model.getName());
-                Log.d("Alarm:", "id:" + idString + " Cal: " + calender.getTime());
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
-                AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis(), pendingIntent);
+                if (System.currentTimeMillis() < calender.getTimeInMillis()) {
+                    Intent intent = new Intent(mainAct, FavReceiver.class);
+                    int idString = Integer.parseInt(calender.get(Calendar.DAY_OF_MONTH) + "" + model.getId());
+                    intent.putExtra("id", idString);
+                    intent.putExtra("realId", model.getId());
+                    intent.putExtra("title", model.getName());
+                    Log.d("Alarm:", "id:" + idString + " Cal: " + calender.getTime());
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
+                    AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis(), pendingIntent);
+                }
             }
         }
     }
@@ -486,7 +494,7 @@ public class MainActivity extends AppCompatActivity
         ((NotificationManager)mainAct.getSystemService(mainAct.NOTIFICATION_SERVICE)).cancel(idString);
         Log.d("Alarm ID",""+idString);
     }
-    public void setImageBackground(String url){
+    public void setImageBackground(String url) {
         Picasso.with(getApplicationContext())
                 .load(url).placeholder(R.drawable.main_placeholder)
                 .into(toolbarImageView);
