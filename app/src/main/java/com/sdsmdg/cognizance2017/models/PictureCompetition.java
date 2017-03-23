@@ -6,6 +6,10 @@ package com.sdsmdg.cognizance2017.models;
 
 public class PictureCompetition {
     private String cogniId,rating;
+    public PictureCompetition(){
+        cogniId=null;
+        rating=null;
+    }
     public PictureCompetition(String cogniId, String rating){
         this.cogniId = cogniId;
         this.rating = rating;

@@ -27,6 +27,7 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
@@ -35,6 +36,7 @@ import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
 import com.sdsmdg.cognizance2017.fragments.AllEventsRecyclerFragment;
 import com.sdsmdg.cognizance2017.models.EventModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,6 +47,9 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import static com.sdsmdg.cognizance2017.R.id.imageView;
+import static com.sdsmdg.cognizance2017.R.id.imageview_toolbar;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -65,6 +70,7 @@ public class MainActivity extends AppCompatActivity
     private int currentSelectedFragmentId;
     public boolean isOnDeptViewPagerFragment;
     public NavigationView navigationView;
+    public ImageView toolbarImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +78,15 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         mainAct = this;
         isOnDeptViewPagerFragment = false;
+        toolbarImageView =(ImageView) findViewById(R.id.imageview_toolbar);
 
 
         tabLayout = (TabLayout) findViewById(R.id.vpager_tabs);
 
         appBar = (AppBarLayout) findViewById(R.id.appbar);
+        String url ="https://scontent.fdel1-1.fna.fbcdn.net/v/t1.0-9/17265243_1432659656807162_6388188857608893324_n.png?oh=d6268dc86d261acadaeef43f9191f5c2&oe=596E349F";
 
+        setImageBackground(url);
         //Is related to transparent toolbar
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -210,10 +219,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(this, MapsActivity.class));
             return true;
         }
-        if (id == R.id.firebaseTest) {
-            startActivity(new Intent(this, FirebaseTestActivity.class));
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -226,23 +232,32 @@ public class MainActivity extends AppCompatActivity
         if (id != R.id.barcode) currentSelectedFragmentId = id;
         isOnHome = false;
         if (id == R.id.all_events) {
+            toolbarImageView.setImageResource(R.drawable.main_placeholder);
             showEvents("all_events", "Home");
             isOnHome = true;
         } else if (id == R.id.theme_events) {
+            setImageBackground("https://scontent.fdel1-1.fna.fbcdn.net/v/t1.0-9/16939604_1409408232465638_2732071995952707105_n.png?oh=e5801aba48c41f8dd153496e8db82fd6&oe=5965A858");
             showEvents("theme_events", "Theme Events");
         } else if (id == R.id.robotics) {
+            setImageBackground("https://scontent.fdel1-1.fna.fbcdn.net/v/t31.0-8/q82/s960x960/16463152_1374411109298684_5412964868764400500_o.jpg?oh=139bc5cf09880a00598e27ffb484077d&oe=595DC83D");
             showEvents("robotics", "Robotics");
         } else if (id == R.id.literario) {
+            setImageBackground("https://scontent.fdel1-1.fna.fbcdn.net/v/t31.0-8/s960x960/16587302_1375407662532362_6304259759811779212_o.png?oh=2dd711f479183e62250bb62ffaf6cb22&oe=5957B88B");
             showEvents("literario", "Literario");
         } else if (id == R.id.competitions) {
+            setImageBackground("https://scontent.fdel1-1.fna.fbcdn.net/v/t1.0-9/17190808_1425555330850928_1236046315941752612_n.png?oh=3576e90bb5ff1b9221fde3b9d74be3b0&oe=5973DB93");
             showEvents("competitions", "Competitions");
         } else if (id == R.id.online) {
+            setImageBackground("https://scontent.fdel1-1.fna.fbcdn.net/v/t31.0-8/s960x960/17358806_1428987000507761_8539195445186412766_o.png?oh=362e8f8d95f92da987b94e204c19351a&oe=595A62F6");
             showEvents("online", "Online Events");
         } else if (id == R.id.fun_events) {
+            setImageBackground("https://scontent.fdel1-1.fna.fbcdn.net/v/t1.0-9/17353358_1432963893443405_8012701290388919154_n.jpg?oh=89f343c9431496f51cc86b6dd91ac7bb&oe=595DC8F6");
             showEvents("fun", "FUN EVENTS");
         } else if (id == R.id.workshop) {
+            setImageBackground("https://scontent.fdel1-1.fna.fbcdn.net/v/t1.0-9/16684338_1380874858652309_7071854506961857899_n.png?oh=51ea2c93dab3767eb6ae09f9c3ae4335&oe=595A27F6");
             showEvents("workshop", "Workshop");
         } else if (id == R.id.dept) {
+            setImageBackground("https://scontent.fdel1-1.fna.fbcdn.net/v/t31.0-8/s960x960/16665063_1382042308535564_5884962650034691312_o.png?oh=68f0223c9f1a0ad4c7f6543a08244a59&oe=5960BE2E");
             fragment = getSupportFragmentManager().findFragmentByTag("dept");
             if (fragment == null) {
                 fragment = AllEventsRecyclerFragment.newInstance(4, "DepartmentList");
@@ -252,12 +267,16 @@ public class MainActivity extends AppCompatActivity
             }
             hideTabs("Departmentals");
         } else if (id == R.id.summit) {
+            toolbarImageView.setImageResource(R.drawable.events);
             showEvents("summit", "E-Summit");
         } else if (id == R.id.mainstay) {
+            setImageBackground("https://scontent.fdel1-1.fna.fbcdn.net/v/t1.0-9/17342703_1427536257319502_4398272506967097961_n.png?oh=24bea22918782b3f135a8f86f70ea26f&oe=5924D29D");
             showEvents("mainstay", "Mainstay");
         } else if (id == R.id.mars) {
+            setImageBackground("https://scontent.fdel1-1.fna.fbcdn.net/v/t31.0-8/s960x960/17038491_1406266746113120_6845539489281441160_o.png?oh=409d1d2ed5d87b4c830084d23edb2e1f&oe=5959735D");
             showEvents("mars", "Project M.A.R.S");
         } else if (id == R.id.fav) {
+            setImageBackground("https://scontent.fdel1-1.fna.fbcdn.net/v/t1.0-9/17361505_1431776796895448_1464994987889437576_n.png?oh=704b763b2588f11d98355698496346d5&oe=595DE449");
             showEvents("fav", "Favorites");
         } else if (id == R.id.barcode) {
             Intent i = new Intent(MainActivity.this, BarCodeActivity.class);
@@ -466,5 +485,10 @@ public class MainActivity extends AppCompatActivity
         alarmManager.cancel(pendingIntent);
         ((NotificationManager)mainAct.getSystemService(mainAct.NOTIFICATION_SERVICE)).cancel(idString);
         Log.d("Alarm ID",""+idString);
+    }
+    public void setImageBackground(String url){
+        Picasso.with(getApplicationContext())
+                .load(url).placeholder(R.drawable.main_placeholder)
+                .into(toolbarImageView);
     }
 }

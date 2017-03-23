@@ -1,6 +1,7 @@
 package com.sdsmdg.cognizance2017.activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.google.zxing.Result;
 
@@ -89,9 +89,12 @@ public class BarCodeActivity extends AppCompatActivity implements ZXingScannerVi
         //Log.v(TAG, rawResult.getText()); // Prints scan results
         //Log.v(TAG, rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
         barCodeResult = rawResult.getText();
-        Toast.makeText(this, barCodeResult, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, barCodeResult, Toast.LENGTH_SHORT).show();
         MainActivity mainActivity = (MainActivity) MainActivity.mainAct;
         mainActivity.navigationView.setCheckedItem(mainActivity.getCurrentSelectedFragmentId());
+        Intent intent = new Intent(this, RatingActivity.class);
+        intent.putExtra("ImageKey", barCodeResult);
+        startActivity(intent);
         finish();
 
         // If you would like to resume scanning, call this method below:

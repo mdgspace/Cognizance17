@@ -38,7 +38,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_weight="1"
                 android:padding="8dp"
-                android:hint="Description"
+                android:text="Description"
                 android:textColor="@color/colorPrimary"/>
 
         </LinearLayout>
@@ -65,7 +65,7 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
                 android:paddingLeft="16dp"
-                android:hint="Time"
+                android:text="Time"
 
                 android:textColor="@color/colorPrimary"
                 android:textAppearance="?android:textAppearanceSmall" />
@@ -118,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:hint="Location"
+                android:text="Location"
                 android:id="@+id/event_location"
                 android:textColor="@color/colorPrimary"/>
         </LinearLayout>
