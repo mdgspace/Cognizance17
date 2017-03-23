@@ -447,4 +447,7 @@ public class MainActivity extends AppCompatActivity
                 .load(url).placeholder(R.drawable.main_placeholder)
                 .into(toolbarImageView);
     }
+    public void showSnack(){
+        Snackbar.make(refreshImg,"You will be notify for this event",Snackbar.LENGTH_LONG).show();
+    }
 }

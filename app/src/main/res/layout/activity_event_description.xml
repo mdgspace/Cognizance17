@@ -33,7 +33,7 @@
                 android:src="@drawable/events"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7"
-                android:alpha="0.7"/>
+                android:alpha="0.5"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/event_toolbar"
@@ -41,11 +41,10 @@
                 android:layout_height="?android:attr/actionBarSize"
                 android:gravity="top"
                 android:minHeight="?android:attr/actionBarSize"
-                app:title="Event"
+                android:title="Home"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:titleMarginTop="15dp"
-                android:fitsSystemWindows="true"/>
+                app:titleMarginTop="15dp" />
 
 
 
@@ -55,18 +54,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <!--<android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|left"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@+id/appBarLayout3"
-        app:layout_anchorGravity="bottom|right"
-        android:tint="@android:color/white"
-        android:backgroundTint="@color/colorPrimaryDark"
-
-        />-->
 
     <include layout="@layout/content_event_description" />
 

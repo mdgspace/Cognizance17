@@ -26,7 +26,6 @@ import static com.sdsmdg.cognizance2017.activities.MainActivity.mainAct;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
 
     private Context ctx;
-    private List<EventModel> eventsList;
     private boolean isInFav;
     private List<EventModel> normalEventList;
     private List<String> deptList;
@@ -49,7 +48,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     public RecyclerAdapter(Context ctx, List<EventModel> eventsList, boolean isInFav, int day) {
         this.ctx = ctx;
-        this.eventsList = eventsList;
         this.isInFav = isInFav;
         this.day = day;
         normalEventList = new ArrayList<EventModel>();
@@ -183,6 +181,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                         currentEvent.setFav3(isChecked);
                     if (isChecked) {
                         ((MainActivity) mainAct).createNotification(currentEvent,day+23);
+                        ((MainActivity) mainAct).showSnack();
                         holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                         holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                         holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
