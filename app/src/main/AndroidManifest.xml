@@ -80,7 +80,10 @@
             android:name=".activities.SponsorsActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoTitle" />
-        <activity android:name=".activities.CogniContacts"></activity>
+        <activity
+            android:name=".activities.ContactUsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTitle" />
     </application>
 
 </manifest>
