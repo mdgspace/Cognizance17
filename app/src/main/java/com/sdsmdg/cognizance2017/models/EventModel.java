@@ -157,4 +157,14 @@ public class EventModel extends RealmObject {
     public void setFav3(boolean fav3) {
         isFav3 = fav3;
     }
+
+    public String getTime(String time){
+        String hr = time.substring(0, 2);
+        String min = time.substring(2, 4);
+
+        String hr2 = time.substring(5, 7);
+        String min2 = time.substring(7, 9);
+        String modifiedTime = hr + ":" + min + " - " + hr2 + ":" + min2;
+        return modifiedTime;
+    }
 }

@@ -1,11 +1,13 @@
 package com.sdsmdg.cognizance2017.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,15 +71,35 @@ public class EventDescriptionActivity extends AppCompatActivity {
                     }, new Realm.Transaction.OnSuccess() {
                         @Override
                         public void onSuccess() {
-                            EventModel model = realm.where(EventModel.class).equalTo("id", getIntent().getIntExtra("id", 6)).findFirst();
+                            final EventModel model = realm.where(EventModel.class).equalTo("id", getIntent().getIntExtra("id", 6)).findFirst();
                             CollapsingToolbarLayout appBar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
                             appBar.setTitle(model.getName());
-                            eventDate.setText(model.getDay1());
+
+                            String timings = "Timings :-";
+                            if(!model.getDay1().isEmpty()){
+                                timings += "\nDay 1 (24 March) : " + model.getTime(model.getDay1());
+                            }
+                            if(!model.getDay2().equals("")){
+                                timings += "\nDay 2 (25 March) : " + model.getTime(model.getDay2());
+                            }
+                            if(!model.getDay3().equals("")){
+                                timings += "\nDay 3 (26 March) : " + model.getTime(model.getDay3());
+                            }
+                            eventDate.setText(timings);
                             String description = Html.fromHtml(model.getDescription()).toString();
                             eventDescription.setText(description);
                             eventLocation.setText(model.getVenue());
+                            eventLocation.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent mapIntent = new Intent(EventDescriptionActivity.this,MapsActivity.class);
+                                    if(!model.getVenue().equals(""))
+                                    mapIntent.putExtra("location",model.getVenue());
+                                    Log.d("location",model.getVenue());
+                                    startActivity(mapIntent);
+                                }
+                            });
                             dialog.dismiss();
-
                         }
                     }, new Realm.Transaction.OnError() {
                         @Override
@@ -97,7 +119,18 @@ public class EventDescriptionActivity extends AppCompatActivity {
             EventModel model = realm.where(EventModel.class).equalTo("id", getIntent().getIntExtra("id", 6)).findFirst();
             CollapsingToolbarLayout appBar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             appBar.setTitle(model.getName());
-            eventDate.setText(model.getDay1());
+            String timings = "Timings :- \n";
+            if(!model.getDay1().isEmpty()){
+                timings += "Day 1 (24 March) : " + model.getTime(model.getDay1());
+            }
+            if(!model.getDay2().equals("")){
+                timings += "\nDay 2 (25 March) : " + model.getTime(model.getDay2());
+            }
+            if(!model.getDay3().equals("")){
+                timings += "\nDay 3 (26 March) : " + model.getTime(model.getDay3());
+            }
+
+            eventDate.setText(timings);
             if(model.getDescription() !=null){
                 String description = Html.fromHtml(model.getDescription()).toString();
                 eventDescription.setText(description);

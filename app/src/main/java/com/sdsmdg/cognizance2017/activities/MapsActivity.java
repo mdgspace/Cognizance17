@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,22 +41,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private boolean isMapReady;
-    private FloatingActionButton resetBtn;
+    private FloatingActionButton resetBtn, mapBtn, satelliteBtn;
     private ArrayList<MarkerData> markersData;
     // Declare a variable for the cluster manager.
     private ClusterManager<MyItem> mClusterManager;
+    private LatLng resetLatLang;
+    private String location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         isMapReady = false;
+        location = getIntent().getStringExtra("location");
+        Toast.makeText(this, location, Toast.LENGTH_SHORT).show();
+        Log.d("location map",location);
         resetBtn = (FloatingActionButton) findViewById(R.id.reset_btn);
-        resetBtn.setOnClickListener(new View.OnClickListener() {
+        mapBtn = (FloatingActionButton) findViewById(R.id.map_button);
+        satelliteBtn = (FloatingActionButton) findViewById(R.id.satellite_button);
+
+        satelliteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isMapReady) {
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(29.865866, 77.896316), 18));
+                if(isMapReady){
+                    mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                }
+            }
+        });
+        mapBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isMapReady){
+                    mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                 }
             }
         });
@@ -87,6 +105,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 markerData.setLongitude(mArray.getJSONObject(i).getDouble("Longitude"));
                 markerData.setTitle(mArray.getJSONObject(i).getString("Location"));
                 markersData.add(markerData);
+                if(markerData.getTitle().equals(location)){
+                    resetLatLang = new LatLng(markerData.getLatitude(),markerData.getLongitude());
+                }else if(location.contains("LHC")){
+                    resetLatLang = new LatLng(29.864856,77.893848);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -98,7 +121,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         isMapReady = true;
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(29.865866, 77.896316), 18));
         setUpClusterManager();
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
@@ -123,6 +145,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (int i = 0; i < markersData.size(); i++) {
             mClusterManager.addItem(new MyItem(markersData.get(i), i));
         }
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(resetLatLang, 18));
+
+        resetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isMapReady) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(resetLatLang, 18));
+                }
+            }
+        });
     }
 
     @Override

@@ -48,20 +48,22 @@ public class AllEventsRecyclerFragment extends Fragment {
             day = 1;
             title = "Title";
         }
+
         Realm.init(getActivity());
         realm = Realm.getDefaultInstance();
         if (title.equals("Home")) {
-            results = realm.where(EventModel.class).notEqualTo("day" + day, "").findAll();
+            results = realm.where(EventModel.class).notEqualTo("day" + day, "").equalTo("type.category","Centerstage").findAll();
+            results = results.sort("day"+day);
         } else if (title.equals("Workshop") || title.equals("Mainstay")
                 || title.equals("E-Summit") || title.equals("Project M.A.R.S")) {
-            results = realm.where(EventModel.class).equalTo("type.category", title).notEqualTo("day" + day, "").findAll();
+            results = realm.where(EventModel.class).equalTo("type.category", title).notEqualTo("day" + day, "").findAllSorted("day"+day);
         } else if (title.equals("Favorites")) {
             if (day == 1)
-                results = realm.where(EventModel.class).equalTo("isFav1", true).notEqualTo("day" + day, "").findAll();
+                results = realm.where(EventModel.class).equalTo("isFav1", true).notEqualTo("day" + day, "").findAllSorted("day"+day);
             else if (day == 2)
-                results = realm.where(EventModel.class).equalTo("isFav2", true).notEqualTo("day" + day, "").findAll();
+                results = realm.where(EventModel.class).equalTo("isFav2", true).notEqualTo("day" + day, "").findAllSorted("day"+day);
             else if (day == 3)
-                results = realm.where(EventModel.class).equalTo("isFav3", true).notEqualTo("day" + day, "").findAll();
+                results = realm.where(EventModel.class).equalTo("isFav3", true).notEqualTo("day" + day, "").findAllSorted("day"+day);
         } else if (title.equals("DepartmentList")) {
             mDeptList = new ArrayList<String>();
             mType = realm.where(Type.class).equalTo("category", "Departmental").findAll();
@@ -75,7 +77,7 @@ public class AllEventsRecyclerFragment extends Fragment {
             mDeptList.addAll(hs);
             Collections.sort(mDeptList);
         } else {
-            results = realm.where(EventModel.class).equalTo("type.name", title).notEqualTo("day" + day, "").findAll();
+            results = realm.where(EventModel.class).equalTo("type.name", title).notEqualTo("day" + day, "").findAllSorted("day"+day);
         }
         //Toast.makeText(getContext(), "" + results.size(), Toast.LENGTH_SHORT).show();
 

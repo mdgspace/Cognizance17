@@ -204,6 +204,9 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.map) {
+            Intent mapIntent = new Intent(MainActivity.this,MapsActivity.class);
+                mapIntent.putExtra("location","Main Building Lawns");
+            startActivity(mapIntent);
             startActivity(new Intent(this, MapsActivity.class));
             return true;
         }
