@@ -182,7 +182,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     else if (day == 3)
                         currentEvent.setFav3(isChecked);
                     if (isChecked) {
-                        ((MainActivity) mainAct).createNotification(currentEvent);
+                        ((MainActivity) mainAct).createNotification(currentEvent,day+23);
                         holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                         holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                         holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
@@ -190,7 +190,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                         holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
                         holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                     } else {
-                        ((MainActivity) mainAct).cancelNotification(currentEvent.getId());
+                        ((MainActivity) mainAct).cancelNotification(currentEvent.getId(),day+23);
                         if (isInFav) {
                             deleteFromFav(holder.getAdapterPosition());
                         } else {
