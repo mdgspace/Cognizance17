@@ -28,7 +28,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.sdsmdg.cognizance2017.FavReceiver;
@@ -68,6 +67,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressDialog dialog;
     private boolean isOnHome, isReady;
     private int currentSelectedFragmentId;
+    private ImageView refreshImg;
 
     public boolean isOnDeptViewPagerFragment;
     public NavigationView navigationView;
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity
         toolbarImageView =(ImageView) findViewById(R.id.imageview_toolbar);
         currentSelectedFragmentId = R.id.all_events;
         tabLayout = (TabLayout) findViewById(R.id.vpager_tabs);
-
+        refreshImg  = (ImageView) findViewById(R.id.refresh_btn);
         appBar = (AppBarLayout) findViewById(R.id.appbar);
         String url ="https://scontent.fdel1-1.fna.fbcdn.net/v/t1.0-9/17265243_1432659656807162_6388188857608893324_n.png?oh=d6268dc86d261acadaeef43f9191f5c2&oe=596E349F";
 
@@ -115,24 +115,25 @@ public class MainActivity extends AppCompatActivity
                 .setEndpoint(BASE_URL)
                 .build();
         api = adapter.create(DataInterface.class);
+        refreshImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadDatabase();
+            }
+        });
         loadDatabase();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        /*showTabs("Home");
-        if (!isOnHome) {
-            showEvents("all_events", "Home");
-            navigationView.getMenu().getItem(0).setChecked(true);
-            isOnHome = true;
-        }*/
     }
 
     private void loadDatabase() {
         if (isNetworkAvailable()) {
             dialog = new ProgressDialog(MainActivity.this);
-            dialog.setMessage("please wait");
+            dialog.setMessage("Fetching data please wait....");
+            dialog.setCancelable(false);
             dialog.show();
             api.getAllEvents(new Callback<JsonArray>() {
                 @Override
@@ -167,16 +168,16 @@ public class MainActivity extends AppCompatActivity
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Snackbar.make(getWindow().getDecorView().getRootView(), "make sure that you have an active internet connection to get latest updates", Snackbar.LENGTH_INDEFINITE).show();
+                    Snackbar.make(refreshImg,"Network Error",Snackbar.LENGTH_LONG).show();
                     dialog.dismiss();
                 }
             });
         } else {
             if (!realm.isEmpty()) {
-                //Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(refreshImg, "Connect to internet to get latest updates", Snackbar.LENGTH_LONG).show();
                 showEvents("all_events", "Home");
             } else {
-                Snackbar.make(getWindow().getDecorView().getRootView(), "make sure that you have an active internet connection to get latest updates", Snackbar.LENGTH_INDEFINITE).show();
+                Snackbar.make(refreshImg, "Connect to internet", Snackbar.LENGTH_LONG).show();
             }
         }
     }
@@ -302,11 +303,6 @@ public class MainActivity extends AppCompatActivity
         Intent eventIntent = new Intent(MainActivity.this, EventDescriptionActivity.class);
         eventIntent.putExtra("id", id);
         startActivity(eventIntent);
-        if (isNetworkAvailable()) {
-            Toast.makeText(mainAct, "connected", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(mainAct, "not connected", Toast.LENGTH_SHORT).show();
-        }
     }
 
     public void showTabs(String title) {
@@ -328,55 +324,6 @@ public class MainActivity extends AppCompatActivity
         return events;
     }
 
-    /*
-        private void loadEvents(final int id) {
-            if (id < ids.size() && shouldLoadEvents) {
-                RealmObject result = realm.where(EventModel.class).equalTo("id", ids.get(id)).findFirst();
-                if (result == null) {
-                    api.getEventById(ids.get(id), new Callback<JsonObject>() {
-                        @Override
-                        public void success(JsonObject json, Response response) {
-                            final JsonObject jsonObject = json;
-
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.createOrUpdateObjectFromJson(EventModel.class, jsonObject.toString());
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    loadEvents(id + 1);
-                                    dialog.setProgress(ids.get(id) * 100 / ids.size());
-                                    Log.d("Cogni data", "" + ids.get(id));
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    // Transaction failed and was automatically canceled.
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            Log.d("Cogni data", "error");
-                            shouldLoadEvents = false;
-                            Toast.makeText(MainActivity.this, "error while downloading", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        }
-                    });
-                } else {
-                    loadEvents(id + 1);
-                    dialog.setProgress(ids.get(id) * 100 / ids.size());
-                }
-            } else {
-                dialog.dismiss();
-                Toast.makeText(mainAct, "Download complete" + ids.size(), Toast.LENGTH_SHORT).show();
-                showEvents("all_events", "Home");
-            }
-        }
-    */
     public void showEvents(String tag, String title) {
         fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if (fragment == null) {
@@ -493,6 +440,7 @@ public class MainActivity extends AppCompatActivity
         alarmManager.cancel(pendingIntent);
         ((NotificationManager)mainAct.getSystemService(mainAct.NOTIFICATION_SERVICE)).cancel(idString);
         Log.d("Alarm ID",""+idString);
+        Snackbar.make(refreshImg,"Notification has been disabled",Snackbar.LENGTH_LONG).show();
     }
     public void setImageBackground(String url) {
         Picasso.with(getApplicationContext())

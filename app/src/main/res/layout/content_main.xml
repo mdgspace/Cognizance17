@@ -8,17 +8,17 @@
     tools:context="com.sdsmdg.cognizance2017.activities.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <ImageView
+        android:id="@+id/refresh_btn"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/logo_two_small"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="#00000000"/>
     <FrameLayout
         android:id="@+id/events_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
-    <TextView
-        android:id="@+id/no_favorite_selected_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="NO FAVORITES"
-        android:visibility="gone" />
-
 </RelativeLayout>

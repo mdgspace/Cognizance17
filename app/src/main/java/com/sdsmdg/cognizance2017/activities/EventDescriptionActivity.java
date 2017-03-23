@@ -1,11 +1,15 @@
 package com.sdsmdg.cognizance2017.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +17,6 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.sdsmdg.cognizance2017.R;
@@ -49,14 +52,14 @@ public class EventDescriptionActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         dialog = new ProgressDialog(this);
         dialog.setMessage("fetching data");
+        dialog.setCancelable(false);
         eventDate = (TextView)findViewById(R.id.event_time);
         eventDescription = (TextView)findViewById(R.id.event_description);
         eventLocation = (TextView)findViewById(R.id.event_location);
         eventContact = (TextView) findViewById(R.id.contact_details);
 
         // accessing data from cognizance website
-        dialog.setCancelable(false);
-        if(((MainActivity)mainAct).isNetworkAvailable()) {
+        if(isNetworkAvailable()) {
             dialog.show();
             RestAdapter adapter = new RestAdapter.Builder()
                     .setEndpoint(BASE_URL)
@@ -126,7 +129,6 @@ public class EventDescriptionActivity extends AppCompatActivity {
                                                         intent.setType("text/html");
                                                         intent.putExtra(Intent.EXTRA_SUBJECT,  "Query about " + model.getName());
                                                         intent.putExtra(android.content.Intent.EXTRA_EMAIL,new String[] { model.getContact_email() });
-                                                        Toast.makeText(EventDescriptionActivity.this, model.getContact_email(), Toast.LENGTH_SHORT).show();
                                                         startActivity(Intent.createChooser(intent, "Send Email"));
                                                     }
                                                 }
@@ -146,7 +148,7 @@ public class EventDescriptionActivity extends AppCompatActivity {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Toast.makeText(EventDescriptionActivity.this, "error while fetching data", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(eventDescription,"error fetching data",Snackbar.LENGTH_LONG).show();
                     dialog.dismiss();
                 }
             });
@@ -171,7 +173,17 @@ public class EventDescriptionActivity extends AppCompatActivity {
                 eventDescription.setText(description);
             }
             eventLocation.setText(model.getVenue());
-            if(!model.getContact_phone().equals("")){
+            eventLocation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent mapIntent = new Intent(EventDescriptionActivity.this,MapsActivity.class);
+                    if(!model.getVenue().equals(""))
+                        mapIntent.putExtra("location",model.getVenue());
+                    Log.d("location",model.getVenue());
+                    startActivity(mapIntent);
+                }
+            });
+            if(model.getContact_email()!= null){
                 eventContact.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -179,7 +191,7 @@ public class EventDescriptionActivity extends AppCompatActivity {
                                 model.getContact_person2()+ " : " + model.getContact_phone2(),
                                 "E-mail : " + model.getContact_email()};
                         AlertDialog.Builder builder = new AlertDialog.Builder(EventDescriptionActivity.this);
-                        builder.setTitle("Contact Details")
+                        builder.setTitle("Contact Us")
                                 .setItems(imageMode, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         if(which==0){
@@ -195,7 +207,6 @@ public class EventDescriptionActivity extends AppCompatActivity {
                                             intent.setType("text/html");
                                             intent.putExtra(Intent.EXTRA_SUBJECT,  "Query about " + model.getName());
                                             intent.putExtra(android.content.Intent.EXTRA_EMAIL,new String[] { model.getContact_email() });
-                                            Toast.makeText(EventDescriptionActivity.this, model.getContact_email(), Toast.LENGTH_SHORT).show();
                                             startActivity(Intent.createChooser(intent, "Send Email"));
                                         }
                                     }
@@ -205,6 +216,13 @@ public class EventDescriptionActivity extends AppCompatActivity {
                 });
             }
             dialog.dismiss();
+            Snackbar.make(eventDescription,"Connect to internet to get latest updates",Snackbar.LENGTH_LONG).show();
         }
+    }
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

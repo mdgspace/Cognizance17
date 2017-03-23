@@ -12,7 +12,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -54,7 +53,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         isMapReady = false;
         location = getIntent().getStringExtra("location");
-        Toast.makeText(this, location, Toast.LENGTH_SHORT).show();
         Log.d("location map",location);
         resetBtn = (FloatingActionButton) findViewById(R.id.reset_btn);
         mapBtn = (FloatingActionButton) findViewById(R.id.map_button);

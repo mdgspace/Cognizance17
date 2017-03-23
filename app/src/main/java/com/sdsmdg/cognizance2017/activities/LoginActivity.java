@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
                 if(isNetworkAvailable()){
                 checkUser();}
                 else {
-                    Snackbar.make(view,"Please check your internet connection",Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(view,"Please check your internet connection",Snackbar.LENGTH_LONG).show();
                 }
             }
         });
@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
         else
-            Toast.makeText(this, "Login failed due to empty fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Login failed due to empty fields", Toast.LENGTH_LONG).show();
     }
 
     private void checkUser(){
@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
         userName = nameEditText.getText().toString();
         userCogniId = passwordEditText.getText().toString();
         if(userName.isEmpty() || userCogniId.isEmpty()){
-            Snackbar.make(button,"Invalid credentials",Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(button,"Invalid credentials",Snackbar.LENGTH_LONG).show();
         }else {
             progressDialog = new ProgressDialog(LoginActivity.this);
             progressDialog.setMessage("Checking Login Credentials");
@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         setUser();
                     } else if (s.equals("401")) {
-                        Snackbar.make(button, "Incorrect Cognizance Id", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(button, "Incorrect Cognizance Id", Snackbar.LENGTH_LONG).show();
                         progressDialog.dismiss();
                     }
 
@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Snackbar.make(button, "Network error", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(button, "Network error", Snackbar.LENGTH_LONG).show();
                     progressDialog.dismiss();
 
                 }
