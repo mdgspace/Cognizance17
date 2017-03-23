@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.sdsmdg.cognizance2017.R;
 
 public class AboutUs extends AppCompatActivity {
 
-    private ImageView gitImage, fbImage, blogImage;
+    private ImageView websiteLinkImage;
+    private ImageView facebookLinkTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,23 +44,7 @@ public class AboutUs extends AppCompatActivity {
     }
 
     private void registerListeners() {
-        gitImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent browser = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://goo.gl/smpcVZ"));
-                startActivity(browser);
-            }
-        });
-        fbImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent browser = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://goo.gl/6Cznj6"));
-                startActivity(browser);
-            }
-        });
-        blogImage.setOnClickListener(new View.OnClickListener() {
+        websiteLinkImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent browser = new Intent(Intent.ACTION_VIEW,
@@ -66,12 +52,19 @@ public class AboutUs extends AppCompatActivity {
                 startActivity(browser);
             }
         });
+        facebookLinkTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent browser = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://goo.gl/6Cznj6"));
+                startActivity(browser);
+            }
+        });
     }
 
     private void initView() {
-        gitImage = (ImageView) findViewById(R.id.git_about_us);
-        fbImage = (ImageView) findViewById(R.id.fb_about_us);
-        blogImage = (ImageView) findViewById(R.id.blog_about_us);
+        websiteLinkImage = (ImageView) findViewById(R.id.about_website_link);
+        facebookLinkTextView = (ImageView) findViewById(R.id.about_facebook_link);
 
     }
 }
