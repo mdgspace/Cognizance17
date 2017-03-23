@@ -94,7 +94,8 @@ public class BarCodeActivity extends AppCompatActivity implements ZXingScannerVi
         mainActivity.navigationView.setCheckedItem(mainActivity.getCurrentSelectedFragmentId());
         Intent intent = new Intent(this, RatingActivity.class);
         intent.putExtra("ImageKey", barCodeResult);
-        startActivity(intent);
+        if (barCodeResult.charAt(0) == '#')
+            startActivity(intent);
         finish();
 
         // If you would like to resume scanning, call this method below:

@@ -143,13 +143,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (int i = 0; i < markersData.size(); i++) {
             mClusterManager.addItem(new MyItem(markersData.get(i), i));
         }
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(resetLatLang, 18));
+        try {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(resetLatLang, 18));
+        }catch (Exception e){
+
+        }
 
         resetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isMapReady) {
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(resetLatLang, 18));
+                    try {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(resetLatLang, 18));
+                    }catch (Exception e){
+
+                    }
                 }
             }
         });

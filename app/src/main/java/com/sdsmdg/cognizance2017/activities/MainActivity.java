@@ -292,6 +292,9 @@ public class MainActivity extends AppCompatActivity
             Intent i = new Intent(MainActivity.this, SponsorsActivity.class);
             i.putExtra("isOnSponser", false);
             startActivity(i);
+        } else if(id==R.id.contacts){
+            Intent i = new Intent(MainActivity.this, ContactUsActivity.class);
+            startActivity(i);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -424,7 +427,7 @@ public class MainActivity extends AppCompatActivity
                     Log.d("Alarm:", "id:" + idString + " Cal: " + calender.getTime());
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
                     AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis(), pendingIntent);
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis()-15*60*1000, pendingIntent);
                 }
             }
         }
@@ -446,5 +449,8 @@ public class MainActivity extends AppCompatActivity
         Picasso.with(getApplicationContext())
                 .load(url).placeholder(R.drawable.main_placeholder)
                 .into(toolbarImageView);
+    }
+    public void showSnack(){
+        Snackbar.make(refreshImg,"You will be notify for this event",Snackbar.LENGTH_LONG).show();
     }
 }

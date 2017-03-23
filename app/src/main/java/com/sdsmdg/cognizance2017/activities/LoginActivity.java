@@ -28,12 +28,12 @@ import static com.sdsmdg.cognizance2017.activities.MainActivity.BASE_URL;
 public class LoginActivity extends AppCompatActivity {
     private String userName;
     private String userCogniId;
-    EditText nameEditText;
-    EditText passwordEditText;
-    SessionManager session;
-    DataInterface api;
-    Button button;
-    ProgressDialog progressDialog;
+    private EditText nameEditText;
+    private EditText passwordEditText;
+    private SessionManager session;
+    private DataInterface api;
+    private Button button;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +47,7 @@ public class LoginActivity extends AppCompatActivity {
                 .setEndpoint(BASE_URL)
                 .build();
         api = adapter.create(DataInterface.class);
-        Button loginButton = (Button) findViewById(R.id.loginButton);
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(isNetworkAvailable()){
@@ -97,7 +96,6 @@ public class LoginActivity extends AppCompatActivity {
                         Snackbar.make(button, "Incorrect Cognizance Id", Snackbar.LENGTH_LONG).show();
                         progressDialog.dismiss();
                     }
-
                 }
 
                 @Override

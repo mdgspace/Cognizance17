@@ -85,6 +85,10 @@
             android:icon="@drawable/dollar"
             android:title="Sponsors" />
         <item
+            android:id="@+id/contacts"
+            android:icon="@drawable/phone"
+            android:title="Contacts" />
+        <item
             android:id="@+id/about_us"
             android:icon="@drawable/about_us"
             android:title="About Us" />

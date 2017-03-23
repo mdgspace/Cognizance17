@@ -39,7 +39,7 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="?attr/actionBarSize"
                 android:gravity="top"
                 android:minHeight="?android:attr/actionBarSize"
                 android:title="Home"
@@ -51,8 +51,7 @@
                 android:id="@+id/vpager_tabs"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:layout_gravity="bottom"
-                app:tabIndicatorColor="@color/colorPrimary">
+                android:layout_gravity="bottom">
 
             </android.support.design.widget.TabLayout>
 
