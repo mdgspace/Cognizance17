@@ -25,5 +25,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="contact_us"><u>Contact Us</u></string>
+    <!--About page strings-->
+    <string name="mdg_description">An Active students group at IIT Roorkee directed towards developing useful applications</string>
+    <string name="contact_us">Contact Us</string>
+
 </resources>
