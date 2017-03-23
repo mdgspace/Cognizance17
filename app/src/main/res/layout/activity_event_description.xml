@@ -10,6 +10,7 @@
         android:id="@+id/appBarLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -43,7 +44,8 @@
                 app:title="Event"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:titleMarginTop="15dp" />
+                app:titleMarginTop="15dp"
+                android:fitsSystemWindows="true"/>
 
 
 

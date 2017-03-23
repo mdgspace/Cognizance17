@@ -28,7 +28,8 @@
             android:layout_marginBottom="8dp"
             android:textColorHint="@color/colorPrimary"
             app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
-            android:theme="@style/TextLabel">
+            android:theme="@style/TextLabel"
+            >
 
             <EditText
                 android:id="@+id/userPhoneNumber"
@@ -37,7 +38,8 @@
                 android:ems="10"
                 android:hint="Your Cognizance Id"
                 android:textColorHint="@color/colorPrimary"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                android:maxLines="1"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -60,7 +62,8 @@
                 android:hint="Your Name"
                 android:inputType="textPersonName"
                 android:textColorHint="@color/colorPrimary"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                android:maxLines="1"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.v7.widget.AppCompatButton
