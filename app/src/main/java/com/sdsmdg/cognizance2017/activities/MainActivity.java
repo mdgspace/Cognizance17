@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressDialog dialog;
     private boolean isOnHome, isReady;
     private int currentSelectedFragmentId;
+
     public boolean isOnDeptViewPagerFragment;
     public NavigationView navigationView;
 
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         mainAct = this;
         isOnDeptViewPagerFragment = false;
+        currentSelectedFragmentId = R.id.all_events;
 
 
         tabLayout = (TabLayout) findViewById(R.id.vpager_tabs);
@@ -121,7 +123,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadDatabase() {
-        if(isNetworkAvailable()){
+        if (isNetworkAvailable()) {
             dialog = new ProgressDialog(MainActivity.this);
             dialog.setMessage("please wait");
             dialog.show();
@@ -138,9 +140,9 @@ public class MainActivity extends AppCompatActivity
                         public void onSuccess() {
                             dialog.dismiss();
                             showEvents("all_events", "Home");
-                            RealmResults<EventModel> eventModels = realm.where(EventModel.class).equalTo("isFav1",true).findAll();
-                            for(EventModel model:eventModels){
-                                if(model.isFav1())
+                            RealmResults<EventModel> eventModels = realm.where(EventModel.class).equalTo("isFav1", true).findAll();
+                            for (EventModel model : eventModels) {
+                                if (model.isFav1())
                                     createNotification(model);
                             }
                         }
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_INDEFINITE).show();
+                    Snackbar.make(getWindow().getDecorView().getRootView(), "make sure that you have an active internet connection to get latest updates", Snackbar.LENGTH_INDEFINITE).show();
                     dialog.dismiss();
                 }
             });
@@ -162,7 +164,7 @@ public class MainActivity extends AppCompatActivity
                 //Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_SHORT).show();
                 showEvents("all_events", "Home");
             } else {
-                Snackbar.make(getWindow().getDecorView().getRootView(),"make sure that you have an active internet connection to get latest updates",Snackbar.LENGTH_INDEFINITE).show();
+                Snackbar.make(getWindow().getDecorView().getRootView(), "make sure that you have an active internet connection to get latest updates", Snackbar.LENGTH_INDEFINITE).show();
             }
         }
     }
@@ -214,7 +216,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        if (id != R.id.barcode) currentSelectedFragmentId = id;
+        if (id != R.id.barcode && id != R.id.about_us && id != R.id.sponsors)
+            currentSelectedFragmentId = id;
         isOnHome = false;
         if (id == R.id.all_events) {
             showEvents("all_events", "Home");
@@ -227,8 +230,6 @@ public class MainActivity extends AppCompatActivity
             showEvents("literario", "Literario");
         } else if (id == R.id.competitions) {
             showEvents("competitions", "Competitions");
-        } else if (id == R.id.online) {
-            showEvents("online", "Online Events");
         } else if (id == R.id.fun_events) {
             showEvents("fun", "FUN EVENTS");
         } else if (id == R.id.workshop) {
@@ -252,6 +253,12 @@ public class MainActivity extends AppCompatActivity
             showEvents("fav", "Favorites");
         } else if (id == R.id.barcode) {
             Intent i = new Intent(MainActivity.this, BarCodeActivity.class);
+            startActivity(i);
+        } else if (id == R.id.sponsors) {
+            Intent i = new Intent(MainActivity.this, SponsorsActivity.class);
+            startActivity(i);
+        } else if (id == R.id.about_us) {
+            Intent i = new Intent(MainActivity.this, AboutUs.class);
             startActivity(i);
         }
 
@@ -289,55 +296,56 @@ public class MainActivity extends AppCompatActivity
         }
         return events;
     }
-/*
-    private void loadEvents(final int id) {
-        if (id < ids.size() && shouldLoadEvents) {
-            RealmObject result = realm.where(EventModel.class).equalTo("id", ids.get(id)).findFirst();
-            if (result == null) {
-                api.getEventById(ids.get(id), new Callback<JsonObject>() {
-                    @Override
-                    public void success(JsonObject json, Response response) {
-                        final JsonObject jsonObject = json;
 
-                        realm.executeTransactionAsync(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                realm.createOrUpdateObjectFromJson(EventModel.class, jsonObject.toString());
-                            }
-                        }, new Realm.Transaction.OnSuccess() {
-                            @Override
-                            public void onSuccess() {
-                                loadEvents(id + 1);
-                                dialog.setProgress(ids.get(id) * 100 / ids.size());
-                                Log.d("Cogni data", "" + ids.get(id));
-                            }
-                        }, new Realm.Transaction.OnError() {
-                            @Override
-                            public void onError(Throwable error) {
-                                // Transaction failed and was automatically canceled.
-                            }
-                        });
-                    }
+    /*
+        private void loadEvents(final int id) {
+            if (id < ids.size() && shouldLoadEvents) {
+                RealmObject result = realm.where(EventModel.class).equalTo("id", ids.get(id)).findFirst();
+                if (result == null) {
+                    api.getEventById(ids.get(id), new Callback<JsonObject>() {
+                        @Override
+                        public void success(JsonObject json, Response response) {
+                            final JsonObject jsonObject = json;
 
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Log.d("Cogni data", "error");
-                        shouldLoadEvents = false;
-                        Toast.makeText(MainActivity.this, "error while downloading", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                    }
-                });
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.createOrUpdateObjectFromJson(EventModel.class, jsonObject.toString());
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    loadEvents(id + 1);
+                                    dialog.setProgress(ids.get(id) * 100 / ids.size());
+                                    Log.d("Cogni data", "" + ids.get(id));
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    // Transaction failed and was automatically canceled.
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            Log.d("Cogni data", "error");
+                            shouldLoadEvents = false;
+                            Toast.makeText(MainActivity.this, "error while downloading", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
+                    });
+                } else {
+                    loadEvents(id + 1);
+                    dialog.setProgress(ids.get(id) * 100 / ids.size());
+                }
             } else {
-                loadEvents(id + 1);
-                dialog.setProgress(ids.get(id) * 100 / ids.size());
+                dialog.dismiss();
+                Toast.makeText(mainAct, "Download complete" + ids.size(), Toast.LENGTH_SHORT).show();
+                showEvents("all_events", "Home");
             }
-        } else {
-            dialog.dismiss();
-            Toast.makeText(mainAct, "Download complete" + ids.size(), Toast.LENGTH_SHORT).show();
-            showEvents("all_events", "Home");
         }
-    }
-*/
+    */
     public void showEvents(String tag, String title) {
         fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if (fragment == null) {
@@ -373,7 +381,7 @@ public class MainActivity extends AppCompatActivity
 
 
     public void createNotification(EventModel model) {
-        if(!(model.getDay1().equals(""))) {
+        if (!(model.getDay1().equals(""))) {
             int hr = Integer.parseInt(model.getDay1().substring(0, 2));
             int min = Integer.parseInt(model.getDay1().substring(2, 4));
             int day = 24;
@@ -395,7 +403,7 @@ public class MainActivity extends AppCompatActivity
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis(), pendingIntent);
             }
         }
-        if(!(model.getDay2().equals(""))) {
+        if (!(model.getDay2().equals(""))) {
             int hr = Integer.parseInt(model.getDay2().substring(0, 2));
             int min = Integer.parseInt(model.getDay2().substring(2, 4));
             int day = 25;
@@ -406,10 +414,10 @@ public class MainActivity extends AppCompatActivity
             calender.set(Calendar.HOUR_OF_DAY, hr);
             calender.set(Calendar.MINUTE, min);
             // testing to be remove before launch
-            calender.set(Calendar.DAY_OF_MONTH,21);
-            calender.set(Calendar.HOUR_OF_DAY,23);
-            calender.set(Calendar.MINUTE,50);
-            if (System.currentTimeMillis() < calender.getTimeInMillis()||true) {
+            calender.set(Calendar.DAY_OF_MONTH, 21);
+            calender.set(Calendar.HOUR_OF_DAY, 23);
+            calender.set(Calendar.MINUTE, 50);
+            if (System.currentTimeMillis() < calender.getTimeInMillis() || true) {
                 Intent intent = new Intent(mainAct, FavReceiver.class);
                 int idString = Integer.parseInt(calender.get(Calendar.DAY_OF_MONTH) + "" + model.getId());
                 intent.putExtra("id", idString);
@@ -421,7 +429,7 @@ public class MainActivity extends AppCompatActivity
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis(), pendingIntent);
             }
         }
-        if(!(model.getDay3().equals(""))) {
+        if (!(model.getDay3().equals(""))) {
             int hr = Integer.parseInt(model.getDay3().substring(0, 2));
             int min = Integer.parseInt(model.getDay3().substring(2, 4));
             int day = 25;
@@ -433,10 +441,10 @@ public class MainActivity extends AppCompatActivity
             calender.set(Calendar.MINUTE, min);
 
             //testing to be remove before launch
-            calender.set(Calendar.DAY_OF_MONTH,22);
-            calender.set(Calendar.HOUR_OF_DAY,23);
-            calender.set(Calendar.MINUTE,51);
-            if (System.currentTimeMillis() < calender.getTimeInMillis()||true) {
+            calender.set(Calendar.DAY_OF_MONTH, 22);
+            calender.set(Calendar.HOUR_OF_DAY, 23);
+            calender.set(Calendar.MINUTE, 51);
+            if (System.currentTimeMillis() < calender.getTimeInMillis() || true) {
                 Intent intent = new Intent(mainAct, FavReceiver.class);
                 int idString = Integer.parseInt(calender.get(Calendar.DAY_OF_MONTH) + "" + model.getId());
                 intent.putExtra("id", idString);
@@ -454,28 +462,28 @@ public class MainActivity extends AppCompatActivity
         AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
         Intent intent = new Intent(mainAct, FavReceiver.class);
         int idString = Integer.parseInt(24 + "" + id);
-        intent.putExtra("idString",idString);
-        intent.putExtra("cancel",true);
-        Log.d("Alarm",""+idString);
+        intent.putExtra("idString", idString);
+        intent.putExtra("cancel", true);
+        Log.d("Alarm", "" + idString);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
         alarmManager.cancel(pendingIntent);
-        ((NotificationManager)mainAct.getSystemService(mainAct.NOTIFICATION_SERVICE)).cancel(idString);
+        ((NotificationManager) mainAct.getSystemService(mainAct.NOTIFICATION_SERVICE)).cancel(idString);
         Intent intent2 = new Intent(mainAct, FavReceiver.class);
         int idString2 = Integer.parseInt(25 + "" + id);
-        intent2.putExtra("idString",idString2);
-        intent2.putExtra("cancel",true);
+        intent2.putExtra("idString", idString2);
+        intent2.putExtra("cancel", true);
         PendingIntent pendingIntent2 = PendingIntent.getBroadcast(mainAct, idString2, intent, 0);
         alarmManager.cancel(pendingIntent2);
-        ((NotificationManager)mainAct.getSystemService(mainAct.NOTIFICATION_SERVICE)).cancel(idString2);
-        Log.d("Alarm",""+idString2);
+        ((NotificationManager) mainAct.getSystemService(mainAct.NOTIFICATION_SERVICE)).cancel(idString2);
+        Log.d("Alarm", "" + idString2);
         Intent intent3 = new Intent(mainAct, FavReceiver.class);
         int idString3 = Integer.parseInt(26 + "" + id);
-        intent3.putExtra("idString",idString3);
-        intent3.putExtra("cancel",true);
+        intent3.putExtra("idString", idString3);
+        intent3.putExtra("cancel", true);
         PendingIntent pendingIntent3 = PendingIntent.getBroadcast(mainAct, idString2, intent, 0);
         alarmManager.cancel(pendingIntent3);
-        Log.d("Alarm",""+idString3);
-        ((NotificationManager)mainAct.getSystemService(mainAct.NOTIFICATION_SERVICE)).cancel(idString3);
+        Log.d("Alarm", "" + idString3);
+        ((NotificationManager) mainAct.getSystemService(mainAct.NOTIFICATION_SERVICE)).cancel(idString3);
         Toast.makeText(mainAct, "Alarm has been cancelled", Toast.LENGTH_LONG).show();
     }
 
