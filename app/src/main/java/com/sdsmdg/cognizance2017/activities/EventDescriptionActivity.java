@@ -2,8 +2,11 @@ package com.sdsmdg.cognizance2017.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -27,7 +30,7 @@ import static com.sdsmdg.cognizance2017.activities.MainActivity.mainAct;
 
 
 public class EventDescriptionActivity extends AppCompatActivity {
-    private TextView eventDate, eventDescription, eventLocation;;
+    private TextView eventDate, eventDescription, eventLocation ,eventContact;
     private Realm realm;
     private ProgressDialog dialog;
 
@@ -49,6 +52,7 @@ public class EventDescriptionActivity extends AppCompatActivity {
         eventDate = (TextView)findViewById(R.id.event_time);
         eventDescription = (TextView)findViewById(R.id.event_description);
         eventLocation = (TextView)findViewById(R.id.event_location);
+        eventContact = (TextView) findViewById(R.id.contact_details);
 
         // accessing data from cognizance website
         dialog.setCancelable(false);
@@ -99,6 +103,37 @@ public class EventDescriptionActivity extends AppCompatActivity {
                                     startActivity(mapIntent);
                                 }
                             });
+                            eventContact.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    String[] imageMode = {model.getContact_person()+" : " + model.getContact_phone(),
+                                            model.getContact_person2()+ " : " + model.getContact_phone2(),
+                                            "E-mail : " + model.getContact_email()};
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(EventDescriptionActivity.this);
+                                    builder.setTitle("Contact Details")
+                                            .setItems(imageMode, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    if(which==0){
+                                                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                                                        intent.setData(Uri.parse("tel:"+model.getContact_phone()));
+                                                        startActivity(intent);                                                     }
+                                                    else if(which == 1) {
+                                                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                                                        intent.setData(Uri.parse("tel:"+model.getContact_phone2()));
+                                                        startActivity(intent);
+                                                    }else {
+                                                        Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                                                        intent.setType("text/html");
+                                                        intent.putExtra(Intent.EXTRA_SUBJECT,  "Query about " + model.getName());
+                                                        intent.putExtra(android.content.Intent.EXTRA_EMAIL,new String[] { model.getContact_email() });
+                                                        Toast.makeText(EventDescriptionActivity.this, model.getContact_email(), Toast.LENGTH_SHORT).show();
+                                                        startActivity(Intent.createChooser(intent, "Send Email"));
+                                                    }
+                                                }
+                                            });
+                                    builder.show();
+                                }
+                            });
                             dialog.dismiss();
                         }
                     }, new Realm.Transaction.OnError() {
@@ -116,7 +151,7 @@ public class EventDescriptionActivity extends AppCompatActivity {
                 }
             });
         }else{
-            EventModel model = realm.where(EventModel.class).equalTo("id", getIntent().getIntExtra("id", 6)).findFirst();
+            final EventModel model = realm.where(EventModel.class).equalTo("id", getIntent().getIntExtra("id", 6)).findFirst();
             CollapsingToolbarLayout appBar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             appBar.setTitle(model.getName());
             String timings = "Timings :- \n";
@@ -136,6 +171,39 @@ public class EventDescriptionActivity extends AppCompatActivity {
                 eventDescription.setText(description);
             }
             eventLocation.setText(model.getVenue());
+            if(!model.getContact_phone().equals("")){
+                eventContact.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String[] imageMode = {model.getContact_person()+" : " + model.getContact_phone(),
+                                model.getContact_person2()+ " : " + model.getContact_phone2(),
+                                "E-mail : " + model.getContact_email()};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(EventDescriptionActivity.this);
+                        builder.setTitle("Contact Details")
+                                .setItems(imageMode, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if(which==0){
+                                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                                            intent.setData(Uri.parse("tel:"+model.getContact_phone()));
+                                            startActivity(intent);                                                     }
+                                        else if(which == 1) {
+                                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                                            intent.setData(Uri.parse("tel:"+model.getContact_phone2()));
+                                            startActivity(intent);
+                                        }else {
+                                            Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                                            intent.setType("text/html");
+                                            intent.putExtra(Intent.EXTRA_SUBJECT,  "Query about " + model.getName());
+                                            intent.putExtra(android.content.Intent.EXTRA_EMAIL,new String[] { model.getContact_email() });
+                                            Toast.makeText(EventDescriptionActivity.this, model.getContact_email(), Toast.LENGTH_SHORT).show();
+                                            startActivity(Intent.createChooser(intent, "Send Email"));
+                                        }
+                                    }
+                                });
+                        builder.show();
+                    }
+                });
+            }
             dialog.dismiss();
         }
     }
