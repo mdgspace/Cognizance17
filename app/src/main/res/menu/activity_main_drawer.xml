@@ -54,7 +54,7 @@
 
         <item
             android:id="@+id/techtainment"
-            android:icon="@drawable/camera"
+            android:icon="@drawable/techtainment"
             android:title="Techtainment" />
         <item
             android:id="@+id/barcode"
@@ -82,11 +82,11 @@
             android:title="Project M.A.R.S" />
         <item
             android:id="@+id/sponsors"
-            android:icon="@drawable/mars"
+            android:icon="@drawable/dollar"
             android:title="Sponsors" />
         <item
             android:id="@+id/about_us"
-            android:icon="@drawable/mars"
+            android:icon="@drawable/about_us"
             android:title="About Us" />
 
     </group>

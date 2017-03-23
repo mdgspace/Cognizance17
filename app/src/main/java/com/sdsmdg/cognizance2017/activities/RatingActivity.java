@@ -19,10 +19,14 @@ import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.SessionManager;
 import com.sdsmdg.cognizance2017.models.PictureCompetition;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.io.InputStream;
+
 import io.techery.properratingbar.ProperRatingBar;
 import io.techery.properratingbar.RatingListener;
-
-import static com.google.zxing.qrcode.decoder.ErrorCorrectionLevel.Q;
 
 public class RatingActivity extends AppCompatActivity {
 
@@ -31,6 +35,7 @@ public class RatingActivity extends AppCompatActivity {
     private SessionManager sessionManager;
     private DatabaseReference mDatabase;
     private String rating;
+    private TextView photographer, caption, location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +46,16 @@ public class RatingActivity extends AppCompatActivity {
         cogniId = sessionManager.getUserCogniId();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         //Fetch the image details from local json
+
         final TextView ratingResult = (TextView) findViewById(R.id.text);
-        TextView photographer = (TextView) findViewById(R.id.photographer);
-        TextView caption = (TextView) findViewById(R.id.desc);
-        TextView contact = (TextView) findViewById(R.id.contact_details);
-        TextView location = (TextView) findViewById(R.id.location);
+        photographer = (TextView) findViewById(R.id.photographer);
+        caption = (TextView) findViewById(R.id.desc);
+        //contact = (TextView) findViewById(R.id.contact_details);
+        location = (TextView) findViewById(R.id.location);
         final AppCompatButton button = (AppCompatButton) findViewById(R.id.submit_button);
+
         //Set the data to the view
+        loadJSONFromAsset();
 
         final ProperRatingBar ratingBar = (ProperRatingBar) findViewById(R.id.rating_bar);
         ratingBar.setListener(new RatingListener() {
@@ -99,14 +107,15 @@ public class RatingActivity extends AppCompatActivity {
         });
 
     }
-    private void submitRating(){
+
+    private void submitRating() {
         Query query = mDatabase.child(imageId).orderByChild("cogniId").equalTo(cogniId);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue()==null) {
+                if (dataSnapshot.getValue() == null) {
                     mDatabase.child(imageId).push().setValue(new PictureCompetition(cogniId, rating));
-                    Toast.makeText(RatingActivity.this, ""+cogniId+"rat"+rating, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RatingActivity.this, "" + cogniId + "rat" + rating, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -144,5 +153,33 @@ public class RatingActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void loadJSONFromAsset() {
+        String json = null;
+        try {
+            InputStream is = getAssets().open("photo_shoot.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        try {
+            //markersData = new ArrayList<>();
+            JSONArray mArray = new JSONArray(json);
+            for (int i = 0; i < mArray.length(); i++) {
+
+                if (imageId == mArray.getJSONObject(i).getString("QR Code")) {
+                    photographer.setText(mArray.getJSONObject(i).getString("Photographer"));
+                    caption.setText(mArray.getJSONObject(i).getString("Location"));
+                    location.setText(mArray.getJSONObject(i).getString("Caption"));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

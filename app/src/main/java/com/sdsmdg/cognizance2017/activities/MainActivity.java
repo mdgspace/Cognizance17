@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        if (id != R.id.barcode && id != R.id.about_us && id != R.id.sponsors)
+        if (id != R.id.barcode && id != R.id.about_us && id != R.id.sponsors && id != R.id.techtainment)
             currentSelectedFragmentId = id;
         isOnHome = false;
         if (id == R.id.all_events) {
@@ -282,13 +282,13 @@ public class MainActivity extends AppCompatActivity
             startActivity(i);
         } else if (id == R.id.sponsors) {
             Intent i = new Intent(MainActivity.this, SponsorsActivity.class);
+            i.putExtra("isOnSponser", true);
             startActivity(i);
         } else if (id == R.id.about_us) {
             Intent i = new Intent(MainActivity.this, AboutUs.class);
-            i.putExtra("isOnSponser", true);
             startActivity(i);
         } else if (id == R.id.techtainment) {
-            Intent i = new Intent(MainActivity.this, AboutUs.class);
+            Intent i = new Intent(MainActivity.this, SponsorsActivity.class);
             i.putExtra("isOnSponser", false);
             startActivity(i);
         }

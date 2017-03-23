@@ -28,25 +28,38 @@ public class SponsorsActivity extends AppCompatActivity {
 
 
         if (isOnSponser) {
-            file_maps.put("Hannibal", R.drawable.cogni_splash);
-            file_maps.put("Big Bang Theory", R.drawable.logo_two);
-            file_maps.put("House of Cards", R.drawable.cogni_splash);
-            file_maps.put("Game of Thrones", R.drawable.logo_two);
+            file_maps.put("1", R.drawable.capture_one);
+            file_maps.put("2", R.drawable.capture_two);
+            file_maps.put("3", R.drawable.capture_three);
+            file_maps.put("4", R.drawable.capture_four);
+            file_maps.put("5", R.drawable.capture_five);
+            file_maps.put("6", R.drawable.capture_six);
+            file_maps.put("7", R.drawable.capture_seven);
+            file_maps.put("8", R.drawable.capture_eight);
+            file_maps.put("9", R.drawable.capture_nine);
+            file_maps.put("10", R.drawable.capture_ten);
+            file_maps.put("11", R.drawable.capture_eleven);
         } else {
-            file_maps.put("Hannibal", R.drawable.cogni_splash);
-            file_maps.put("Big Bang Theory", R.drawable.logo_two);
-            file_maps.put("House of Cards", R.drawable.cogni_splash);
-            file_maps.put("Game of Thrones", R.drawable.logo_two);
+            file_maps.put("Coke Studio", R.drawable.dayone);
+            file_maps.put("The Viral Fever", R.drawable.test_image);
+            file_maps.put("Papon", R.drawable.day_three_one);
+            file_maps.put("Sachin-Jigar", R.drawable.day_three_two);
         }
 
 
         for (String name : file_maps.keySet()) {
             TextSliderView textSliderView = new TextSliderView(this);
             // initialize a SliderLayout
-            textSliderView
-                    .description(name)
-                    .image(file_maps.get(name))
-                    .setScaleType(BaseSliderView.ScaleType.Fit);
+            if (isOnSponser)
+                textSliderView
+                        //.description(name)
+                        .image(file_maps.get(name))
+                        .setScaleType(BaseSliderView.ScaleType.CenterCrop);
+            else
+                textSliderView
+                        .description(name)
+                        .image(file_maps.get(name))
+                        .setScaleType(BaseSliderView.ScaleType.CenterCrop);
 
             //add your extra information
             textSliderView.bundle(new Bundle());

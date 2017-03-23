@@ -55,30 +55,9 @@
         android:textColor="@color/colorPrimary" />
 
     <LinearLayout
-        android:id="@+id/linear_one"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/desc"
-        android:orientation="horizontal"
-        android:padding="10dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/phone" />
-
-        <TextView
-            android:id="@+id/contact_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Contact"
-            android:textColor="@color/colorPrimary" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/linear_one"
         android:orientation="horizontal"
         android:padding="10dp">
 
@@ -99,11 +78,11 @@
         android:id="@+id/submit_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginBottom="24dp"
+        android:layout_marginTop="24dp"
+        android:background="@color/colorAccent"
         android:padding="12dp"
         android:text="Submit"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorAccent"
-        android:textColor="#ffffff"/>
+        android:textColor="#ffffff" />
 </RelativeLayout>

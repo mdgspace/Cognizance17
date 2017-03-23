@@ -9,7 +9,7 @@
     <com.daimajia.slider.library.SliderLayout
         android:id="@+id/slider"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         custom:auto_cycle="true"
         custom:indicator_visibility="visible"
         custom:pager_animation="Accordion"
@@ -24,7 +24,6 @@
         android:layout_marginBottom="20dp"
         android:gravity="center"
         custom:selected_color="#0095BF"
-        custom:selected_drawable="@drawable/camera"
         custom:selected_height="6dp"
         custom:selected_padding_left="5dp"
         custom:selected_padding_right="5dp"

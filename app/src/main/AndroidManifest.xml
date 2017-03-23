@@ -69,10 +69,11 @@
         <activity android:name=".activities.RatingActivity"></activity>
         <activity
             android:name=".activities.AboutUs"
-            android:theme="@style/AppTheme.NoTitle"/>
+            android:theme="@style/AppTheme.NoTitle" />
         <activity
             android:name=".activities.SponsorsActivity"
-            android:theme="@style/AppTheme.NoTitle"/>
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.NoTitle" />
     </application>
 
 </manifest>
