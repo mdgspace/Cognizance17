@@ -65,9 +65,8 @@
         <activity
             android:name=".activities.LoginActivity"
             android:theme="@style/LoginActivityTheme" />
-
-        <activity android:name=".activities.FirebaseTestActivity"></activity>
-
+        <activity android:name=".activities.FirebaseTestActivity" />
+        <activity android:name=".activities.RatingActivity"></activity>
     </application>
 
 </manifest>

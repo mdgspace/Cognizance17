@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.adapters.RecyclerAdapter;
@@ -34,6 +35,7 @@ public class AllEventsRecyclerFragment extends Fragment {
     private RecyclerAdapter adapter;
     private List<String> mDeptList;
     private List<Type> mType;
+    private TextView holderText;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,15 +48,22 @@ public class AllEventsRecyclerFragment extends Fragment {
             day = 1;
             title = "Title";
         }
+
         Realm.init(getActivity());
         realm = Realm.getDefaultInstance();
         if (title.equals("Home")) {
-            results = realm.where(EventModel.class).notEqualTo("day" + day, "").findAll();
+            results = realm.where(EventModel.class).notEqualTo("day" + day, "").equalTo("type.category","Centerstage").findAll();
+            results = results.sort("day"+day);
         } else if (title.equals("Workshop") || title.equals("Mainstay")
                 || title.equals("E-Summit") || title.equals("Project M.A.R.S")) {
-            results = realm.where(EventModel.class).equalTo("type.category", title).findAll();
+            results = realm.where(EventModel.class).equalTo("type.category", title).notEqualTo("day" + day, "").findAllSorted("day"+day);
         } else if (title.equals("Favorites")) {
-            results = realm.where(EventModel.class).equalTo("isFav", true).findAll();
+            if (day == 1)
+                results = realm.where(EventModel.class).equalTo("isFav1", true).notEqualTo("day" + day, "").findAllSorted("day"+day);
+            else if (day == 2)
+                results = realm.where(EventModel.class).equalTo("isFav2", true).notEqualTo("day" + day, "").findAllSorted("day"+day);
+            else if (day == 3)
+                results = realm.where(EventModel.class).equalTo("isFav3", true).notEqualTo("day" + day, "").findAllSorted("day"+day);
         } else if (title.equals("DepartmentList")) {
             mDeptList = new ArrayList<String>();
             mType = realm.where(Type.class).equalTo("category", "Departmental").findAll();
@@ -68,7 +77,7 @@ public class AllEventsRecyclerFragment extends Fragment {
             mDeptList.addAll(hs);
             Collections.sort(mDeptList);
         } else {
-            results = realm.where(EventModel.class).equalTo("type.name", title).findAll();
+            results = realm.where(EventModel.class).equalTo("type.name", title).notEqualTo("day" + day, "").findAllSorted("day"+day);
         }
         //Toast.makeText(getContext(), "" + results.size(), Toast.LENGTH_SHORT).show();
 
@@ -81,17 +90,40 @@ public class AllEventsRecyclerFragment extends Fragment {
 
         RecyclerView eventsRecyclerView = (RecyclerView) view.findViewById(R.id.main_recycler_view);
         if (title.equals("Favorites")) {
-            adapter = new RecyclerAdapter(getActivity(), results, true);
+            adapter = new RecyclerAdapter(getActivity(), results, true, day);
         } else if (title.equals("DepartmentList")) {
             adapter = new RecyclerAdapter(getActivity(), mDeptList);
         } else {
-            adapter = new RecyclerAdapter(getActivity(), results, false);
+            adapter = new RecyclerAdapter(getActivity(), results, false, day);
         }
         eventsRecyclerView.setAdapter(adapter);
         eventsRecyclerView.setItemAnimator(new FadeInUpAnimator());
         eventsRecyclerView.getItemAnimator().setRemoveDuration(500);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         eventsRecyclerView.setNestedScrollingEnabled(true);
+
+        String message;
+        if (title.equals("Favorites")) {
+            message = "You have not selected any events for this day. Click the favorite button next to Events" +
+                    " to receive notifications before event starts";
+        } else {
+            message = "No events on this day";
+        }
+
+        holderText = (TextView) view.findViewById(R.id.text_holder);
+        holderText.setText(message);
+        adapter.setmListener(new RecyclerAdapter.AdapterListener() {
+            @Override
+            public void itemsRemoved() {
+                holderText.setVisibility(View.VISIBLE);
+            }
+        });
+        if(results!=null)
+        if (results.isEmpty()) {
+            holderText.setVisibility(View.VISIBLE);
+        } else {
+            holderText.setVisibility(View.GONE);
+        }
         return view;
     }
 

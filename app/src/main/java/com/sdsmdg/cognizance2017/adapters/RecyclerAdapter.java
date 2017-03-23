@@ -2,16 +2,13 @@ package com.sdsmdg.cognizance2017.adapters;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.sdsmdg.cognizance2017.R;
@@ -19,7 +16,6 @@ import com.sdsmdg.cognizance2017.activities.MainActivity;
 import com.sdsmdg.cognizance2017.models.EventModel;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import io.realm.Realm;
@@ -35,16 +31,27 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     private List<EventModel> normalEventList;
     private List<String> deptList;
     private Realm realm;
+    private AdapterListener mListener;
+    private int day;
+
+    public interface AdapterListener {
+        public void itemsRemoved();
+    }
+
+    public void setmListener(AdapterListener mListener) {
+        this.mListener = mListener;
+    }
 
     public RecyclerAdapter(Context ctx, List<String> deptList) {
         this.ctx = ctx;
         this.deptList = deptList;
     }
 
-    public RecyclerAdapter(Context ctx, List<EventModel> eventsList, boolean isInFav) {
+    public RecyclerAdapter(Context ctx, List<EventModel> eventsList, boolean isInFav, int day) {
         this.ctx = ctx;
         this.eventsList = eventsList;
         this.isInFav = isInFav;
+        this.day = day;
         normalEventList = new ArrayList<EventModel>();
         try {
             realm = Realm.getDefaultInstance();
@@ -105,21 +112,33 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         if (deptList == null) {
             final EventModel currentEvent = normalEventList.get(position);
             holder.titleText.setText(currentEvent.getName());
-            if(curDay == 24){
-                holder.timeText.setText(currentEvent.getDay1());
-            }else if(curDay ==25){
+            String time = "";
+            if (curDay == 24) {
+                time = currentEvent.getDay1();
+            } else if (curDay == 25) {
+                time = currentEvent.getDay2();
+            } else {
+                time = currentEvent.getDay3();
+            }
+            try {
+                if (!time.equals("")) {
+                    String hr = time.substring(0, 2);
+                    String min = time.substring(2, 4);
 
-                holder.timeText.setText(currentEvent.getDay2());
-            }else {
-
-                holder.timeText.setText(currentEvent.getDay3());
+                    String hr2 = time.substring(5, 7);
+                    String min2 = time.substring(7, 9);
+                    String modifiedTime = hr + ":" + min + " - " + hr2 + ":" + min2;
+                    holder.timeText.setText(modifiedTime);
+                }
+            } catch (Exception e) {
+                //Toast.makeText(ctx,""+currentEvent.getId(),Toast.LENGTH_SHORT).show();
             }
             if (currentEvent.getVenue().equals("")) {
                 holder.locationText.setText("Venue");
             } else {
                 holder.locationText.setText(currentEvent.getVenue());
             }
-            if (currentEvent.isFav()) {
+            if ((day == 1 && currentEvent.isFav1()) || (day == 2 && currentEvent.isFav2()) || (day == 3 && currentEvent.isFav3())) {
                 holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                 holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                 holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
@@ -133,66 +152,59 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
                 holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
                 holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimary));
-
             }
-        //in some cases, it will prevent unwanted situations
-        holder.checkBox.setOnCheckedChangeListener(null);
-        holder.checkBox.setChecked(currentEvent.isFav());
-        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Realm.init(ctx);
-                realm = Realm.getDefaultInstance();
-                realm.beginTransaction();
-                EventModel eventModel = realm.where(EventModel.class).equalTo("id", currentEvent.getId()).findFirst();
-                eventModel.setFav(isChecked);
-                realm.commitTransaction();
-                currentEvent.setFav(isChecked);
-                if (isChecked) {
-                    if(!(currentEvent.getCurDay().equals(""))){
-                        int hr = Integer.parseInt(currentEvent.getCurDay().substring(0,2));
-                        int min = Integer.parseInt(currentEvent.getCurDay().substring(2,4));
-                        int day = curDay;
-                        Calendar calender = Calendar.getInstance();
-                        calender.set(Calendar.MONTH,Calendar.MARCH);
-                        calender.set(Calendar.YEAR,2017);
-                        calender.set(Calendar.DAY_OF_MONTH,day);
-                        calender.set(Calendar.HOUR_OF_DAY,hr);
-                        calender.set(Calendar.MINUTE,min);
-                        if(System.currentTimeMillis()<calender.getTimeInMillis())
-                            ((MainActivity)mainAct).createNotification(calender,currentEvent);
-                        else {
-                            Toast.makeText(ctx, "This event has already started", Toast.LENGTH_SHORT).show();
-                        }
-                    }else {
-                        Toast.makeText(ctx, "can't set alarm ,date is null", Toast.LENGTH_SHORT).show();
-                    }
-                    holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
-                    holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
-                    holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
-                    holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
-                    holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
-                    holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
-                } else {
-                    if(!currentEvent.getCurDay().equals("")) {
-                        int day = curDay;
-                        ((MainActivity)mainAct).cancelNotification(Integer.parseInt(day + "" + currentEvent.getId()));
-                    }
-                    if (isInFav) {
-                        deleteFromFav(holder.getAdapterPosition());
+            //in some cases, it will prevent unwanted situations
+            holder.checkBox.setOnCheckedChangeListener(null);
+            if (day == 1)
+                holder.checkBox.setChecked(currentEvent.isFav1());
+            else if (day == 2)
+                holder.checkBox.setChecked(currentEvent.isFav2());
+            else if (day == 3)
+                holder.checkBox.setChecked(currentEvent.isFav3());
+            holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Realm.init(ctx);
+                    realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    EventModel eventModel = realm.where(EventModel.class).equalTo("id", currentEvent.getId()).findFirst();
+                    if (day == 1)
+                        eventModel.setFav1(isChecked);
+                    else if (day == 2)
+                        eventModel.setFav2(isChecked);
+                    else if (day == 3)
+                        eventModel.setFav3(isChecked);
+                    realm.commitTransaction();
+                    if (day == 1)
+                        currentEvent.setFav1(isChecked);
+                    else if (day == 2)
+                        currentEvent.setFav2(isChecked);
+                    else if (day == 3)
+                        currentEvent.setFav3(isChecked);
+                    if (isChecked) {
+                        ((MainActivity) mainAct).createNotification(currentEvent,day+23);
+                        holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                        holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                        holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                        holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                        holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                        holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                     } else {
-                        holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
-                        holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
-                        holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
-                        holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
-                        holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
-                        holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimary));
+                        ((MainActivity) mainAct).cancelNotification(currentEvent.getId(),day+23);
+                        if (isInFav) {
+                            deleteFromFav(holder.getAdapterPosition());
+                        } else {
+                            holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                            holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                            holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                            holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
+                            holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
+                            holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimary));
+                        }
                     }
                 }
-            }
-        });
-        }
-        else {
+            });
+        } else {
             if (!deptList.get(position).equals(""))
                 holder.titleText.setText(deptList.get(position));
         }
@@ -210,5 +222,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         normalEventList.remove(index);
         notifyItemRemoved(index);
         notifyItemRangeChanged(index, normalEventList.size());
+        if (normalEventList.isEmpty()) {
+            if (mListener != null)
+                mListener.itemsRemoved();
+        }
     }
 }
