@@ -2,16 +2,13 @@ package com.sdsmdg.cognizance2017.adapters;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.sdsmdg.cognizance2017.R;
@@ -19,7 +16,6 @@ import com.sdsmdg.cognizance2017.activities.MainActivity;
 import com.sdsmdg.cognizance2017.models.EventModel;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import io.realm.Realm;
@@ -36,6 +32,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     private List<String> deptList;
     private Realm realm;
     private AdapterListener mListener;
+    private int day;
 
     public interface AdapterListener {
         public void itemsRemoved();
@@ -50,10 +47,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         this.deptList = deptList;
     }
 
-    public RecyclerAdapter(Context ctx, List<EventModel> eventsList, boolean isInFav) {
+    public RecyclerAdapter(Context ctx, List<EventModel> eventsList, boolean isInFav, int day) {
         this.ctx = ctx;
         this.eventsList = eventsList;
         this.isInFav = isInFav;
+        this.day = day;
         normalEventList = new ArrayList<EventModel>();
         try {
             realm = Realm.getDefaultInstance();
@@ -140,7 +138,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             } else {
                 holder.locationText.setText(currentEvent.getVenue());
             }
-            if (currentEvent.isFav()) {
+            if ((day == 1 && currentEvent.isFav1()) || (day == 2 && currentEvent.isFav2()) || (day == 3 && currentEvent.isFav3())) {
                 holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                 holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                 holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
@@ -154,46 +152,59 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
                 holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
                 holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimary));
-
             }
-        //in some cases, it will prevent unwanted situations
-        holder.checkBox.setOnCheckedChangeListener(null);
-        holder.checkBox.setChecked(currentEvent.isFav());
-        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Realm.init(ctx);
-                realm = Realm.getDefaultInstance();
-                realm.beginTransaction();
-                EventModel eventModel = realm.where(EventModel.class).equalTo("id", currentEvent.getId()).findFirst();
-                eventModel.setFav(isChecked);
-                realm.commitTransaction();
-                currentEvent.setFav(isChecked);
-                if (isChecked) {
-                            ((MainActivity)mainAct).createNotification(currentEvent);
-                    holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
-                    holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
-                    holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
-                    holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
-                    holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
-                    holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
-                } else {
-                        ((MainActivity)mainAct).cancelNotification(currentEvent.getId());
-                    if (isInFav) {
-                        deleteFromFav(holder.getAdapterPosition());
+            //in some cases, it will prevent unwanted situations
+            holder.checkBox.setOnCheckedChangeListener(null);
+            if (day == 1)
+                holder.checkBox.setChecked(currentEvent.isFav1());
+            else if (day == 2)
+                holder.checkBox.setChecked(currentEvent.isFav2());
+            else if (day == 3)
+                holder.checkBox.setChecked(currentEvent.isFav3());
+            holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Realm.init(ctx);
+                    realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    EventModel eventModel = realm.where(EventModel.class).equalTo("id", currentEvent.getId()).findFirst();
+                    if (day == 1)
+                        eventModel.setFav1(isChecked);
+                    else if (day == 2)
+                        eventModel.setFav2(isChecked);
+                    else if (day == 3)
+                        eventModel.setFav3(isChecked);
+                    realm.commitTransaction();
+                    if (day == 1)
+                        currentEvent.setFav1(isChecked);
+                    else if (day == 2)
+                        currentEvent.setFav2(isChecked);
+                    else if (day == 3)
+                        currentEvent.setFav3(isChecked);
+                    if (isChecked) {
+                        ((MainActivity) mainAct).createNotification(currentEvent);
+                        holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                        holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                        holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                        holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                        holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimarySelected));
+                        holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimarySelected));
                     } else {
-                        holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
-                        holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
-                        holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
-                        holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
-                        holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
-                        holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimary));
+                        ((MainActivity) mainAct).cancelNotification(currentEvent.getId());
+                        if (isInFav) {
+                            deleteFromFav(holder.getAdapterPosition());
+                        } else {
+                            holder.locationText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                            holder.timeText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                            holder.titleText.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                            holder.clockIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
+                            holder.markerIcon.setColorFilter(ctx.getResources().getColor(R.color.colorPrimary));
+                            holder.divider.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimary));
+                        }
                     }
                 }
-            }
-        });
-        }
-        else {
+            });
+        } else {
             if (!deptList.get(position).equals(""))
                 holder.titleText.setText(deptList.get(position));
         }
@@ -211,8 +222,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         normalEventList.remove(index);
         notifyItemRemoved(index);
         notifyItemRangeChanged(index, normalEventList.size());
-        if(normalEventList.isEmpty()){
-            if(mListener!=null)
+        if (normalEventList.isEmpty()) {
+            if (mListener != null)
                 mListener.itemsRemoved();
         }
     }

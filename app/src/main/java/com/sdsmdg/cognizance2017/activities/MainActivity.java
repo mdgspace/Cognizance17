@@ -30,7 +30,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.sdsmdg.cognizance2017.FavReceiver;
 import com.sdsmdg.cognizance2017.R;
 import com.sdsmdg.cognizance2017.fragments.AllEventsFragment;
@@ -41,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import io.realm.Realm;
-import io.realm.RealmObject;
 import io.realm.RealmResults;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -140,9 +138,9 @@ public class MainActivity extends AppCompatActivity
                         public void onSuccess() {
                             dialog.dismiss();
                             showEvents("all_events", "Home");
-                            RealmResults<EventModel> eventModels = realm.where(EventModel.class).equalTo("isFav",true).findAll();
+                            RealmResults<EventModel> eventModels = realm.where(EventModel.class).equalTo("isFav1",true).findAll();
                             for(EventModel model:eventModels){
-                                if(model.isFav())
+                                if(model.isFav1())
                                     createNotification(model);
                             }
                         }

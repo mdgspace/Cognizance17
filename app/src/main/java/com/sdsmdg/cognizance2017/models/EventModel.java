@@ -11,7 +11,7 @@ public class EventModel extends RealmObject {
     private int id;
     private String name, contact_person, contact_email, contact_phone, prize, description, contact_person2, contact_phone2, venue,day1,day2,day3;
     private Type type;
-    private boolean isFav;
+    private boolean isFav1, isFav2, isFav3;
 
     public String getDay1() {
         return day1;
@@ -101,12 +101,12 @@ public class EventModel extends RealmObject {
         this.venue = venue;
     }
 
-    public boolean isFav() {
-        return isFav;
+    public boolean isFav1() {
+        return isFav1;
     }
 
-    public void setFav(boolean fav) {
-        isFav = fav;
+    public void setFav1(boolean fav1) {
+        isFav1 = fav1;
     }
 
     public Type getType() {
@@ -142,4 +142,19 @@ public class EventModel extends RealmObject {
         }
     }
 
+    public boolean isFav2() {
+        return isFav2;
+    }
+
+    public void setFav2(boolean fav2) {
+        isFav2 = fav2;
+    }
+
+    public boolean isFav3() {
+        return isFav3;
+    }
+
+    public void setFav3(boolean fav3) {
+        isFav3 = fav3;
+    }
 }

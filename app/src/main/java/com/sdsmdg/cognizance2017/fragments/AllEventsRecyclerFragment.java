@@ -54,9 +54,14 @@ public class AllEventsRecyclerFragment extends Fragment {
             results = realm.where(EventModel.class).notEqualTo("day" + day, "").findAll();
         } else if (title.equals("Workshop") || title.equals("Mainstay")
                 || title.equals("E-Summit") || title.equals("Project M.A.R.S")) {
-            results = realm.where(EventModel.class).equalTo("type.category", title).findAll();
+            results = realm.where(EventModel.class).equalTo("type.category", title).notEqualTo("day" + day, "").findAll();
         } else if (title.equals("Favorites")) {
-            results = realm.where(EventModel.class).equalTo("isFav", true).notEqualTo("day" + day, "").findAll();
+            if (day == 1)
+                results = realm.where(EventModel.class).equalTo("isFav1", true).notEqualTo("day" + day, "").findAll();
+            else if (day == 2)
+                results = realm.where(EventModel.class).equalTo("isFav2", true).notEqualTo("day" + day, "").findAll();
+            else if (day == 3)
+                results = realm.where(EventModel.class).equalTo("isFav3", true).notEqualTo("day" + day, "").findAll();
         } else if (title.equals("DepartmentList")) {
             mDeptList = new ArrayList<String>();
             mType = realm.where(Type.class).equalTo("category", "Departmental").findAll();
@@ -83,11 +88,11 @@ public class AllEventsRecyclerFragment extends Fragment {
 
         RecyclerView eventsRecyclerView = (RecyclerView) view.findViewById(R.id.main_recycler_view);
         if (title.equals("Favorites")) {
-            adapter = new RecyclerAdapter(getActivity(), results, true);
+            adapter = new RecyclerAdapter(getActivity(), results, true, day);
         } else if (title.equals("DepartmentList")) {
             adapter = new RecyclerAdapter(getActivity(), mDeptList);
         } else {
-            adapter = new RecyclerAdapter(getActivity(), results, false);
+            adapter = new RecyclerAdapter(getActivity(), results, false, day);
         }
         eventsRecyclerView.setAdapter(adapter);
         eventsRecyclerView.setItemAnimator(new FadeInUpAnimator());
@@ -96,10 +101,10 @@ public class AllEventsRecyclerFragment extends Fragment {
         eventsRecyclerView.setNestedScrollingEnabled(true);
 
         String message;
-        if(title.equals("Favorites")) {
+        if (title.equals("Favorites")) {
             message = "You have not selected any events for this day. Click the favorite button next to Events" +
                     " to receive notifications before event starts";
-        }else {
+        } else {
             message = "No events on this day";
         }
 
@@ -112,9 +117,9 @@ public class AllEventsRecyclerFragment extends Fragment {
             }
         });
 
-        if(results.isEmpty()){
+        if (results.isEmpty()) {
             holderText.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             holderText.setVisibility(View.GONE);
         }
         return view;
