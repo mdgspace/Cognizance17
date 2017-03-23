@@ -424,7 +424,7 @@ public class MainActivity extends AppCompatActivity
                     Log.d("Alarm:", "id:" + idString + " Cal: " + calender.getTime());
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(mainAct, idString, intent, 0);
                     AlarmManager alarmManager = (AlarmManager) mainAct.getSystemService(ALARM_SERVICE);
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis(), pendingIntent);
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calender.getTimeInMillis()-15*60*1000, pendingIntent);
                 }
             }
         }
