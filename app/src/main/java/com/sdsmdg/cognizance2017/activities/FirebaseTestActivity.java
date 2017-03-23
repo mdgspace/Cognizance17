@@ -40,6 +40,7 @@ public class FirebaseTestActivity extends AppCompatActivity {
                 query();
             }
         });
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,7 +54,7 @@ public class FirebaseTestActivity extends AppCompatActivity {
     private void submitRating(){
         PictureCompetition picture = new PictureCompetition(cogniIdText.getText().toString().trim(),ratingText.getText().toString().trim());
 
-        mDatabase.child("ImageId").push().setValue(picture);
+        mDatabase.child("a1").push().setValue(picture);
     }
     private  void query(){
         Query query = mDatabase.child("ImageId").orderByChild("cogniId").equalTo("cogni123");
@@ -66,7 +67,7 @@ public class FirebaseTestActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Toast.makeText(FirebaseTestActivity.this, "Check your network connection!!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -102,7 +103,7 @@ public class FirebaseTestActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Toast.makeText(FirebaseTestActivity.this, "Check your network connection!!", Toast.LENGTH_SHORT).show();
 
             }
         });
