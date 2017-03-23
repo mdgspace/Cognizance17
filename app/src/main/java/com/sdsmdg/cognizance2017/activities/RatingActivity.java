@@ -21,6 +21,7 @@ import com.sdsmdg.cognizance2017.models.PictureCompetition;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -155,6 +156,19 @@ public class RatingActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus)
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
     public void loadJSONFromAsset() {
         String json = null;
         try {
@@ -168,14 +182,14 @@ public class RatingActivity extends AppCompatActivity {
             ex.printStackTrace();
         }
         try {
-            //markersData = new ArrayList<>();
             JSONArray mArray = new JSONArray(json);
             for (int i = 0; i < mArray.length(); i++) {
-
-                if (imageId == mArray.getJSONObject(i).getString("QR Code")) {
-                    photographer.setText(mArray.getJSONObject(i).getString("Photographer"));
-                    caption.setText(mArray.getJSONObject(i).getString("Location"));
-                    location.setText(mArray.getJSONObject(i).getString("Caption"));
+                JSONObject jsonObject = mArray.getJSONObject(i);
+                if (imageId.equals(jsonObject.getString("QR Code").substring(1))) {
+                    photographer.setText("By " + jsonObject.getString("Photographer"));
+                    location.setText("Shot at " + jsonObject.getString("Location"));
+                    caption.setText(jsonObject.getString("Caption"));
+                    break;
                 }
             }
         } catch (JSONException e) {

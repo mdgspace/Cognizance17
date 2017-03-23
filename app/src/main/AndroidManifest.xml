@@ -16,7 +16,6 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -39,6 +38,7 @@
         <activity
             android:name=".activities.MapsActivity"
             android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoTitle" />
 
         <receiver android:name=".FavReceiver" />
@@ -57,6 +57,7 @@
             android:name=".activities.EventDescriptionActivity"
             android:label="@string/title_activity_event_description"
             android:parentActivityName=".activities.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.BarCodeActivity"
@@ -64,11 +65,16 @@
             android:theme="@style/AppTheme.NoTitle" />
         <activity
             android:name=".activities.LoginActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/LoginActivityTheme" />
         <activity android:name=".activities.FirebaseTestActivity" />
-        <activity android:name=".activities.RatingActivity"></activity>
+        <activity
+            android:name=".activities.RatingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTitle" />
         <activity
             android:name=".activities.AboutUs"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoTitle" />
         <activity
             android:name=".activities.SponsorsActivity"

@@ -2,8 +2,8 @@ package com.sdsmdg.cognizance2017.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -29,11 +29,10 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import static com.sdsmdg.cognizance2017.activities.MainActivity.BASE_URL;
-import static com.sdsmdg.cognizance2017.activities.MainActivity.mainAct;
 
 
 public class EventDescriptionActivity extends AppCompatActivity {
-    private TextView eventDate, eventDescription, eventLocation ,eventContact;
+    private TextView eventDate, eventDescription, eventLocation, eventContact;
     private Realm realm;
     private ProgressDialog dialog;
 
@@ -53,13 +52,13 @@ public class EventDescriptionActivity extends AppCompatActivity {
         dialog = new ProgressDialog(this);
         dialog.setMessage("fetching data");
         dialog.setCancelable(false);
-        eventDate = (TextView)findViewById(R.id.event_time);
-        eventDescription = (TextView)findViewById(R.id.event_description);
-        eventLocation = (TextView)findViewById(R.id.event_location);
+        eventDate = (TextView) findViewById(R.id.event_time);
+        eventDescription = (TextView) findViewById(R.id.event_description);
+        eventLocation = (TextView) findViewById(R.id.event_location);
         eventContact = (TextView) findViewById(R.id.contact_details);
 
         // accessing data from cognizance website
-        if(isNetworkAvailable()) {
+        if (isNetworkAvailable()) {
             dialog.show();
             RestAdapter adapter = new RestAdapter.Builder()
                     .setEndpoint(BASE_URL)
@@ -83,13 +82,13 @@ public class EventDescriptionActivity extends AppCompatActivity {
                             appBar.setTitle(model.getName());
 
                             String timings = "Timings :-";
-                            if(!model.getDay1().isEmpty()){
+                            if (!model.getDay1().isEmpty()) {
                                 timings += "\nDay 1 (24 March) : " + model.getTime(model.getDay1());
                             }
-                            if(!model.getDay2().equals("")){
+                            if (!model.getDay2().equals("")) {
                                 timings += "\nDay 2 (25 March) : " + model.getTime(model.getDay2());
                             }
-                            if(!model.getDay3().equals("")){
+                            if (!model.getDay3().equals("")) {
                                 timings += "\nDay 3 (26 March) : " + model.getTime(model.getDay3());
                             }
                             eventDate.setText(timings);
@@ -99,36 +98,36 @@ public class EventDescriptionActivity extends AppCompatActivity {
                             eventLocation.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Intent mapIntent = new Intent(EventDescriptionActivity.this,MapsActivity.class);
-                                    if(!model.getVenue().equals(""))
-                                    mapIntent.putExtra("location",model.getVenue());
-                                    Log.d("location",model.getVenue());
+                                    Intent mapIntent = new Intent(EventDescriptionActivity.this, MapsActivity.class);
+                                    if (!model.getVenue().equals(""))
+                                        mapIntent.putExtra("location", model.getVenue());
+                                    Log.d("location", model.getVenue());
                                     startActivity(mapIntent);
                                 }
                             });
                             eventContact.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    String[] imageMode = {model.getContact_person()+" : " + model.getContact_phone(),
-                                            model.getContact_person2()+ " : " + model.getContact_phone2(),
-                                            "E-mail : " + model.getContact_email()};
+                                    String[] imageMode = {model.getContact_person() + " : " + model.getContact_phone(),
+                                            model.getContact_person2() + " : " + model.getContact_phone2(),
+                                            "E-mail : \n" + model.getContact_email()};
                                     AlertDialog.Builder builder = new AlertDialog.Builder(EventDescriptionActivity.this);
                                     builder.setTitle("Contact Details")
                                             .setItems(imageMode, new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int which) {
-                                                    if(which==0){
+                                                    if (which == 0) {
                                                         Intent intent = new Intent(Intent.ACTION_DIAL);
-                                                        intent.setData(Uri.parse("tel:"+model.getContact_phone()));
-                                                        startActivity(intent);                                                     }
-                                                    else if(which == 1) {
-                                                        Intent intent = new Intent(Intent.ACTION_DIAL);
-                                                        intent.setData(Uri.parse("tel:"+model.getContact_phone2()));
+                                                        intent.setData(Uri.parse("tel:" + model.getContact_phone()));
                                                         startActivity(intent);
-                                                    }else {
+                                                    } else if (which == 1) {
+                                                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                                                        intent.setData(Uri.parse("tel:" + model.getContact_phone2()));
+                                                        startActivity(intent);
+                                                    } else {
                                                         Intent intent = new Intent(android.content.Intent.ACTION_SEND);
                                                         intent.setType("text/html");
-                                                        intent.putExtra(Intent.EXTRA_SUBJECT,  "Query about " + model.getName());
-                                                        intent.putExtra(android.content.Intent.EXTRA_EMAIL,new String[] { model.getContact_email() });
+                                                        intent.putExtra(Intent.EXTRA_SUBJECT, "Query about " + model.getName());
+                                                        intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{model.getContact_email()});
                                                         startActivity(Intent.createChooser(intent, "Send Email"));
                                                     }
                                                 }
@@ -148,27 +147,27 @@ public class EventDescriptionActivity extends AppCompatActivity {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Snackbar.make(eventDescription,"error fetching data",Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(eventDescription, "error fetching data", Snackbar.LENGTH_LONG).show();
                     dialog.dismiss();
                 }
             });
-        }else{
+        } else {
             final EventModel model = realm.where(EventModel.class).equalTo("id", getIntent().getIntExtra("id", 6)).findFirst();
             CollapsingToolbarLayout appBar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
             appBar.setTitle(model.getName());
             String timings = "Timings :- \n";
-            if(!model.getDay1().isEmpty()){
+            if (!model.getDay1().isEmpty()) {
                 timings += "Day 1 (24 March) : " + model.getTime(model.getDay1());
             }
-            if(!model.getDay2().equals("")){
+            if (!model.getDay2().equals("")) {
                 timings += "\nDay 2 (25 March) : " + model.getTime(model.getDay2());
             }
-            if(!model.getDay3().equals("")){
+            if (!model.getDay3().equals("")) {
                 timings += "\nDay 3 (26 March) : " + model.getTime(model.getDay3());
             }
 
             eventDate.setText(timings);
-            if(model.getDescription() !=null){
+            if (model.getDescription() != null) {
                 String description = Html.fromHtml(model.getDescription()).toString();
                 eventDescription.setText(description);
             }
@@ -176,37 +175,37 @@ public class EventDescriptionActivity extends AppCompatActivity {
             eventLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent mapIntent = new Intent(EventDescriptionActivity.this,MapsActivity.class);
-                    if(!model.getVenue().equals(""))
-                        mapIntent.putExtra("location",model.getVenue());
-                    Log.d("location",model.getVenue());
+                    Intent mapIntent = new Intent(EventDescriptionActivity.this, MapsActivity.class);
+                    if (!model.getVenue().equals(""))
+                        mapIntent.putExtra("location", model.getVenue());
+                    Log.d("location", model.getVenue());
                     startActivity(mapIntent);
                 }
             });
-            if(model.getContact_email()!= null){
+            if (model.getContact_email() != null) {
                 eventContact.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String[] imageMode = {model.getContact_person()+" : " + model.getContact_phone(),
-                                model.getContact_person2()+ " : " + model.getContact_phone2(),
-                                "E-mail : " + model.getContact_email()};
+                        String[] imageMode = {model.getContact_person() + " : " + model.getContact_phone(),
+                                model.getContact_person2() + " : " + model.getContact_phone2(),
+                                "E-mail : \n" + model.getContact_email()};
                         AlertDialog.Builder builder = new AlertDialog.Builder(EventDescriptionActivity.this);
                         builder.setTitle("Contact Us")
                                 .setItems(imageMode, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-                                        if(which==0){
+                                        if (which == 0) {
                                             Intent intent = new Intent(Intent.ACTION_DIAL);
-                                            intent.setData(Uri.parse("tel:"+model.getContact_phone()));
-                                            startActivity(intent);                                                     }
-                                        else if(which == 1) {
-                                            Intent intent = new Intent(Intent.ACTION_DIAL);
-                                            intent.setData(Uri.parse("tel:"+model.getContact_phone2()));
+                                            intent.setData(Uri.parse("tel:" + model.getContact_phone()));
                                             startActivity(intent);
-                                        }else {
+                                        } else if (which == 1) {
+                                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                                            intent.setData(Uri.parse("tel:" + model.getContact_phone2()));
+                                            startActivity(intent);
+                                        } else {
                                             Intent intent = new Intent(android.content.Intent.ACTION_SEND);
                                             intent.setType("text/html");
-                                            intent.putExtra(Intent.EXTRA_SUBJECT,  "Query about " + model.getName());
-                                            intent.putExtra(android.content.Intent.EXTRA_EMAIL,new String[] { model.getContact_email() });
+                                            intent.putExtra(Intent.EXTRA_SUBJECT, "Query about " + model.getName());
+                                            intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{model.getContact_email()});
                                             startActivity(Intent.createChooser(intent, "Send Email"));
                                         }
                                     }
@@ -216,9 +215,10 @@ public class EventDescriptionActivity extends AppCompatActivity {
                 });
             }
             dialog.dismiss();
-            Snackbar.make(eventDescription,"Connect to internet to get latest updates",Snackbar.LENGTH_LONG).show();
+            Snackbar.make(eventDescription, "Connect to internet to get latest updates", Snackbar.LENGTH_LONG).show();
         }
     }
+
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

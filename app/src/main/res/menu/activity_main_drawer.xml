@@ -26,7 +26,7 @@
                         android:title="Competitions" />
                     <item
                         android:id="@+id/literario"
-                        android:icon="@drawable/literario"
+                        android:icon="@drawable/literario_icon"
                         android:title="Literario" />
                     <item
                         android:id="@+id/robotics"
