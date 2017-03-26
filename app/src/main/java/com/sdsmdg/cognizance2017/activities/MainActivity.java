@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -46,9 +47,6 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import static com.sdsmdg.cognizance2017.R.id.imageView;
-import static com.sdsmdg.cognizance2017.R.id.imageview_toolbar;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -312,6 +310,9 @@ public class MainActivity extends AppCompatActivity
         CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
         layoutParams.height = 2 * actionBarSize;
         tabLayout.setVisibility(View.VISIBLE);
+        //Sets indicator color  of tabs to colorPrimary.
+        //Using resource file was giving error so used the hex code as it is.
+        tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#A6A14A"));
         toolbar.setLayoutParams(layoutParams);
         appBar.setExpanded(true);
         toolbar.setTitle(title);
