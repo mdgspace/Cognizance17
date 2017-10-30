@@ -10,6 +10,18 @@ As an attendee in Cognizance 2017 you will face many questions. This application
 So you are still reading? Wondering whether to download it or not? Why bother? Just download and see the app for yourself, after all it is free!
 
 ## Screenshots
-![Main Screen](https://lh3.googleusercontent.com/9REq8B6H55onJm7WuiBjmiT1tlcgfeEY045Wsfkh7rLpETuUQs-HRNTcqVDciOa1AvM=h900-rw)
-![](https://lh3.googleusercontent.com/w7WXSeGxZlfQM3yUASYaBEb9c6NSTs6qn3gq3r-8eXhz3No96vGdpChK4qiIIj1jVyk=h900-rw)
-![](https://lh3.googleusercontent.com/GtsHSyvJdLHp8FAIY9JfpmrubcwbGwfBawP0Hqxhy67v1xKtpsIp6PZoR6cwZ64V_u4f=h900-rw)
+<div style="
+	height: auto;
+	text-align: justify;
+	-ms-text-justify: distribute-all-lines;
+	text-justify: distribute-all-lines;
+">
+<img src="https://lh3.googleusercontent.com/9REq8B6H55onJm7WuiBjmiT1tlcgfeEY045Wsfkh7rLpETuUQs-HRNTcqVDciOa1AvM=h900-rw" width="200"  />
+<img src="https://lh3.googleusercontent.com/w7WXSeGxZlfQM3yUASYaBEb9c6NSTs6qn3gq3r-8eXhz3No96vGdpChK4qiIIj1jVyk=h900-rw" width="200"  />
+<img src="https://lh3.googleusercontent.com/GtsHSyvJdLHp8FAIY9JfpmrubcwbGwfBawP0Hqxhy67v1xKtpsIp6PZoR6cwZ64V_u4f=h900-rw" width="200"  />
+<span style="
+  width: 100%;
+  display: inline-block;
+  font-size: 0;
+  line-height: 0"></span>
+</div>
