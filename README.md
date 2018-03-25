@@ -9,6 +9,8 @@ As an attendee in Cognizance 2017 you will face many questions. This application
 
 So you are still reading? Wondering whether to download it or not? Why bother? Just download and see the app for yourself, after all it is free!
 
+Download it on Play Store: [Link](https://play.google.com/store/apps/details?id=com.sdsmdg.cognizance2017&hl=en)
+
 ## Screenshots
 <div style="
 	height: auto;
